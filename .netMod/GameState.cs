@@ -370,17 +370,17 @@ namespace RE3DotNet_CC
                 
                 try
                 {
-                    var guiMaster = API.GetManagedSingleton("app.GUIManager");
+                    var guiMaster = API.GetManagedSingleton("app.GuiManager");
                     if (guiMaster != null)
                     {
                         guiMasterExists = true;
                         var guiMasterObj = guiMaster as ManagedObject;
                         if (guiMasterObj != null)
                         {
-                            var map = guiMasterObj.Call("get_IsOpenWorldMap");
+                            var map = guiMasterObj.Call("get_IsWorldMapEnabled");
                             if (map != null) isOpenMap = Convert.ToBoolean(map);
                             
-                            var pause = guiMasterObj.Call("get_IsHudPause");
+                            var pause = guiMasterObj.Call("get_IsHudPaused");
                             if (pause != null) isOpenPause = Convert.ToBoolean(pause);
                             
                             
@@ -430,7 +430,7 @@ namespace RE3DotNet_CC
         {
             try
             {
-                _mainFlowManager = API.GetManagedSingleton("app.MainGameFlowManager");
+                _mainFlowManager = API.GetManagedSingleton("app.MainGameFlowController");
             }
             catch (Exception)
             {
@@ -1703,6 +1703,15 @@ namespace RE3DotNet_CC
                     return;
 
                 _currentPlayerCondition = hitPoint;
+                if(hitPoint != null)
+                {
+                    try
+                    {
+                        var hitCont = playerContext.GetField("<HitPoint>k__BackingField");
+                        if (hitCont != null) _hitPointController = hitCont;
+                    }
+                    catch (Exception) { }
+                }
             }
             catch (Exception)
             {
