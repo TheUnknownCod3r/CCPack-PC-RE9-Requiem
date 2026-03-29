@@ -48,29 +48,29 @@ namespace RE3DotNet_CC
                 // Load configuration
                 Logger.SetEnabled(false);
                 _config = PluginConfig.Load();
-                Logger.LogInfo($"RE3DotNet-CC: 2.0.1");
+                Logger.LogInfo($"RE9DotNet-CC: 2.0.1");
                 EnemySpawnManager.SetMaxSpawnedEnemies(_config.MaxSpawnedEnemies);
 
                 // Initialize game state
                 _gameState = new GameState();
-                Logger.LogInfo("RE3DotNet-CC: GameState initialized");
+                Logger.LogInfo("RE9DotNet-CC: GameState initialized");
 
                 // Register all effects
                 RegisterEffects();
-                Logger.LogInfo($"RE3DotNet-CC: Registered {_effects.Count} effects");
+                Logger.LogInfo($"RE9DotNet-CC: Registered {_effects.Count} effects");
 
                 // Initialize and start Crowd Control connection
                 _connection = new CCConnection();
                 _connection.OnRequestReceived += HandleRequest;
                 _connection.Start();
-                Logger.LogInfo("RE3DotNet-CC: Crowd Control connection started");
+                Logger.LogInfo("RE9DotNet-CC: Crowd Control connection started");
 
                 _isInitialized = true;
-                Logger.LogInfo("RE3DotNet-CC: Plugin loaded successfully!");
+                Logger.LogInfo("RE9DotNet-CC: Plugin loaded successfully!");
             }
             catch (Exception ex)
             {
-                Logger.LogError($"RE3DotNet-CC: Failed to initialize - {ex.Message}");
+                Logger.LogError($"RE9DotNet-CC: Failed to initialize - {ex.Message}");
                 Logger.LogError($"Stack trace: {ex.StackTrace}");
             }
         }
@@ -105,7 +105,7 @@ namespace RE3DotNet_CC
                         _config.Save();
                         if (enableLogging)
                         {
-                            Logger.LogInfo("RE3DotNet-CC: Logging enabled");
+                            Logger.LogInfo("RE9DotNet-CC: Logging enabled");
                         }
                     }
 
@@ -398,7 +398,7 @@ namespace RE3DotNet_CC
         {
             try
             {
-                Logger.LogInfo("RE3DotNet-CC: Plugin unloading...");
+                Logger.LogInfo("RE9DotNet-CC: Plugin unloading...");
 
                 // Set flag first to prevent new operations
                 _isInitialized = false;
@@ -406,7 +406,7 @@ namespace RE3DotNet_CC
                 // Stop and dispose connection
                 if (_connection != null)
                 {
-                    Logger.LogInfo("RE3DotNet-CC: Stopping connection...");
+                    Logger.LogInfo("RE9DotNet-CC: Stopping connection...");
                     
                     // Remove event handler first to prevent new requests
                     try
@@ -415,7 +415,7 @@ namespace RE3DotNet_CC
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogInfo($"RE3DotNet-CC: Error removing event handler - {ex.Message}");
+                        Logger.LogInfo($"RE9DotNet-CC: Error removing event handler - {ex.Message}");
                     }
                     
                     try
@@ -424,7 +424,7 @@ namespace RE3DotNet_CC
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogInfo($"RE3DotNet-CC: Error stopping connection - {ex.Message}");
+                        Logger.LogInfo($"RE9DotNet-CC: Error stopping connection - {ex.Message}");
                     }
                     
                     try
@@ -433,11 +433,11 @@ namespace RE3DotNet_CC
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogInfo($"RE3DotNet-CC: Error disposing connection - {ex.Message}");
+                        Logger.LogInfo($"RE9DotNet-CC: Error disposing connection - {ex.Message}");
                     }
                     
                     _connection = null;
-                    Logger.LogInfo("RE3DotNet-CC: Connection stopped and disposed");
+                    Logger.LogInfo("RE9DotNet-CC: Connection stopped and disposed");
                 }
 
                 // Clear effects
@@ -447,7 +447,7 @@ namespace RE3DotNet_CC
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogInfo($"RE3DotNet-CC: Error clearing effects - {ex.Message}");
+                    Logger.LogInfo($"RE9DotNet-CC: Error clearing effects - {ex.Message}");
                 }
 
                 // Clear game state
@@ -461,18 +461,18 @@ namespace RE3DotNet_CC
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogInfo($"RE3DotNet-CC: Error clearing enemy state - {ex.Message}");
+                    Logger.LogInfo($"RE9DotNet-CC: Error clearing enemy state - {ex.Message}");
                 }
 
                 // Don't force GC - it can prevent unloading
                 // Just clear references and let it happen naturally
 
-                Logger.LogInfo("RE3DotNet-CC: Plugin unloaded successfully");
+                Logger.LogInfo("RE9DotNet-CC: Plugin unloaded successfully");
             }
             catch (Exception ex)
             {
-                Logger.LogError($"RE3DotNet-CC: Error during unload - {ex.Message}");
-                Logger.LogError($"RE3DotNet-CC: Stack trace: {ex.StackTrace}");
+                Logger.LogError($"RE9DotNet-CC: Error during unload - {ex.Message}");
+                Logger.LogError($"RE9DotNet-CC: Stack trace: {ex.StackTrace}");
             }
         }
 
@@ -512,11 +512,11 @@ namespace RE3DotNet_CC
                     _wasPaused = isPaused;
                     if (isPaused)
                     {
-                        Logger.LogInfo("RE3DotNet-CC: Game paused (menu/cutscene/loading)");
+                        Logger.LogInfo("RE9DotNet-CC: Game paused (menu/cutscene/loading)");
                     }
                     else
                     {
-                        Logger.LogInfo("RE3DotNet-CC: Game resumed");
+                        Logger.LogInfo("RE9DotNet-CC: Game resumed");
                     }
                 }
 
@@ -525,7 +525,7 @@ namespace RE3DotNet_CC
                 {
                     if (!_loadCleanupTriggered)
                     {
-                        Logger.LogInfo("RE3DotNet-CC: Load request detected, running cleanup");
+                        Logger.LogInfo("RE9DotNet-CC: Load request detected, running cleanup");
                         EnemySpawnManager.TryRequestDestroyAllTracked();
                         EnemySpawnManager.ClearAll();
                         EnemySpawner.ResetPrefabCache();
@@ -552,7 +552,7 @@ namespace RE3DotNet_CC
                         {
                             if (justResumed)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: OHKO resumed, sending Resumed response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: OHKO resumed, sending Resumed response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -567,7 +567,7 @@ namespace RE3DotNet_CC
                             }
                             else if (wasPaused && !_ohkoWasPaused)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: OHKO paused, sending Pause response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: OHKO paused, sending Pause response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -595,7 +595,7 @@ namespace RE3DotNet_CC
                         
                         if (requestId > 0)
                         {
-                            Logger.LogInfo($"RE3DotNet-CC: OHKO expired, sending Stopped response for request ID: {requestId}");
+                            Logger.LogInfo($"RE9DotNet-CC: OHKO expired, sending Stopped response for request ID: {requestId}");
                             
                             var response = new CCResponse
                             {
@@ -631,7 +631,7 @@ namespace RE3DotNet_CC
                         {
                             if (justResumed)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: Invincibility resumed, sending Resumed response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: Invincibility resumed, sending Resumed response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -646,7 +646,7 @@ namespace RE3DotNet_CC
                             }
                             else if (wasPaused && !_invulWasPaused)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: Invincibility paused, sending Pause response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: Invincibility paused, sending Pause response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -674,7 +674,7 @@ namespace RE3DotNet_CC
                         
                         if (requestId > 0)
                         {
-                            Logger.LogInfo($"RE3DotNet-CC: Invincibility expired, sending Stopped response for request ID: {requestId}");
+                            Logger.LogInfo($"RE9DotNet-CC: Invincibility expired, sending Stopped response for request ID: {requestId}");
                             
                             var response = new CCResponse
                             {
@@ -710,7 +710,7 @@ namespace RE3DotNet_CC
                         {
                             if (justResumed)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: FOV effect resumed, sending Resumed response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: FOV effect resumed, sending Resumed response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -725,7 +725,7 @@ namespace RE3DotNet_CC
                             }
                             else if (wasPaused && !_fovWasPaused)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: FOV effect paused, sending Pause response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: FOV effect paused, sending Pause response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -753,7 +753,7 @@ namespace RE3DotNet_CC
                         
                         if (requestId > 0)
                         {
-                            Logger.LogInfo($"RE3DotNet-CC: FOV effect expired, sending Stopped response for request ID: {requestId}");
+                            Logger.LogInfo($"RE9DotNet-CC: FOV effect expired, sending Stopped response for request ID: {requestId}");
                             
                             var response = new CCResponse
                             {
@@ -789,7 +789,7 @@ namespace RE3DotNet_CC
                         {
                             if (justResumed)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: Scale effect resumed, sending Resumed response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: Scale effect resumed, sending Resumed response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -804,7 +804,7 @@ namespace RE3DotNet_CC
                             }
                             else if (wasPaused && !_scaleWasPaused)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: Scale effect paused, sending Pause response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: Scale effect paused, sending Pause response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -832,7 +832,7 @@ namespace RE3DotNet_CC
                         
                         if (requestId > 0)
                         {
-                            Logger.LogInfo($"RE3DotNet-CC: Scale effect expired, sending Stopped response for request ID: {requestId}");
+                            Logger.LogInfo($"RE9DotNet-CC: Scale effect expired, sending Stopped response for request ID: {requestId}");
                             
                             var response = new CCResponse
                             {
@@ -868,7 +868,7 @@ namespace RE3DotNet_CC
                         {
                             if (justResumed)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: Speed effect resumed, sending Resumed response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: Speed effect resumed, sending Resumed response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -883,7 +883,7 @@ namespace RE3DotNet_CC
                             }
                             else if (wasPaused && !_speedWasPaused)
                             {
-                                Logger.LogInfo($"RE3DotNet-CC: Speed effect paused, sending Pause response for request ID: {requestId}");
+                                Logger.LogInfo($"RE9DotNet-CC: Speed effect paused, sending Pause response for request ID: {requestId}");
                                 var response = new CCResponse
                                 {
                                     Id = requestId,
@@ -915,7 +915,7 @@ namespace RE3DotNet_CC
                         
                         if (requestId > 0)
                         {
-                            Logger.LogInfo($"RE3DotNet-CC: Speed effect expired, sending Stopped response for request ID: {requestId}");
+                            Logger.LogInfo($"RE9DotNet-CC: Speed effect expired, sending Stopped response for request ID: {requestId}");
                             
                             var response = new CCResponse
                             {
@@ -1310,7 +1310,7 @@ namespace RE3DotNet_CC
         private static void RegisterEffect(IEffect effect)
         {
             _effects[effect.Code] = effect;
-            Logger.LogInfo($"RE3DotNet-CC: Registered effect '{effect.Code}'");
+            Logger.LogInfo($"RE9DotNet-CC: Registered effect '{effect.Code}'");
         }
 
         private static void UpdateCharacterMenuVisibility(GameState gameState)
@@ -1437,11 +1437,11 @@ namespace RE3DotNet_CC
                 return;
 
             // Log incoming request (simplified)
-            Logger.LogInfo($"RE3DotNet-CC: Received effect '{request.Code}' (ID: {request.Id}, Duration: {request.Duration}ms)");
+            Logger.LogInfo($"RE9DotNet-CC: Received effect '{request.Code}' (ID: {request.Id}, Duration: {request.Duration}ms)");
 
             if (_connection == null || _gameState == null)
             {
-                Logger.LogError("RE3DotNet-CC: Cannot handle request - plugin not initialized");
+                Logger.LogError("RE9DotNet-CC: Cannot handle request - plugin not initialized");
                 // Try to send error response anyway
                 if (_connection != null)
                 {
@@ -1455,7 +1455,7 @@ namespace RE3DotNet_CC
             {
                 if (EnableRequestGate && !_requestGate.Wait(0))
                 {
-                    Logger.LogWarning($"RE3DotNet-CC: Too many in-flight effects, retrying '{request.Code}' (ID: {request.Id})");
+                    Logger.LogWarning($"RE9DotNet-CC: Too many in-flight effects, retrying '{request.Code}' (ID: {request.Id})");
                     if (_connection != null)
                     {
                         await SendResponseAsync(_connection, request, CCStatus.Retry, "Too many active effects - please retry");
@@ -1474,18 +1474,18 @@ namespace RE3DotNet_CC
                     {
                         effect = new SpawnEnemyEffect(request.Code);
                         _effects[request.Code] = effect;
-                        Logger.LogInfo($"RE3DotNet-CC: Dynamically registered '{request.Code}'");
+                        Logger.LogInfo($"RE9DotNet-CC: Dynamically registered '{request.Code}'");
                     }
                     else
                 {
-                    Logger.LogInfo($"RE3DotNet-CC: ⚠️ UNKNOWN EFFECT CODE: '{request.Code}' (ID: {request.Id}, RequestID: {request.RequestID})");
-                    Logger.LogInfo($"RE3DotNet-CC: Registered effects: {string.Join(", ", _effects.Keys)}");
+                    Logger.LogInfo($"RE9DotNet-CC: ⚠️ UNKNOWN EFFECT CODE: '{request.Code}' (ID: {request.Id}, RequestID: {request.RequestID})");
+                    Logger.LogInfo($"RE9DotNet-CC: Registered effects: {string.Join(", ", _effects.Keys)}");
                     await SendResponseAsync(_connection, request, CCStatus.Failure, $"Unknown effect code: {request.Code}");
                     return;
                     }
                 }
 
-                Logger.LogInfo($"RE3DotNet-CC: Found effect handler for '{request.Code}' (ID: {request.Id}, RequestID: {request.RequestID})");
+                Logger.LogInfo($"RE9DotNet-CC: Found effect handler for '{request.Code}' (ID: {request.Id}, RequestID: {request.RequestID})");
 
                 // Execute effect with timeout to ensure we respond within SDK's 10 second limit
                 var status = await ExecuteWithTimeoutAsync(() => effect.ExecuteAsync(_gameState, request), TimeSpan.FromSeconds(8));
@@ -1511,13 +1511,13 @@ namespace RE3DotNet_CC
                         break;
                 }
 
-                Logger.LogInfo($"RE3DotNet-CC: Effect '{request.Code}' result: {status} - {message}");
+                Logger.LogInfo($"RE9DotNet-CC: Effect '{request.Code}' result: {status} - {message}");
                 await SendResponseAsync(_connection, request, status, message);
             }
             catch (Exception ex)
             {
-                Logger.LogError($"RE3DotNet-CC: ❌ ERROR handling request - {ex.Message}");
-                Logger.LogError($"RE3DotNet-CC: Stack trace: {ex.StackTrace}");
+                Logger.LogError($"RE9DotNet-CC: ❌ ERROR handling request - {ex.Message}");
+                Logger.LogError($"RE9DotNet-CC: Stack trace: {ex.StackTrace}");
                 if (_connection != null)
                 {
                     try
@@ -1526,7 +1526,7 @@ namespace RE3DotNet_CC
                     }
                     catch (Exception sendEx)
                     {
-                        Logger.LogError($"RE3DotNet-CC: Failed to send error response - {sendEx.Message}");
+                        Logger.LogError($"RE9DotNet-CC: Failed to send error response - {sendEx.Message}");
                     }
                 }
             }
@@ -1550,7 +1550,7 @@ namespace RE3DotNet_CC
                 
                 if (completedTask == timeoutTask)
                 {
-                    Logger.LogError("RE3DotNet-CC: Effect execution timed out");
+                    Logger.LogError("RE9DotNet-CC: Effect execution timed out");
                     return CCStatus.Retry;
                 }
                 
@@ -1558,7 +1558,7 @@ namespace RE3DotNet_CC
             }
             catch (Exception ex)
             {
-                Logger.LogError($"RE3DotNet-CC: Error in ExecuteWithTimeoutAsync - {ex.Message}");
+                Logger.LogError($"RE9DotNet-CC: Error in ExecuteWithTimeoutAsync - {ex.Message}");
                 return CCStatus.Retry;
             }
         }

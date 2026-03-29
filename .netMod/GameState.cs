@@ -1,7 +1,8 @@
+using app;
+using REFrameworkNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using REFrameworkNET;
 using via;
 
 namespace RE3DotNet_CC
@@ -553,9 +554,6 @@ namespace RE3DotNet_CC
             }
         }
 
-
-        
-        
 
         private static List<string> TryGetTypeDefinitionMethodNames(REFrameworkNET.TypeDefinition typeDef)
         {
@@ -1957,294 +1955,69 @@ namespace RE3DotNet_CC
         /// <summary>
         /// Set player health directly
         /// </summary>
-        public bool SetHealth(float health)
+        /// 
+        public bool SetHealth(float health, int type = 1)
         {
-            // Force update to get fresh references
             Update();
-            
-            if (_hitPointController == null)
-            {
-                LogError("GameState: Cannot set health - HitPointController not available");
-                LogError($"GameState: PlayerManager={_playerManager != null}, Condition={_currentPlayerCondition != null}");
-                
-                // Try multiple times with fresh updates
-                for (int i = 0; i < 3 && _hitPointController == null; i++)
-                {
-                    UpdatePlayerManager();
-                    UpdatePlayerCondition();
-                    if (_hitPointController != null)
-                        break;
-                    System.Threading.Thread.Sleep(10); // Small delay between attempts
-                }
-                
-                if (_hitPointController == null)
-                {
-                    LogError("GameState: HitPointController still not available after retries");
-                    return false;
-                }
-            }
 
+            if (_currentPlayerCondition == null)
+            {
+                LogError("GameState: No PlayerCondition");
+                return false;
+            }
+            
             try
             {
-                var clampedHealth = Math.Max(0, health);
-                if (_maxHealth > 0)
+                var playerManagerObj = _playerManager as ManagedObject;
+                var playerContext = playerManagerObj.Call("getPlayerContextRef") as ManagedObject;
+                if (playerContext == null)
+                    return false;
+                var hpObj = playerContext.Call("get_HitPoint") as ManagedObject;
+                var currentObj = hpObj.Call("get_CurrentHitPoint")
+                    ?? hpObj.GetField("<HitPointData>k__BackingField")
+                    ?? hpObj.GetField("CurrentHitPoint");
+                if (currentObj == null)
                 {
-                    clampedHealth = Math.Min(clampedHealth, _maxHealth);
+                    Logger.LogWarning("RE9DotNet-CC: TrySetHitPoint failed - current HP missing.");
+                    return false;
                 }
-                
-                LogInfo($"GameState: Setting health to {clampedHealth} (requested: {health}, max: {_maxHealth})");
-                
-                // If setting to 0 (kill), try a soft kill first (poison/damage tick),
-                // then fall back to a large damage kill if needed.
-                if (clampedHealth == 0)
+                var current = Convert.ToInt32(currentObj);
+                var target = Math.Max(0, Convert.ToInt32(health));
+                var delta = target - current;
+                if (delta == 0)
+                    return false;
+
+                var typeDef = hpObj.GetTypeDefinition();
+                if (type == 2)
                 {
-                    try
+                    if (typeDef?.FindMethod("set_CurrentHitPoint") == null)
                     {
-                        var hitPointObj = (ManagedObject)_hitPointController;
-                        var conditionObj = _currentPlayerCondition as ManagedObject;
-
-                        // Disable invincibility and no-damage flags first
-                        try
-                        {
-                            var invincibleObj = ((ManagedObject)_hitPointController).Call("get_Invincible");
-                            var noDamageObj = ((ManagedObject)_hitPointController).Call("get_NoDamage");
-                            
-                            if (invincibleObj != null && Convert.ToBoolean(invincibleObj))
-                            {
-                                LogInfo("GameState: Disabling Invincible flag");
-                                ((ManagedObject)_hitPointController).Call("set_Invincible", false);
-                            }
-                            
-                            if (noDamageObj != null && Convert.ToBoolean(noDamageObj))
-                            {
-                                LogInfo("GameState: Disabling NoDamage flag");
-                                ((ManagedObject)_hitPointController).Call("set_NoDamage", false);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogInfo($"GameState: Could not check/disable invincibility flags - {ex.Message}");
-                        }
-                        
-                        // Get current health first
-                        var currentHPObj = ((ManagedObject)_hitPointController).Call("get_CurrentHitPoint");
-                        var currentHP = currentHPObj != null ? Convert.ToInt32(currentHPObj) : (int)_maxHealth;
-
-                        if (currentHP > 0)
-                        {
-                            if (TryKillViaPoisonAndDamage(hitPointObj, conditionObj))
-                            {
-                                if (IsPlayerDeadNow(hitPointObj, conditionObj))
-                                {
-                                    LogInfo("GameState: Poison/damage tick set dead flags; continuing kill sequence");
-                                }
-
-                                LogInfo("GameState: Poison/damage tick ran but player is still alive; continuing kill sequence");
-                            }
-
-                            if (TryKillViaDamageParamAndHit(conditionObj))
-                            {
-                                if (IsPlayerDeadNow(hitPointObj, conditionObj))
-                                {
-                                    _currentHealth = 0;
-                                    _isPlayerAlive = false;
-                                    LogInfo("GameState: Kill sequence completed via DamageParam/onHitDamage");
-                                    return true;
-                                }
-
-                                LogInfo("GameState: DamageParam/onHitDamage ran but player is still alive; continuing kill sequence");
-                            }
-
-                            if (TryDamageCurrentPlayer(999999))
-                            {
-                                if (IsPlayerDeadNow(hitPointObj, conditionObj))
-                                {
-                                    _currentHealth = 0;
-                                    _isPlayerAlive = false;
-                                    LogInfo("GameState: Kill sequence completed via PlayerManager.damageCurrentPlayer");
-                                    return true;
-                                }
-
-                                LogInfo("GameState: damageCurrentPlayer ran but player is still alive; continuing kill sequence");
-                            }
-
-                            hitPointObj.Call("set_CurrentHitPoint", 1);
-                            var damageAmount = 999999; // Extremely large value
-                            LogInfo($"GameState: Using addDamage({damageAmount}) to kill player (current HP: {currentHP})");
-                            hitPointObj.Call("addDamage", damageAmount);
-
-                            var hpAfterDamageObj = hitPointObj.Call("get_CurrentHitPoint");
-                            var hpAfterDamage = hpAfterDamageObj != null ? Convert.ToInt32(hpAfterDamageObj) : -1;
-                            LogInfo($"GameState: Health after addDamage: {hpAfterDamage}");
-
-                            hitPointObj.Call("set_CurrentHitPoint", 0);
-
-                            var isDeadObj = hitPointObj.Call("get_IsDead");
-                            var isDead = isDeadObj != null && Convert.ToBoolean(isDeadObj);
-                            LogInfo($"GameState: IsDead after setting HP to 0: {isDead}");
-
-                            if (!isDead)
-                            {
-                                LogInfo("GameState: Player not dead after setting HP to 0, calling dead() directly");
-                                hitPointObj.Call("dead");
-                            }
-
-                            var finalHPObj = hitPointObj.Call("get_CurrentHitPoint");
-                            var finalHP = finalHPObj != null ? Convert.ToInt32(finalHPObj) : -1;
-                            var finalIsDeadObj = hitPointObj.Call("get_IsDead");
-                            var finalIsDead = finalIsDeadObj != null && Convert.ToBoolean(finalIsDeadObj);
-
-                            LogInfo($"GameState: Final state - HP: {finalHP}, IsDead: {finalIsDead}");
-
-                            if (IsPlayerDeadNow(hitPointObj, conditionObj))
-                            {
-                                _currentHealth = 0;
-                                _isPlayerAlive = false;
-                                LogInfo("GameState: Kill sequence completed");
-                                return true;
-                            }
-
-                            LogInfo("GameState: Kill sequence finished but player is still alive");
-                            return false;
-                        }
-                        else
-                        {
-                            LogInfo("GameState: Player already at 0 HP, just calling dead()");
-                            ((ManagedObject)_hitPointController).Call("dead");
-                            if (IsPlayerDeadNow(hitPointObj, conditionObj))
-                            {
-                                _currentHealth = 0;
-                                _isPlayerAlive = false;
-                                LogInfo("GameState: Kill sequence completed (already at 0 HP)");
-                                return true;
-                            }
-
-                            LogInfo("GameState: Player still alive after dead() call at 0 HP");
-                            return false;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogError($"GameState: Error in kill sequence - {ex.Message}, falling back to set_CurrentHitPoint");
-                        // Fallback to direct set
-                        try
-                        {
-                            ((ManagedObject)_hitPointController).Call("set_CurrentHitPoint", 0);
-                            ((ManagedObject)_hitPointController).Call("dead");
-                        }
-                        catch (Exception ex2)
-                        {
-                            LogError($"GameState: Fallback also failed - {ex2.Message}");
-                        }
-                        if (IsPlayerDeadNow((ManagedObject)_hitPointController, _currentPlayerCondition as ManagedObject))
-                        {
-                            _currentHealth = 0;
-                            _isPlayerAlive = false;
-                            return true;
-                        }
-
+                        Logger.LogWarning("RE9DotNet-CC: HitPoint.addDamage not found.");
                         return false;
                     }
-                }
-                else if (clampedHealth > _currentHealth)
-                {
-                    // Healing - use recovery method
-                    var recoveryAmount = (int)(clampedHealth - _currentHealth);
-                    try
-                    {
-                        LogInfo($"GameState: Using recovery({recoveryAmount}) to heal player");
-                        ((ManagedObject)_hitPointController).Call("recovery", recoveryAmount);
-                        _currentHealth = clampedHealth;
-                        _isPlayerAlive = _currentHealth > 0;
-                    }
-                    catch (Exception ex)
-                    {
-                        LogError($"GameState: Error using recovery method - {ex.Message}, falling back to set_CurrentHitPoint");
-                        // Fallback to direct set
-                        ((ManagedObject)_hitPointController).Call("set_CurrentHitPoint", clampedHealth);
-                        _currentHealth = clampedHealth;
-                        _isPlayerAlive = _currentHealth > 0;
-                    }
-                }
-                else if (clampedHealth < _currentHealth)
-                {
-                    // Reducing health (damage) - use addDamage with negative value, similar to how recovery works for healing
-                    var damageAmount = (int)(_currentHealth - clampedHealth);
-                    try
-                    {
-                        // Disable invincibility/no-damage flags first
-                        try
-                        {
-                            var invincibleObj = ((ManagedObject)_hitPointController).Call("get_Invincible");
-                            var noDamageObj = ((ManagedObject)_hitPointController).Call("get_NoDamage");
-                            
-                            if (invincibleObj != null && Convert.ToBoolean(invincibleObj))
-                            {
-                                LogInfo("GameState: Disabling Invincible flag for damage");
-                                ((ManagedObject)_hitPointController).Call("set_Invincible", false);
-                            }
-                            
-                            if (noDamageObj != null && Convert.ToBoolean(noDamageObj))
-                            {
-                                LogInfo("GameState: Disabling NoDamage flag for damage");
-                                ((ManagedObject)_hitPointController).Call("set_NoDamage", false);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogInfo($"GameState: Could not check/disable invincibility flags for damage - {ex.Message}");
-                        }
-                        
-                        LogInfo($"GameState: Using addDamage({-damageAmount}) to damage player");
-                        // Use negative value for addDamage to reduce health
-                        ((ManagedObject)_hitPointController).Call("addDamage", -damageAmount);
-                        
-                        // Verify the health was actually set
-                        var verifyHPObj = ((ManagedObject)_hitPointController).Call("get_CurrentHitPoint");
-                        var verifyHP = verifyHPObj != null ? Convert.ToSingle(verifyHPObj) : clampedHealth;
-                        
-                        // If verification shows different value, try direct set as fallback
-                        if (Math.Abs(verifyHP - clampedHealth) > 1.0f)
-                        {
-                            LogInfo($"GameState: addDamage resulted in {verifyHP}, expected {clampedHealth}, using direct set as fallback");
-                            ((ManagedObject)_hitPointController).Call("set_CurrentHitPoint", clampedHealth);
-                            
-                            // Verify again
-                            verifyHPObj = ((ManagedObject)_hitPointController).Call("get_CurrentHitPoint");
-                            verifyHP = verifyHPObj != null ? Convert.ToSingle(verifyHPObj) : clampedHealth;
-                        }
-                        
-                        _currentHealth = verifyHP;
-                        _isPlayerAlive = _currentHealth > 0;
-                    }
-                    catch (Exception ex)
-                    {
-                        LogError($"GameState: Error using addDamage method - {ex.Message}, falling back to set_CurrentHitPoint");
-                        // Fallback to direct set
-                        ((ManagedObject)_hitPointController).Call("set_CurrentHitPoint", clampedHealth);
-                        _currentHealth = clampedHealth;
-                        _isPlayerAlive = _currentHealth > 0;
-                    }
+
+                    ((ManagedObject)hpObj).Call("set_CurrentHitPoint", current - target);
                 }
                 else
                 {
-                    // Normal health setting (direct set, not healing or damage)
-                    ((ManagedObject)_hitPointController).Call("set_CurrentHitPoint", clampedHealth);
-                    _currentHealth = clampedHealth;
-                    _isPlayerAlive = _currentHealth > 0;
+                    if (typeDef?.FindMethod("set_CurrentHitPoint") == null)
+                    {
+                        Logger.LogWarning("RE9DotNet-CC: HitPoint.recovery not found.");
+                        return false;
+                    }
+                    ((ManagedObject)hpObj).Call("set_CurrentHitPoint", target);
                 }
-            
-            LogInfo($"GameState: Health set successfully - Current: {_currentHealth}, Alive: {_isPlayerAlive}");
-            return true;
+                LogInfo($"Final HP: {_currentHealth}, Alive: {_isPlayerAlive}");
+
+                return true;
             }
             catch (Exception ex)
             {
-                LogError($"GameState: Error setting health - {ex.Message}");
-                LogError($"GameState: Exception type: {ex.GetType().Name}");
-                LogError($"GameState: Stack trace: {ex.StackTrace}");
+                LogError($"SetHealth failed: {ex.Message}");
                 return false;
             }
         }
+
 
         public bool ForceKillPlayer()
         {
@@ -2297,7 +2070,6 @@ namespace RE3DotNet_CC
                     // ignore flag failures
                 }
 
-                // Ensure poison is cleared; kill effect should not poison the player.
                 try
                 {
                     if (conditionObj != null)
@@ -2338,13 +2110,6 @@ namespace RE3DotNet_CC
                     deadNow = IsPlayerDeadNow(hitPointObj, conditionObj);
                     if (deadNow)
                         LogInfo("GameState: Kill sequence completed via PlayerManager.damageCurrentPlayer");
-                }
-
-                if (!deadNow && TryKillViaPoisonAndDamage(hitPointObj, conditionObj))
-                {
-                    deadNow = IsPlayerDeadNow(hitPointObj, conditionObj);
-                    if (deadNow)
-                        LogInfo("GameState: Kill sequence completed via poison/damage tick");
                 }
 
                 if (!deadNow)
@@ -2681,51 +2446,6 @@ namespace RE3DotNet_CC
             }
         }
 
-        private bool TryKillViaPoisonAndDamage(ManagedObject hitPointObj, ManagedObject? conditionObj)
-        {
-            try
-            {
-                hitPointObj.Call("set_CurrentHitPoint", 1);
-
-                if (conditionObj != null)
-                {
-                    var conditionType = conditionObj.GetTypeDefinition();
-                    if (conditionType?.FindMethod("set_IsPoison") != null)
-                    {
-                        conditionObj.Call("set_IsPoison", true);
-                    }
-
-                    if (conditionType?.FindMethod("updatePoisonDamage") != null)
-                    {
-                        conditionObj.Call("updatePoisonDamage");
-                    }
-                }
-
-                hitPointObj.Call("addDamage", 1);
-
-                if (IsHitPointDead(hitPointObj))
-                {
-                    return true;
-                }
-
-                var hpObj = hitPointObj.Call("get_CurrentHitPoint");
-                if (hpObj != null && Convert.ToInt32(hpObj) <= 0)
-                {
-                    // HP reached 0 but death pipeline did not trigger; try forcing it.
-                    if (TryForceDead(hitPointObj))
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogInfo($"GameState: Poison/damage tick kill failed - {ex.Message}");
-            }
-
-            return false;
-        }
-
         private static bool IsHitPointDead(ManagedObject hitPointObj)
         {
             var isDeadObj = hitPointObj.Call("get_IsDead");
@@ -2736,16 +2456,21 @@ namespace RE3DotNet_CC
         {
             try
             {
-                var hitPointType = hitPointObj.GetTypeDefinition();
+                var type = hitPointObj.GetTypeDefinition();
 
-                if (hitPointType?.FindMethod("checkDead") != null)
+                if (type?.FindMethod("set_CurrentHitPoint") != null)
                 {
-                    hitPointObj.Call("checkDead", 999999);
+                    hitPointObj.Call("set_CurrentHitPoint", 0);
                 }
 
-                if (hitPointType?.FindMethod("dead") != null)
+                if (type?.FindMethod("dead") != null)
                 {
                     hitPointObj.Call("dead");
+                }
+
+                if (type?.FindMethod("set_IsDead") != null)
+                {
+                    hitPointObj.Call("set_IsDead", true);
                 }
 
                 return IsHitPointDead(hitPointObj);
@@ -2756,152 +2481,48 @@ namespace RE3DotNet_CC
             }
         }
 
-        private bool TryKillViaDamageParamAndHit(ManagedObject? conditionObj)
+        private bool TryKillViaDamageParamAndHit(ManagedObject? hitPointObj)
         {
-            if (conditionObj == null)
-            {
+            if (hitPointObj == null)
                 return false;
-            }
 
             try
             {
-                var conditionType = conditionObj.GetTypeDefinition();
-                if (conditionType == null)
-                {
-                    return false;
-                }
+                var type = hitPointObj.GetTypeDefinition();
 
-                ManagedObject? damageParamObj = null;
-                if (conditionType.FindMethod("get_DamageParam") != null)
+                try
                 {
-                    var damageParamRet = conditionObj.Call("get_DamageParam");
-                    if (damageParamRet is ManagedObject managedParam)
+                    hitPointObj.Call("set_Invincible", false);
+
+                    var noDamage = hitPointObj.Call("get_NoDamage");
+                    if (noDamage is ManagedObject nd)
                     {
-                        damageParamObj = managedParam;
-                    }
-                    else if (damageParamRet != null)
-                    {
-                        damageParamObj = ExtractFromInvokeRet(damageParamRet) as ManagedObject;
+                        try { nd.Call("clear"); } catch { }
+                        try { nd.Call("reset"); } catch { }
                     }
                 }
+                catch { }
 
-                if (damageParamObj != null)
+                if (type?.FindMethod("addDamage") != null)
                 {
-                    var damageParamType = damageParamObj.GetTypeDefinition();
-                    var damageType = 0;
-
-                    if (damageParamType?.FindMethod("set") != null)
-                    {
-                        damageParamObj.Call("set", damageType, true);
-                    }
-                    else
-                    {
-                        if (damageParamType?.FindMethod("set_DamageType") != null)
-                        {
-                            damageParamObj.Call("set_DamageType", damageType);
-                        }
-
-                        if (damageParamType?.FindMethod("set_IsDead") != null)
-                        {
-                            damageParamObj.Call("set_IsDead", true);
-                        }
-                    }
+                    hitPointObj.Call("addDamage", 999999);
                 }
 
-                ManagedObject? hitControllerObj = null;
-                if (conditionType.FindMethod("get_HitController") != null)
+                if (type?.FindMethod("set_CurrentHitPoint") != null)
                 {
-                    var hitControllerRet = conditionObj.Call("get_HitController");
-                    if (hitControllerRet is ManagedObject managedHitController)
-                    {
-                        hitControllerObj = managedHitController;
-                    }
-                    else if (hitControllerRet != null)
-                    {
-                        hitControllerObj = ExtractFromInvokeRet(hitControllerRet) as ManagedObject;
-                    }
+                    hitPointObj.Call("set_CurrentHitPoint", 0);
                 }
 
-                ManagedObject? damageInfoObj = null;
-                if (hitControllerObj != null)
+                if (type?.FindMethod("dead") != null)
                 {
-                    var hitControllerType = hitControllerObj.GetTypeDefinition();
-                    if (hitControllerType?.FindMethod("get_damageCalcInfo") != null)
-                    {
-                        var damageInfoRet = hitControllerObj.Call("get_damageCalcInfo");
-                        damageInfoObj = damageInfoRet as ManagedObject
-                            ?? ExtractFromInvokeRet(damageInfoRet) as ManagedObject;
-                    }
-                    else if (hitControllerType?.FindMethod("get_DamageCalcInfo") != null)
-                    {
-                        var damageInfoRet = hitControllerObj.Call("get_DamageCalcInfo");
-                        damageInfoObj = damageInfoRet as ManagedObject
-                            ?? ExtractFromInvokeRet(damageInfoRet) as ManagedObject;
-                    }
+                    hitPointObj.Call("dead");
                 }
 
-                if (damageInfoObj != null)
-                {
-                    var damageInfoType = damageInfoObj.GetTypeDefinition();
-                    const int damageAmount = 999999;
-
-                    if (damageInfoType?.FindMethod("set_OriginalDamage") != null)
-                    {
-                        damageInfoObj.Call("set_OriginalDamage", damageAmount);
-                    }
-
-                    if (damageInfoType?.FindMethod("set_Damage") != null)
-                    {
-                        damageInfoObj.Call("set_Damage", damageAmount);
-                    }
-
-                    if (damageInfoType?.FindMethod("set_DamageRatio") != null)
-                    {
-                        damageInfoObj.Call("set_DamageRatio", 1.0f);
-                    }
-
-                    if (damageInfoType?.FindMethod("set_IsKill") != null)
-                    {
-                        damageInfoObj.Call("set_IsKill", true);
-                    }
-
-                    if (damageInfoType?.FindMethod("set_DamageDir") != null)
-                    {
-                        var damageDir = REFrameworkNET.ValueType.New<via.vec3>();
-                        damageDir.x = 0f;
-                        damageDir.y = 0f;
-                        damageDir.z = 1f;
-                        damageInfoObj.Call("set_DamageDir", damageDir);
-                    }
-
-                    var playerManagerObj = _playerManager as ManagedObject
-                        ?? API.GetManagedSingleton("offline.PlayerManager") as ManagedObject;
-                    if (playerManagerObj != null)
-                    {
-                        var playerManagerType = playerManagerObj.GetTypeDefinition();
-                        if (playerManagerType?.FindMethod("get_CurrentPlayer") != null)
-                        {
-                            var playerObj = playerManagerObj.Call("get_CurrentPlayer");
-                            if (playerObj != null && damageInfoType?.FindMethod("set_AttackOwnerObject") != null)
-                            {
-                                damageInfoObj.Call("set_AttackOwnerObject", playerObj);
-                            }
-                        }
-                    }
-                }
-
-                if (conditionType.FindMethod("onHitDamage") != null && damageInfoObj != null)
-                {
-                    LogInfo("GameState: Calling PlayerCondition.onHitDamage with DamageInfo");
-                    conditionObj.Call("onHitDamage", damageInfoObj);
-                    return true;
-                }
-
-                return damageParamObj != null;
+                return IsHitPointDead(hitPointObj);
             }
             catch (Exception ex)
             {
-                LogInfo($"GameState: DamageParam/onHitDamage kill failed - {ex.Message}");
+                LogInfo($"GameState: Kill fallback failed - {ex.Message}");
                 return false;
             }
         }
@@ -2909,77 +2530,54 @@ namespace RE3DotNet_CC
         private bool IsPlayerDeadNow(ManagedObject hitPointObj, ManagedObject? conditionObj)
         {
             var hitPointDead = false;
-            var conditionDead = false;
-            var playerManagerDead = false;
 
             try
             {
-                hitPointDead = IsHitPointDead(hitPointObj);
+                var isDeadObj = hitPointObj.Call("get_IsDead");
+                hitPointDead = isDeadObj != null && Convert.ToBoolean(isDeadObj);
             }
             catch
             {
                 hitPointDead = false;
             }
 
+            var conditionDead = false;
             if (conditionObj != null)
             {
                 try
                 {
-                    var conditionType = conditionObj.GetTypeDefinition();
-                    if (conditionType?.FindMethod("get_IsDead") != null)
-                    {
-                        var conditionDeadObj = conditionObj.Call("get_IsDead");
-                        conditionDead = conditionDeadObj != null && Convert.ToBoolean(conditionDeadObj);
-                    }
+                    var obj = conditionObj.Call("get_IsDead");
+                    conditionDead = obj != null && Convert.ToBoolean(obj);
                 }
-                catch
-                {
-                    conditionDead = false;
-                }
+                catch { }
             }
 
-            try
-            {
-                var playerManagerObj = _playerManager as ManagedObject
-                    ?? API.GetManagedSingleton("offline.PlayerManager") as ManagedObject;
-                if (playerManagerObj != null)
-                {
-                    var playerManagerType = playerManagerObj.GetTypeDefinition();
-                    if (playerManagerType?.FindMethod("get_IsDead") != null)
-                    {
-                        var pmDeadObj = playerManagerObj.Call("get_IsDead");
-                        playerManagerDead = pmDeadObj != null && Convert.ToBoolean(pmDeadObj);
-                    }
-                }
-            }
-            catch
-            {
-                playerManagerDead = false;
-            }
+            LogInfo($"GameState: Kill verify - HitPointDead={hitPointDead}, ConditionDead={conditionDead}");
 
-            LogInfo($"GameState: Kill verify - HitPointDead={hitPointDead}, ConditionDead={conditionDead}, PlayerManagerDead={playerManagerDead}");
-            return hitPointDead || conditionDead || playerManagerDead;
+            return hitPointDead || conditionDead;
         }
 
         private bool TryDamageCurrentPlayer(int damageAmount)
         {
             try
             {
-                var playerManagerObj = _playerManager as ManagedObject
-                    ?? API.GetManagedSingleton("offline.PlayerManager") as ManagedObject;
-                if (playerManagerObj == null)
-                {
+                var charMgr = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
+                if (charMgr == null)
                     return false;
-                }
 
-                var playerManagerType = playerManagerObj.GetTypeDefinition();
-                if (playerManagerType?.FindMethod("damageCurrentPlayer") == null)
-                {
+                var ctx = charMgr.Call("getPlayerContextRef")
+                       ?? charMgr.Call("get_PlayerContext");
+
+                if (ctx is not ManagedObject ctxObj)
                     return false;
-                }
 
-                LogInfo($"GameState: Calling PlayerManager.damageCurrentPlayer({damageAmount})");
-                playerManagerObj.Call("damageCurrentPlayer", damageAmount);
+                var hpObj = ctxObj.Call("get_HitPoint") as ManagedObject;
+                if (hpObj == null)
+                    return false;
+
+                LogInfo($"GameState: Applying damage via HitPoint ({damageAmount})");
+
+                hpObj.Call("addDamage", damageAmount);
                 return true;
             }
             catch (Exception ex)
@@ -2988,74 +2586,6 @@ namespace RE3DotNet_CC
                 return false;
             }
         }
-
-        public bool TryApplyPoisonStatus(float durationSeconds = 10f)
-        {
-            Update();
-            var conditionObj = _currentPlayerCondition as ManagedObject;
-            if (conditionObj == null)
-            {
-                return false;
-            }
-
-            var conditionType = conditionObj.GetTypeDefinition();
-            var applied = false;
-
-            if (conditionType?.FindMethod("set_IsPoison") != null)
-            {
-                conditionObj.Call("set_IsPoison", true);
-                applied = true;
-            }
-
-            if (conditionType?.FindMethod("set_PoisonTimer") != null)
-            {
-                conditionObj.Call("set_PoisonTimer", durationSeconds);
-            }
-
-            if (conditionType?.FindMethod("set_PoisonAutoRecoveryTimer") != null)
-            {
-                conditionObj.Call("set_PoisonAutoRecoveryTimer", durationSeconds);
-            }
-
-            if (conditionType?.FindMethod("updatePoisonDamage") != null)
-            {
-                conditionObj.Call("updatePoisonDamage");
-            }
-
-            return applied;
-        }
-
-        public bool TryClearPoisonStatus()
-        {
-            Update();
-            var conditionObj = _currentPlayerCondition as ManagedObject;
-            if (conditionObj == null)
-            {
-                return false;
-            }
-
-            var conditionType = conditionObj.GetTypeDefinition();
-            var cleared = false;
-
-            if (conditionType?.FindMethod("set_IsPoison") != null)
-            {
-                conditionObj.Call("set_IsPoison", false);
-                cleared = true;
-            }
-
-            if (conditionType?.FindMethod("set_PoisonTimer") != null)
-            {
-                conditionObj.Call("set_PoisonTimer", 0f);
-            }
-
-            if (conditionType?.FindMethod("set_PoisonAutoRecoveryTimer") != null)
-            {
-                conditionObj.Call("set_PoisonAutoRecoveryTimer", 0f);
-            }
-
-            return cleared;
-        }
-
         public bool TryApplyDopingStatus(float durationSeconds = 15f)
         {
             Update();
@@ -3105,85 +2635,6 @@ namespace RE3DotNet_CC
 
             return true;
         }
-
-        public bool TryApplyBurnStatus()
-        {
-            Update();
-            var conditionObj = _currentPlayerCondition as ManagedObject;
-            if (conditionObj == null)
-            {
-                return false;
-            }
-
-            var updaterObj = TryGetUserVariablesUpdater(conditionObj);
-            var applied = false;
-
-            if (updaterObj != null)
-            {
-                var updaterType = updaterObj.GetTypeDefinition();
-                if (updaterType?.FindMethod("set_Fire") != null)
-                {
-                    updaterObj.Call("set_Fire", true);
-                    applied = true;
-                }
-
-                if (updaterType?.FindMethod("set_Burn") != null)
-                {
-                    updaterObj.Call("set_Burn", true);
-                    applied = true;
-                }
-
-                if (updaterType?.FindMethod("set_FireSlur") != null)
-                {
-                    updaterObj.Call("set_FireSlur", 1.0f);
-                }
-            }
-
-            var conditionType = conditionObj.GetTypeDefinition();
-            if (conditionType?.FindMethod("updateBurnTimer") != null)
-            {
-                conditionObj.Call("updateBurnTimer");
-            }
-
-            return applied;
-        }
-
-        public bool TryClearBurnStatus()
-        {
-            Update();
-            var conditionObj = _currentPlayerCondition as ManagedObject;
-            if (conditionObj == null)
-            {
-                return false;
-            }
-
-            var updaterObj = TryGetUserVariablesUpdater(conditionObj);
-            var cleared = false;
-
-            if (updaterObj != null)
-            {
-                var updaterType = updaterObj.GetTypeDefinition();
-                if (updaterType?.FindMethod("set_Fire") != null)
-                {
-                    updaterObj.Call("set_Fire", false);
-                    cleared = true;
-                }
-
-                if (updaterType?.FindMethod("set_Burn") != null)
-                {
-                    updaterObj.Call("set_Burn", false);
-                    cleared = true;
-                }
-
-                if (updaterType?.FindMethod("set_FireSlur") != null)
-                {
-                    updaterObj.Call("set_FireSlur", 0.0f);
-                }
-            }
-
-            return cleared;
-        }
-
         private ManagedObject? TryGetUserVariablesUpdater(ManagedObject conditionObj)
         {
             var conditionType = conditionObj.GetTypeDefinition();
@@ -6404,7 +5855,7 @@ namespace RE3DotNet_CC
             // Get current speed from player motion
             try
             {
-                var playman = API.GetManagedSingleton("offline.PlayerManager");
+                var playman = API.GetManagedSingleton("app.CharacterManager");
                 if (playman == null)
                 {
                     LogError("GameState: Cannot get PlayerManager for speed effect");
@@ -6418,7 +5869,7 @@ namespace RE3DotNet_CC
                     return false;
                 }
 
-                var condition = playmanObj.Call("get_CurrentPlayerCondition");
+                var condition = playmanObj.Call("getPlayerContextFast");
                 if (condition == null)
                 {
                     LogError("GameState: Cannot get CurrentPlayerCondition for speed effect");

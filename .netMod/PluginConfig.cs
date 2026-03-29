@@ -37,19 +37,19 @@ namespace RE3DotNet_CC
                     if (config != null)
                     {
                         Logger.SetEnabled(config.EnableLogging);
-                        Logger.LogInfo($"RE3DotNet-CC: Loaded config from {ConfigFilePath}");
+                        Logger.LogInfo($"RE9DotNet-CC: Loaded config from {ConfigFilePath}");
                         return config;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError($"RE3DotNet-CC: Error loading config - {ex.Message}");
+                Logger.LogError($"RE9DotNet-CC: Error loading config - {ex.Message}");
             }
 
             // Return default config if file doesn't exist or failed to load
             Logger.SetEnabled(false);
-            Logger.LogInfo("RE3DotNet-CC: Using default config");
+            Logger.LogInfo("RE9DotNet-CC: Using default config");
             return new PluginConfig();
         }
 
@@ -67,11 +67,11 @@ namespace RE3DotNet_CC
                 string json = JsonSerializer.Serialize(this, options);
                 File.WriteAllText(ConfigFilePath, json);
                 Logger.SetEnabled(EnableLogging);
-                Logger.LogInfo($"RE3DotNet-CC: Saved config to {ConfigFilePath}");
+                Logger.LogInfo($"RE9DotNet-CC: Saved config to {ConfigFilePath}");
             }
             catch (Exception ex)
             {
-                Logger.LogError($"RE3DotNet-CC: Error saving config - {ex.Message}");
+                Logger.LogError($"RE9DotNet-CC: Error saving config - {ex.Message}");
             }
         }
     }

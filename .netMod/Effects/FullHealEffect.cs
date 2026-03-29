@@ -26,7 +26,7 @@ namespace RE3DotNet_CC.Effects
             Logger.LogInfo("FullHealEffect: Executing full heal effect");
 
             // Set health to max
-            if (gameState.SetHealth(gameState.MaxHealth))
+            if (gameState.SetHealth(gameState.MaxHealth,1))
             {
                 Logger.LogInfo($"FullHealEffect: Fully healed player to {gameState.MaxHealth} HP");
                 return Task.FromResult((int)CCStatus.Success);

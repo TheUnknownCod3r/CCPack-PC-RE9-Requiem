@@ -55,7 +55,7 @@ namespace RE3DotNet_CC.Effects
             }
 
             // Set new health
-            if (gameState.SetHealth(newHealth))
+            if (gameState.SetHealth(damageAmount,2))
             {
                 Logger.LogInfo($"HurtEffect: Damaged player from {currentHP:F1} to {newHealth:F1} HP");
                 await Task.CompletedTask;
