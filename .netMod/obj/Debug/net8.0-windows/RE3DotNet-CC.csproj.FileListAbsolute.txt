@@ -1,0 +1,5 @@
+H:\CCPack-PC-ResidentEvil3-main3\CCPack-PC-ResidentEvil3-main\.netMod\obj\Debug\net8.0-windows\RE3DotNet-CC.csproj.AssemblyReference.cache
+H:\CCPack-PC-ResidentEvil3-main3\CCPack-PC-ResidentEvil3-main\.netMod\obj\Debug\net8.0-windows\RE3DotNet-CC.GeneratedMSBuildEditorConfig.editorconfig
+H:\CCPack-PC-ResidentEvil3-main3\CCPack-PC-ResidentEvil3-main\.netMod\obj\Debug\net8.0-windows\RE3DotNet-CC.AssemblyInfoInputs.cache
+H:\CCPack-PC-ResidentEvil3-main3\CCPack-PC-ResidentEvil3-main\.netMod\obj\Debug\net8.0-windows\RE3DotNet-CC.AssemblyInfo.cs
+H:\CCPack-PC-ResidentEvil3-main3\CCPack-PC-ResidentEvil3-main\.netMod\obj\Debug\net8.0-windows\RE3DotNet-CC.csproj.CoreCompileInputs.cache

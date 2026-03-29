@@ -1,0 +1,141 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\enemyspawnmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:enemyspawnmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\enemyspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:enemyspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\ccconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:ccconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\re3dotnet-cc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE3DotNet-CC.csproj|solutionrelative:re3dotnet-cc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EnemySpawnManager.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
+              "RelativeDocumentMoniker": "EnemySpawnManager.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
+              "RelativeToolTip": "EnemySpawnManager.cs",
+              "ViewState": "AgIAAOgAAAAAAAAAAAAzwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T18:04:53.827Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "EnemySpawner.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawner.cs",
+              "RelativeDocumentMoniker": "EnemySpawner.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawner.cs*",
+              "RelativeToolTip": "EnemySpawner.cs*",
+              "ViewState": "AgIAAIMBAAAAAAAAAADwvzMBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T18:02:45.888Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ItemData.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\ItemData.cs",
+              "RelativeDocumentMoniker": "ItemData.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\ItemData.cs",
+              "RelativeToolTip": "ItemData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T16:34:14.829Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GameState.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs",
+              "RelativeDocumentMoniker": "GameState.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs*",
+              "RelativeToolTip": "GameState.cs*",
+              "ViewState": "AgIAAOMGAAAAAAAAAAAUwPoGAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T16:20:26.833Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CCConnection.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\CCConnection.cs",
+              "RelativeDocumentMoniker": "CCConnection.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\CCConnection.cs",
+              "RelativeToolTip": "CCConnection.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T16:20:17.003Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "RE3CrowdControlPlugin.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs",
+              "RelativeDocumentMoniker": "RE3CrowdControlPlugin.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs",
+              "RelativeToolTip": "RE3CrowdControlPlugin.cs",
+              "ViewState": "AgIAAJ4AAAAAAAAAAAAIwLQAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T16:19:55.709Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RE3DotNet-CC.csproj",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3DotNet-CC.csproj",
+              "RelativeDocumentMoniker": "RE3DotNet-CC.csproj",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3DotNet-CC.csproj",
+              "RelativeToolTip": "RE3DotNet-CC.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-27T16:19:16.64Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

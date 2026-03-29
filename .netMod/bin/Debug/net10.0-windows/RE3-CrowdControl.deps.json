@@ -1,0 +1,162 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "RE3-CrowdControl/1.0.0": {
+        "dependencies": {
+          "Hexa.NET.ImGui": "1.92.2.0",
+          "REFCoreDeps": "1.0.0.0",
+          "REFramework.NET.application": "0.0.0.0",
+          "REFramework.NET": "1.0.0.0",
+          "REFramework.NET.viacore": "0.0.0.0",
+          "REFramework.NET._System": "0.0.0.0",
+          "REFramework.NET._System.Private.CoreLib": "0.0.0.0"
+        },
+        "runtime": {
+          "RE3-CrowdControl.dll": {}
+        }
+      },
+      "Hexa.NET.ImGui/1.92.2.0": {
+        "runtime": {
+          "Hexa.NET.ImGui.dll": {
+            "assemblyVersion": "1.92.2.0",
+            "fileVersion": "1.92.2.0"
+          }
+        }
+      },
+      "REFCoreDeps/1.0.0.0": {
+        "runtime": {
+          "REFCoreDeps.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "REFramework.NET.application/0.0.0.0": {
+        "runtime": {
+          "REFramework.NET.application.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "REFramework.NET/1.0.0.0": {
+        "runtime": {
+          "REFramework.NET.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "REFramework.NET.viacore/0.0.0.0": {
+        "runtime": {
+          "REFramework.NET.viacore.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "REFramework.NET._System/0.0.0.0": {
+        "runtime": {
+          "REFramework.NET._System.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "REFramework.NET._System.Private.CoreLib/0.0.0.0": {
+        "runtime": {
+          "REFramework.NET._System.Private.CoreLib.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "HexaGen.Runtime/1.1.0.0": {
+        "runtime": {
+          "HexaGen.Runtime.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "1.1.0.0"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis/4.9.0.0": {
+        "runtime": {
+          "Microsoft.CodeAnalysis.dll": {
+            "assemblyVersion": "4.9.0.0",
+            "fileVersion": "4.900.224.12906"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.CSharp/4.9.0.0": {
+        "runtime": {
+          "Microsoft.CodeAnalysis.CSharp.dll": {
+            "assemblyVersion": "4.9.0.0",
+            "fileVersion": "4.900.224.12906"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RE3-CrowdControl/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Hexa.NET.ImGui/1.92.2.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "REFCoreDeps/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "REFramework.NET.application/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "REFramework.NET/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "REFramework.NET.viacore/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "REFramework.NET._System/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "REFramework.NET._System.Private.CoreLib/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HexaGen.Runtime/1.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.CodeAnalysis/4.9.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.CodeAnalysis.CSharp/4.9.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
