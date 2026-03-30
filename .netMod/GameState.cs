@@ -7541,7 +7541,7 @@ namespace RE3DotNet_CC
             }
         }
 
-        private bool TryAdjustEnemyHitPoint(ManagedObject hitPointObj, float currentHP, float targetHP, bool kill = false)
+        private bool TryAdjustEnemyHitPoint(ManagedObject hitPointObj, float currentHP, float targetHP)
         {
             try
             {
@@ -7549,15 +7549,15 @@ namespace RE3DotNet_CC
                     return false;
 
                 int targetInt = (int)Math.Round(targetHP);
-                if (targetInt < 1 && !kill)
+                if (targetInt < 1)
                     targetInt = 1;
 
                 int delta = (int)Math.Round(Math.Abs(targetHP - currentHP));
-                if (delta <= 0 && !kill)
+                if (delta <= 0)
                     delta = 1;
 
                 var typeDef = ((ManagedObject)hitPointObj).GetTypeDefinition();
-                if (targetInt <= 1 && typeDef?.FindMethod("resetHitPoint") != null && !kill)
+                if (targetInt <= 1 && typeDef?.FindMethod("resetHitPoint") != null)
                 {
                     ((ManagedObject)hitPointObj).Call("resetHitPoint", targetInt);
                     if (typeDef?.FindMethod("get_CurrentHitPoint") != null)
@@ -7621,7 +7621,7 @@ namespace RE3DotNet_CC
 
                         var currentObj = ((ManagedObject)hpObj).Call("get_CurrentHitPoint");
                         var maxObj = ((ManagedObject)hpObj).Call("get_CurrentMaximumHitPoint");
-
+                        if ((int)currentObj == 0) continue;
                         if (currentObj == null || maxObj == null)
                         {
                             API.LogInfo($"RE9DotNet-CC: Error, Failed to get Current / Max Hit Points {currentObj}/Current, {maxObj}/Max ");
@@ -7696,7 +7696,7 @@ namespace RE3DotNet_CC
 
                         var currentObj = ((ManagedObject)hpObj).Call("get_CurrentHitPoint");
                         var maxObj = ((ManagedObject)hpObj).Call("get_CurrentMaximumHitPoint");
-
+                        if ((int)currentObj == 0) continue;
                         if (currentObj == null || maxObj == null)
                         {
                             API.LogInfo($"RE9DotNet-CC: Error, Failed to get Current / Max Hit Points");
@@ -7758,26 +7758,28 @@ namespace RE3DotNet_CC
                             continue;
 
                         // Get HitPoint field
-                        var hitPoint = enemyObj.GetField("<HitPoint>k__BackingField");
-                        if (hitPoint == null)
+                        var hpObj = enemyObj.Call("get_HitPoint") as ManagedObject;
+
+                        if (hpObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to Find Enemy HitPoint");
                             continue;
+                        }
 
-                        var hitPointObj = hitPoint as ManagedObject;
-                        if (hitPointObj == null)
+                        var currentObj = ((ManagedObject)hpObj).Call("get_CurrentHitPoint");
+                        var maxObj = ((ManagedObject)hpObj).Call("get_CurrentMaximumHitPoint");
+                        if ((int)currentObj == 0) continue;
+                        if (currentObj == null || maxObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to get Current / Max Hit Points");
                             continue;
-
-                        var currentHPObj = hitPointObj.Call("get_CurrentHitPoint");
-                        var maxHPObj = hitPointObj.Call("get_DefaultHitPoint");
-
-                        if (currentHPObj == null || maxHPObj == null)
-                            continue;
-
-                        float currentHP = Convert.ToSingle(currentHPObj);
-                        float maxHP = Convert.ToSingle(maxHPObj);
+                        }
+                        float currentHP = Convert.ToSingle(currentObj);
+                        float maxHP = Convert.ToSingle(maxObj);
 
                         if (currentHP > 1.0f)
                         {
-                            if (TryAdjustEnemyHitPoint(hitPointObj, currentHP, 1.0f))
+                            if (TryAdjustEnemyHitPoint(hpObj, currentHP, 1.0f))
                                 found = true;
                         }
                     }
@@ -7814,26 +7816,29 @@ namespace RE3DotNet_CC
                             continue;
 
                         // Get HitPoint field
-                        var hitPoint = enemyObj.GetField("<HitPoint>k__BackingField");
-                        if (hitPoint == null)
+                        var hpObj = enemyObj.Call("get_HitPoint") as ManagedObject;
+
+                        if (hpObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to Find Enemy HitPoint");
                             continue;
+                        }
 
-                        var hitPointObj = hitPoint as ManagedObject;
-                        if (hitPointObj == null)
+                        var currentObj = ((ManagedObject)hpObj).Call("get_CurrentHitPoint");
+                        var maxObj = ((ManagedObject)hpObj).Call("get_CurrentMaximumHitPoint");
+                        if ((int)currentObj == 0) continue;
+                        if (currentObj == null || maxObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to get Current / Max Hit Points");
                             continue;
+                        }
 
-                        var currentHPObj = hitPointObj.Call("get_CurrentHitPoint");
-                        var maxHPObj = hitPointObj.Call("get_DefaultHitPoint");
-
-                        if (currentHPObj == null || maxHPObj == null)
-                            continue;
-
-                        float currentHP = Convert.ToSingle(currentHPObj);
-                        float maxHP = Convert.ToSingle(maxHPObj);
+                        float currentHP = Convert.ToSingle(currentObj);
+                        float maxHP = Convert.ToSingle(maxObj);
 
                         if (currentHP < maxHP)
                         {
-                            if (TryAdjustEnemyHitPoint(hitPointObj, currentHP, maxHP))
+                            if (TryAdjustEnemyHitPoint(hpObj, currentHP, maxHP))
                                 found = true;
                         }
                     }

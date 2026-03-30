@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\effects\\enemyonehpeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\enemyonehpeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -61,11 +65,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
+              "Title": "EnemyOneHPEffect.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\EnemyOneHPEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\EnemyOneHPEffect.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\EnemyOneHPEffect.cs",
+              "RelativeToolTip": "Effects\\EnemyOneHPEffect.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T01:16:55.778Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "KillEffect.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\KillEffect.cs",
               "RelativeDocumentMoniker": "Effects\\KillEffect.cs",
@@ -78,7 +95,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ResidentEvilRequiemNET.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
@@ -95,7 +112,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "PluginConfig.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\PluginConfig.cs",
               "RelativeDocumentMoniker": "PluginConfig.cs",
@@ -108,7 +125,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "EnemyDamageEffect.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\EnemyDamageEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyDamageEffect.cs",
@@ -121,7 +138,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "EnemySpawner.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawner.cs",
               "RelativeDocumentMoniker": "EnemySpawner.cs",
@@ -133,7 +150,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "ItemData.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\ItemData.cs",
               "RelativeDocumentMoniker": "ItemData.cs",
@@ -145,7 +162,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "RE3CrowdControlPlugin.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs",
               "RelativeDocumentMoniker": "RE3CrowdControlPlugin.cs",
@@ -162,16 +179,16 @@
               "Title": "GameState.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs",
               "RelativeDocumentMoniker": "GameState.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs",
-              "RelativeToolTip": "GameState.cs",
-              "ViewState": "AgIAAIMdAAAAAAAAAAAkwI0dAAA0AAAAAAAAAA==",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs*",
+              "RelativeToolTip": "GameState.cs*",
+              "ViewState": "AgIAAKAeAAAAAAAAAAAiwJQeAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-27T16:20:26.833Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "EnemySpawnManager.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
               "RelativeDocumentMoniker": "EnemySpawnManager.cs",
@@ -183,7 +200,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "HurtEffect.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HurtEffect.cs",
               "RelativeDocumentMoniker": "Effects\\HurtEffect.cs",
@@ -195,7 +212,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "FullHealEffect.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\FullHealEffect.cs",
               "RelativeDocumentMoniker": "Effects\\FullHealEffect.cs",
@@ -207,7 +224,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "HealEffect.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HealEffect.cs",
               "RelativeDocumentMoniker": "Effects\\HealEffect.cs",
@@ -219,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "CCConnection.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\CCConnection.cs",
               "RelativeDocumentMoniker": "CCConnection.cs",
