@@ -3,8 +3,27 @@
   "WorkspaceRootPath": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\effects\\killeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\killeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\effects\\enemydamageeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\enemydamageeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\effects\\healeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -33,10 +52,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\ccconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:ccconnection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|h:\\ccpack-pc-residentevil3-main3\\ccpack-pc-residentevil3-main\\.netmod\\re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:re3crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -49,60 +64,64 @@
           "SelectedChildIndex": 7,
           "Children": [
             {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "KillEffect.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\KillEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\KillEffect.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\KillEffect.cs",
+              "RelativeToolTip": "Effects\\KillEffect.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T01:02:20.587Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ResidentEvilRequiemNET.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
+              "RelativeToolTip": "..\\..\\..\\CCPack-PC-ResidentEvil3-main2\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACAAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T00:10:54.679Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Bookmark",
               "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "HealEffect.cs",
-              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HealEffect.cs",
-              "RelativeDocumentMoniker": "Effects\\HealEffect.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HealEffect.cs",
-              "RelativeToolTip": "Effects\\HealEffect.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAeAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "PluginConfig.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\PluginConfig.cs",
+              "RelativeDocumentMoniker": "PluginConfig.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\PluginConfig.cs",
+              "RelativeToolTip": "PluginConfig.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAA8wA4AAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-29T22:20:07.093Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "FullHealEffect.cs",
-              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\FullHealEffect.cs",
-              "RelativeDocumentMoniker": "Effects\\FullHealEffect.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\FullHealEffect.cs",
-              "RelativeToolTip": "Effects\\FullHealEffect.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAgwBwAAAA5AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-29T20:25:21.239Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "HurtEffect.cs",
-              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HurtEffect.cs",
-              "RelativeDocumentMoniker": "Effects\\HurtEffect.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HurtEffect.cs",
-              "RelativeToolTip": "Effects\\HurtEffect.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAwwDkAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-29T19:07:02.175Z"
+              "WhenOpened": "2026-03-29T23:56:56.927Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "EnemySpawnManager.cs",
-              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
-              "RelativeDocumentMoniker": "EnemySpawnManager.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
-              "RelativeToolTip": "EnemySpawnManager.cs",
-              "ViewState": "AgIAACACAAAAAAAAAAAUwAAAAAAAAAAAAAAAAA==",
+              "Title": "EnemyDamageEffect.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\EnemyDamageEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\EnemyDamageEffect.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\EnemyDamageEffect.cs",
+              "RelativeToolTip": "Effects\\EnemyDamageEffect.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-29T18:04:53.827Z"
+              "WhenOpened": "2026-03-29T22:44:09.956Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "EnemySpawner.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawner.cs",
               "RelativeDocumentMoniker": "EnemySpawner.cs",
@@ -114,7 +133,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "ItemData.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\ItemData.cs",
               "RelativeDocumentMoniker": "ItemData.cs",
@@ -127,19 +146,80 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "RE3CrowdControlPlugin.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs",
+              "RelativeDocumentMoniker": "RE3CrowdControlPlugin.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs*",
+              "RelativeToolTip": "RE3CrowdControlPlugin.cs*",
+              "ViewState": "AgIAAJwEAAAAAAAAAAAAAKUEAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T16:19:55.709Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "GameState.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs",
               "RelativeDocumentMoniker": "GameState.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs",
-              "RelativeToolTip": "GameState.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAANQHAAArAAAAAAAAAA==",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\GameState.cs*",
+              "RelativeToolTip": "GameState.cs*",
+              "ViewState": "AgIAANkdAAAAAAAAAAAswNAdAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-27T16:20:26.833Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "EnemySpawnManager.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
+              "RelativeDocumentMoniker": "EnemySpawnManager.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\EnemySpawnManager.cs",
+              "RelativeToolTip": "EnemySpawnManager.cs",
+              "ViewState": "AgIAACACAAAAAAAAAAAUwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T18:04:53.827Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "HurtEffect.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HurtEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\HurtEffect.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HurtEffect.cs",
+              "RelativeToolTip": "Effects\\HurtEffect.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAwwDkAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T19:07:02.175Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "FullHealEffect.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\FullHealEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\FullHealEffect.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\FullHealEffect.cs",
+              "RelativeToolTip": "Effects\\FullHealEffect.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwBwAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T20:25:21.239Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "HealEffect.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HealEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\HealEffect.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\Effects\\HealEffect.cs",
+              "RelativeToolTip": "Effects\\HealEffect.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T22:20:07.093Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "CCConnection.cs",
               "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\CCConnection.cs",
               "RelativeDocumentMoniker": "CCConnection.cs",
@@ -148,18 +228,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-27T16:20:17.003Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "RE3CrowdControlPlugin.cs",
-              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs",
-              "RelativeDocumentMoniker": "RE3CrowdControlPlugin.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE3CrowdControlPlugin.cs",
-              "RelativeToolTip": "RE3CrowdControlPlugin.cs",
-              "ViewState": "AgIAAJgFAAAAAAAAAAAAAGEAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T16:19:55.709Z"
             }
           ]
         }

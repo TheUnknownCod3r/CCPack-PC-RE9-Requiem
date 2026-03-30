@@ -12,7 +12,7 @@ namespace RE3DotNet_CC
     {
         private static readonly string ConfigFilePath = Path.Combine(
             Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-            "RE3-CrowdControl.json"
+            "RE9-CrowdControl.json"
         );
 
         public bool ShowNameplates { get; set; } = false;

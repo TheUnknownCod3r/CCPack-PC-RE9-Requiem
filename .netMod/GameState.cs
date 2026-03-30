@@ -3,6 +3,7 @@ using REFrameworkNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using via;
 
 namespace RE3DotNet_CC
@@ -7487,32 +7488,35 @@ namespace RE3DotNet_CC
         {
             try
             {
-                var enemyManager = API.GetManagedSingleton("offline.EnemyManager");
-                if (enemyManager == null)
-                    return null;
-
-                var enemyManagerObj = enemyManager as ManagedObject;
+                var enemyManagerObj = _playerManager as ManagedObject;
                 if (enemyManagerObj == null)
+                {
                     return null;
+                }
 
                 // Get ActiveEnemyList field
-                var activeEnemyList = enemyManagerObj.GetField("<ActiveEnemyList>k__BackingField");
+                var activeEnemyList = enemyManagerObj.Call("getSpawnedEnemyContextRefList") as ManagedObject;
                 if (activeEnemyList == null)
+                {
+                    API.LogInfo($"RE9DotNet-CC: Error, No Enemy List");
                     return null;
+                }
 
                 var activeEnemyListObj = activeEnemyList as ManagedObject;
                 if (activeEnemyListObj == null)
                     return null;
 
                 // Try to get size
-                var sizeObj = activeEnemyListObj.GetField("mSize");
+                var sizeObj = activeEnemyListObj.Call("get_Count");
                 if (sizeObj == null)
                     return null;
-
+                API.LogInfo(sizeObj.ToString());
+                API.LogInfo($"{sizeObj}");
                 int size = Convert.ToInt32(sizeObj);
                 if (size <= 0)
                     return null;
 
+                API.LogInfo($"{size}");
                 // Return enumerable of enemies
                 // The list is accessed using get_Item method
                 var list = new List<object>();
@@ -7527,7 +7531,7 @@ namespace RE3DotNet_CC
                     }
                     catch { }
                 }
-
+                if (list != null) API.LogInfo("RE9DotNet-CC: Found Enemy List");
                 return list;
             }
             catch (Exception ex)
@@ -7537,7 +7541,7 @@ namespace RE3DotNet_CC
             }
         }
 
-        private bool TryAdjustEnemyHitPoint(ManagedObject hitPointObj, float currentHP, float targetHP)
+        private bool TryAdjustEnemyHitPoint(ManagedObject hitPointObj, float currentHP, float targetHP, bool kill = false)
         {
             try
             {
@@ -7545,46 +7549,31 @@ namespace RE3DotNet_CC
                     return false;
 
                 int targetInt = (int)Math.Round(targetHP);
-                if (targetInt < 1)
+                if (targetInt < 1 && !kill)
                     targetInt = 1;
 
                 int delta = (int)Math.Round(Math.Abs(targetHP - currentHP));
-                if (delta <= 0)
+                if (delta <= 0 && !kill)
                     delta = 1;
 
-                var typeDef = hitPointObj.GetTypeDefinition();
-                if (targetInt <= 1 && typeDef?.FindMethod("resetHitPoint") != null)
+                var typeDef = ((ManagedObject)hitPointObj).GetTypeDefinition();
+                if (targetInt <= 1 && typeDef?.FindMethod("resetHitPoint") != null && !kill)
                 {
-                    hitPointObj.Call("resetHitPoint", targetInt);
+                    ((ManagedObject)hitPointObj).Call("resetHitPoint", targetInt);
                     if (typeDef?.FindMethod("get_CurrentHitPoint") != null)
                     {
-                        var verifyObj = hitPointObj.Call("get_CurrentHitPoint");
+                        var verifyObj = ((ManagedObject)hitPointObj).Call("get_CurrentHitPoint");
                         if (verifyObj != null && Convert.ToInt32(verifyObj) <= targetInt)
                             return true;
                     }
                     // If resetHitPoint doesn't apply, fall through to other methods.
                 }
 
-                if (targetHP < currentHP)
-                {
-                    if (typeDef?.FindMethod("addDamage") != null)
-                    {
-                        hitPointObj.Call("addDamage", delta);
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (typeDef?.FindMethod("recovery") != null)
-                    {
-                        hitPointObj.Call("recovery", delta);
-                        return true;
-                    }
-                }
-
                 if (typeDef?.FindMethod("set_CurrentHitPoint") != null)
                 {
-                    hitPointObj.Call("set_CurrentHitPoint", targetInt);
+                    ((ManagedObject)hitPointObj).Call("set_CurrentHitPoint", targetInt);
+                    var newHP = ((ManagedObject)hitPointObj).Call("get_CurrentHitPoint");
+                    LogInfo($"Final HP: {newHP}, Alive: {_isPlayerAlive}");
                     return true;
                 }
 
@@ -7595,7 +7584,6 @@ namespace RE3DotNet_CC
                 return false;
             }
         }
-
         /// <summary>
         /// Damage all enemies by 25% of their max HP
         /// </summary>
@@ -7605,35 +7593,45 @@ namespace RE3DotNet_CC
             {
                 var enemies = GetAllActiveEnemies();
                 if (enemies == null)
+                {
+                    API.LogInfo($"RE9DotNet-CC: Error, No Enemy List");
                     return false;
+                }
 
                 bool found = false;
+
                 foreach (var enemy in enemies)
                 {
                     try
                     {
                         var enemyObj = enemy as ManagedObject;
                         if (enemyObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, No Enemy Context");
                             continue;
+                        }
 
-                        // Get HitPoint field
-                        var hitPoint = enemyObj.GetField("<HitPoint>k__BackingField");
-                        if (hitPoint == null)
+                        var hpObj = enemyObj.Call("get_HitPoint") as ManagedObject;
+
+                        if (hpObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to Find Enemy HitPoint");
                             continue;
+                        }
 
-                        var hitPointObj = hitPoint as ManagedObject;
-                        if (hitPointObj == null)
+                        var currentObj = ((ManagedObject)hpObj).Call("get_CurrentHitPoint");
+                        var maxObj = ((ManagedObject)hpObj).Call("get_CurrentMaximumHitPoint");
+
+                        if (currentObj == null || maxObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to get Current / Max Hit Points {currentObj}/Current, {maxObj}/Max ");
                             continue;
+                        }
 
-                        var currentHPObj = hitPointObj.Call("get_CurrentHitPoint");
-                        var maxHPObj = hitPointObj.Call("get_DefaultHitPoint");
-
-                        if (currentHPObj == null || maxHPObj == null)
-                            continue;
-
-                        float currentHP = Convert.ToSingle(currentHPObj);
-                        float maxHP = Convert.ToSingle(maxHPObj);
-                        float damage = maxHP / 4.0f;
+                        float currentHP = Convert.ToSingle(currentObj);
+                        float maxHP = Convert.ToSingle(maxObj);
+                        float damage;
+                        damage = maxHP / 4.0f;
 
                         if (currentHP >= damage / 2.0f)
                         {
@@ -7646,8 +7644,7 @@ namespace RE3DotNet_CC
                             {
                                 newHP = currentHP - damage;
                             }
-
-                            if (TryAdjustEnemyHitPoint(hitPointObj, currentHP, newHP))
+                            if (TryAdjustEnemyHitPoint(hpObj, currentHP, newHP))
                                 found = true;
                         }
                     }
@@ -7672,39 +7669,49 @@ namespace RE3DotNet_CC
             {
                 var enemies = GetAllActiveEnemies();
                 if (enemies == null)
+                {
+                    API.LogInfo($"RE9DotNet-CC: Error, No Enemy List");
                     return false;
+                }
 
                 bool found = false;
+
                 foreach (var enemy in enemies)
                 {
                     try
                     {
                         var enemyObj = enemy as ManagedObject;
                         if (enemyObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, No Enemy Context");
                             continue;
+                        }
+                        var hpObj = enemyObj.Call("get_HitPoint") as ManagedObject;
 
-                        // Get HitPoint field
-                        var hitPoint = enemyObj.GetField("<HitPoint>k__BackingField");
-                        if (hitPoint == null)
+                        if (hpObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to Find Enemy HitPoint");
                             continue;
+                        }
 
-                        var hitPointObj = hitPoint as ManagedObject;
-                        if (hitPointObj == null)
+                        var currentObj = ((ManagedObject)hpObj).Call("get_CurrentHitPoint");
+                        var maxObj = ((ManagedObject)hpObj).Call("get_CurrentMaximumHitPoint");
+
+                        if (currentObj == null || maxObj == null)
+                        {
+                            API.LogInfo($"RE9DotNet-CC: Error, Failed to get Current / Max Hit Points");
                             continue;
+                        }
 
-                        var currentHPObj = hitPointObj.Call("get_CurrentHitPoint");
-                        var maxHPObj = hitPointObj.Call("get_DefaultHitPoint");
+                        float currentHP = Convert.ToSingle(currentObj);
+                        float maxHP = Convert.ToSingle(maxObj);
 
-                        if (currentHPObj == null || maxHPObj == null)
-                            continue;
-
-                        float currentHP = Convert.ToSingle(currentHPObj);
-                        float maxHP = Convert.ToSingle(maxHPObj);
                         float heal = maxHP / 4.0f;
 
-                        if (currentHP <= maxHP - heal / 2.0f)
+                        if (currentHP <= maxHP - (heal / 2.0f))
                         {
-                            float newHP = currentHP;
+                            float newHP;
+
                             if (currentHP + heal > maxHP)
                             {
                                 newHP = maxHP;
@@ -7714,7 +7721,7 @@ namespace RE3DotNet_CC
                                 newHP = currentHP + heal;
                             }
 
-                            if (TryAdjustEnemyHitPoint(hitPointObj, currentHP, newHP))
+                            if (TryAdjustEnemyHitPoint(hpObj, currentHP, newHP))
                                 found = true;
                         }
                     }
