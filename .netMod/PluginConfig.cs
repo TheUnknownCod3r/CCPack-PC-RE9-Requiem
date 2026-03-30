@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     /// <summary>
     /// Plugin configuration that persists to JSON file

@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using RE3DotNet_CC;
+using RE9DotNet_CC;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     public class AccessoryEffect : EffectBase
     {

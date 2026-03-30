@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     /// <summary>
     /// Handles actual enemy spawning logic

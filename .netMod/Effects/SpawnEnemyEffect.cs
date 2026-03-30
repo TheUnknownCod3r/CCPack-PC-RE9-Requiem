@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using REFrameworkNET;
-using RE3DotNet_CC;
+using RE9DotNet_CC;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Dynamic effect that handles all enemy spawn effects
@@ -44,7 +44,7 @@ namespace RE3DotNet_CC.Effects
         {
             try
             {
-                if (!RE3CrowdControlPlugin.AllowEnemySpawns(gameState))
+                if (!RE9CrowdControlPlugin.AllowEnemySpawns(gameState))
                 {
                     Logger.LogInfo($"{Code}: Enemy spawns currently disabled");
                     return Task.FromResult((int)CCStatus.Failure);

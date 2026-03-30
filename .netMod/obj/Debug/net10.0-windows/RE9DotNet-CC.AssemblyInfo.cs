@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("RE3-CrowdControl")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("RE9-CrowdControl")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("RE3-CrowdControl")]
-[assembly: System.Reflection.AssemblyTitleAttribute("RE3-CrowdControl")]
+[assembly: System.Reflection.AssemblyProductAttribute("RE9-CrowdControl")]
+[assembly: System.Reflection.AssemblyTitleAttribute("RE9-CrowdControl")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]

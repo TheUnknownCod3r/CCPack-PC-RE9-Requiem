@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     /// <summary>
     /// Item ID mappings for RE3

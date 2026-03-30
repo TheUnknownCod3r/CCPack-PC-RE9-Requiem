@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Take the currently equipped weapon from the player.
@@ -13,7 +13,7 @@ namespace RE3DotNet_CC.Effects
 
         protected override bool CanExecute(GameState gameState, CCRequest request)
         {
-            return RE3CrowdControlPlugin.AllowWeaponManipulation(gameState)
+            return RE9CrowdControlPlugin.AllowWeaponManipulation(gameState)
                 && gameState.IsGameReady
                 && gameState.HasWeaponEquipped();
         }

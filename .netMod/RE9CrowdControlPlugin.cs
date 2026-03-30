@@ -1,15 +1,15 @@
 using REFrameworkNET;
 using REFrameworkNET.Attributes;
 using REFrameworkNET.Callbacks;
-using RE3DotNet_CC.Effects;
+using RE9DotNet_CC.Effects;
 using Hexa.NET.ImGui;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     /// <summary>
-    /// Main plugin entry point for RE3 Crowd Control .NET implementation
+    /// Main plugin entry point for RE9 Crowd Control .NET implementation
     /// </summary>
-    public class RE3CrowdControlPlugin
+    public class RE9CrowdControlPlugin
     {
         private static CCConnection? _connection;
         private static GameState? _gameState;

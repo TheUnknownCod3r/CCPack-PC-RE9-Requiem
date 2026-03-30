@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using via;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     /// <summary>
     /// Manages and checks game state for effect execution
@@ -51,7 +51,7 @@ namespace RE3DotNet_CC
         private string? _invulRequestID = null;
         private bool _invulWasPaused = false;
 
-        private bool IsLoggingEnabled => RE3CrowdControlPlugin.IsLoggingEnabled;
+        private bool IsLoggingEnabled => RE9CrowdControlPlugin.IsLoggingEnabled;
 
         private void LogInfo(string message)
         {

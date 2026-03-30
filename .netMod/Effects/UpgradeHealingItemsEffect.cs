@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Upgrade all healing items to their strongest form.

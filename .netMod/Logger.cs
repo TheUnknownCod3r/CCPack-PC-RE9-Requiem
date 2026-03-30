@@ -1,6 +1,6 @@
 using REFrameworkNET;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     public static class Logger
     {

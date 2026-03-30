@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     public class PostEffectFilterEffect : EffectBase
     {

@@ -1,4 +1,4 @@
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     // All healing item give effects in one file
     public class GiveHealHerbgEffect : GiveHealingEffect

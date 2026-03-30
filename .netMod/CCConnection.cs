@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC
+namespace RE9DotNet_CC
 {
     /// <summary>
     /// Manages TCP socket connection to Crowd Control app/SDK

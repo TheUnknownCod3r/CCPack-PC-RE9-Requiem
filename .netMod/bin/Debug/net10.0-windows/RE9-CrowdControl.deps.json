@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v10.0": {
-      "RE3-CrowdControl/1.0.0": {
+      "RE9-CrowdControl/1.0.0": {
         "dependencies": {
           "Hexa.NET.ImGui": "1.92.2.0",
           "REFCoreDeps": "1.0.0.0",
@@ -17,7 +17,7 @@
           "REFramework.NET._System.Private.CoreLib": "0.0.0.0"
         },
         "runtime": {
-          "RE3-CrowdControl.dll": {}
+          "RE9-CrowdControl.dll": {}
         }
       },
       "Hexa.NET.ImGui/1.92.2.0": {
@@ -103,7 +103,7 @@
     }
   },
   "libraries": {
-    "RE3-CrowdControl/1.0.0": {
+    "RE9-CrowdControl/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using REFrameworkNET;
-using RE3DotNet_CC.Effects;
+using RE9DotNet_CC.Effects;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Effect to fill the current weapon's magazine
@@ -15,7 +15,7 @@ namespace RE3DotNet_CC.Effects
         protected override bool CanExecute(GameState gameState, CCRequest request)
         {
             // Need a weapon equipped
-            return RE3CrowdControlPlugin.AllowWeaponManipulation(gameState)
+            return RE9CrowdControlPlugin.AllowWeaponManipulation(gameState)
                 && gameState.IsGameReady
                 && gameState.HasWeaponEquipped();
         }

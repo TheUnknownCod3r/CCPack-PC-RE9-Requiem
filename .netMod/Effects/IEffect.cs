@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using RE3DotNet_CC;
+using RE9DotNet_CC;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Interface for all Crowd Control effects

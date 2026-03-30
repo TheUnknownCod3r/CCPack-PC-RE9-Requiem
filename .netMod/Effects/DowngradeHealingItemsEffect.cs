@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Downgrade all healing items to their lowest form.

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PlatformTarget>x64</PlatformTarget>
     <OutputType>Library</OutputType>
-    <AssemblyName>RE3-CrowdControl</AssemblyName>
+    <AssemblyName>RE9-CrowdControl</AssemblyName>
     <RootNamespace>RE9DotNet-CC</RootNamespace>
 
     <!-- Configure these paths to your RE3 install -->

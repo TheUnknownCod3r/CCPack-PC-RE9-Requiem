@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Applies the healing-over-time (doping) status to the player.

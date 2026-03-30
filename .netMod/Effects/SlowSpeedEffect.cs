@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using REFrameworkNET;
-using RE3DotNet_CC;
+using RE9DotNet_CC;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Effect that decreases player movement speed

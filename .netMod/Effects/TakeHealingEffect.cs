@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using REFrameworkNET;
 
-namespace RE3DotNet_CC.Effects
+namespace RE9DotNet_CC.Effects
 {
     /// <summary>
     /// Take a random healing item from the player inventory.
