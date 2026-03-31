@@ -3783,36 +3783,57 @@ namespace RE9DotNet_CC
         /// <summary>
         /// Get player transform from HeadJoint
         /// </summary>
+        public bool GetCharacterGrace()
+        {
+            if (_playerManager == null)
+            {
+                return false;
+            }
+
+            var playMan = _playerManager as ManagedObject;
+            if (playMan == null) return false;
+
+            var ctx = playMan.Call("getPlayerContextRefFast") as ManagedObject;
+            if (ctx == null) return false;
+            var isGrace = ctx.Call("get_IsCp_A0Character");
+            return isGrace != null && Convert.ToBoolean(isGrace);
+        }
+        public bool GetCharacterLeon()
+        {
+            if (_playerManager == null)
+            {
+                return false;
+            }
+
+            var playMan = _playerManager as ManagedObject;
+            if (playMan == null) return false;
+
+            var ctx = playMan.Call("getPlayerContextRefFast") as ManagedObject;
+            if (ctx == null) return false;
+            var isLeon = ctx.Call("get_IsCp_A1Character");
+            return isLeon != null && Convert.ToBoolean(isLeon);
+        }
         private object? GetPlayerTransform()
         {
             try
             {
-                if (_currentPlayerCondition == null)
-                {
+                var cm = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
+                if (cm == null)
                     return null;
-                }
 
-                var conditionObj = _currentPlayerCondition as ManagedObject;
-                if (conditionObj == null)
-                {
+                var ctx = cm.Call("getPlayerContextRef") as ManagedObject;
+                if (ctx == null)
                     return null;
-                }
 
-                // Get HeadJoint field
-                var headJoint = conditionObj.GetField("<HeadJoint>k__BackingField");
-                if (headJoint == null)
-                {
+                var updater = ctx.Call("get_Updater") as ManagedObject;
+                if (updater == null)
                     return null;
-                }
 
-                var headJointObj = headJoint as ManagedObject;
-                if (headJointObj == null)
-                {
+                var go = updater.Call("get_GameObject") as ManagedObject;
+                if (go == null)
                     return null;
-                }
 
-                // Get transform from head joint
-                var transform = headJointObj.Call("get_Owner");
+                var transform = go.Call("get_Transform");
                 return transform;
             }
             catch (Exception ex)
@@ -5841,7 +5862,35 @@ namespace RE9DotNet_CC
             _scaleRequestId = requestId;
             _scaleRequestID = requestID;
         }
+        private ManagedObject GetPlayerMotion()
+        {
+            var cm = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
+            if (cm == null)
+                return null;
 
+            var ctx = cm.Call("getPlayerContextRef") as ManagedObject;
+            if (ctx == null)
+                return null;
+
+            var updater = ctx.Call("get_Updater") as ManagedObject;
+            if (updater == null)
+                return null;
+
+            var go = updater.Call("get_GameObject") as ManagedObject;
+            if (go == null)
+                return null;
+
+            var tdb = API.GetTDB();
+            if (tdb == null)
+                return null;
+
+            var motionType = tdb.FindType("via.motion.Motion");
+            if (motionType == null)
+                return null;
+
+            var motion = go.Call("getComponent", motionType) as ManagedObject;
+            return motion;
+        }
         /// <summary>
         /// Start player speed effect - stores original speed and sets target speed
         /// </summary>
@@ -5853,70 +5902,26 @@ namespace RE9DotNet_CC
                 return false;
             }
 
-            // Get current speed from player motion
             try
             {
-                var playman = API.GetManagedSingleton("app.CharacterManager");
-                if (playman == null)
-                {
-                    LogError("GameState: Cannot get PlayerManager for speed effect");
-                    return false;
-                }
-
-                var playmanObj = playman as ManagedObject;
-                if (playmanObj == null)
-                {
-                    LogError("GameState: PlayerManager is not a ManagedObject");
-                    return false;
-                }
-
-                var condition = playmanObj.Call("getPlayerContextFast");
-                if (condition == null)
-                {
-                    LogError("GameState: Cannot get CurrentPlayerCondition for speed effect");
-                    return false;
-                }
-
-                var conditionObj = condition as ManagedObject;
-                if (conditionObj == null)
-                {
-                    LogError("GameState: CurrentPlayerCondition is not a ManagedObject");
-                    return false;
-                }
-
-                // Get Motion field
-                var motion = conditionObj.GetField("<Motion>k__BackingField");
+                var motion = GetPlayerMotion();
                 if (motion == null)
                 {
-                    LogError("GameState: Cannot get Motion field for speed effect");
+                    LogError("GameState: Cannot get Motion");
                     return false;
                 }
 
-                var motionObj = motion as ManagedObject;
-                if (motionObj == null)
-                {
-                    LogError("GameState: Motion is not a ManagedObject");
-                    return false;
-                }
-
-                // Get current SecondaryPlaySpeed
-                var currentSpeedObj = motionObj.Call("get_SecondaryPlaySpeed");
+                var currentSpeedObj = motion.Call("get_SecondaryPlaySpeed");
                 if (currentSpeedObj != null)
-                {
                     _originalSpeed = Convert.ToSingle(currentSpeedObj);
-                }
                 else
-                {
-                    _originalSpeed = 1.0f; // Default speed
-                    LogInfo("GameState: Could not get original speed, using default 1.0");
-                }
+                    _originalSpeed = 1.0f;
 
                 _targetSpeed = targetSpeed;
-                _speedTimer = durationMs / 1000.0f; // Convert milliseconds to seconds
+                _speedTimer = durationMs / 1000.0f;
                 _speedActive = true;
                 _isFast = isFast;
 
-                // Apply the speed immediately
                 ApplySpeed();
 
                 LogInfo($"GameState: Speed effect started - Original: {_originalSpeed}, Target: {targetSpeed}, Duration: {_speedTimer}s, IsFast: {isFast}");
@@ -6065,126 +6070,35 @@ namespace RE9DotNet_CC
         /// </summary>
         private void ApplySpeed()
         {
-            if (!_speedActive || _originalSpeed == null)
+            if (!_speedActive)
                 return;
 
             try
             {
-                var playman = API.GetManagedSingleton("offline.PlayerManager");
-                if (playman == null)
-                    return;
-
-                var playmanObj = playman as ManagedObject;
-                if (playmanObj == null)
-                    return;
-
-                var condition = playmanObj.Call("get_CurrentPlayerCondition");
-                if (condition == null)
-                    return;
-
-                var conditionObj = condition as ManagedObject;
-                if (conditionObj == null)
-                    return;
-
-                // Get Motion field
-                var motion = conditionObj.GetField("<Motion>k__BackingField");
+                var motion = GetPlayerMotion();
                 if (motion == null)
                     return;
 
-                var motionObj = motion as ManagedObject;
-                if (motionObj == null)
-                    return;
-
-                // Check if player is reloading using get_IsReload on PlayerCondition
-                // This is simpler and more reliable than checking BehaviorTree nodes
                 bool isReloading = false;
+
                 try
                 {
-                    // Try to get IsReload property from PlayerCondition
-                    var isReloadObj = conditionObj.Call("get_IsReload");
-                    if (isReloadObj != null)
-                    {
-                        isReloading = Convert.ToBoolean(isReloadObj);
-                    }
-                }
-                catch (Exception)
-                {
-                    // If get_IsReload doesn't exist, try alternative approach
-                    // Check BehaviorTree current node name as fallback
-                    try
-                    {
-                        // Get GameObject from Motion component, then get MotionFsm2 component
-                        var gameObject = motionObj.Call("get_GameObject");
-                        if (gameObject != null)
-                        {
-                            var gameObj = gameObject as ManagedObject;
-                            if (gameObj != null)
-                            {
-                                // Get MotionFsm2 component from GameObject
-                                var tdb = API.GetTDB();
-                                if (tdb != null)
-                                {
-                                    var motionFsm2Type = tdb.FindType("via.motion.MotionFsm2");
-                                    if (motionFsm2Type != null)
-                                    {
-                                        // Use getComponent with Type parameter (same as EnemySpawnManager)
-                                        var motionFsm = gameObj.Call("getComponent", motionFsm2Type);
-                                        if (motionFsm != null)
-                                        {
-                                            var motionFsmObj = motionFsm as ManagedObject;
-                                            if (motionFsmObj != null)
-                                            {
-                                                // Try to get tree count first
-                                                var treeCountObj = motionFsmObj.Call("getTreeCount");
-                                                if (treeCountObj != null)
-                                                {
-                                                    uint treeCount = Convert.ToUInt32(treeCountObj);
-                                                    // Try each tree to find reload state
-                                                    for (uint i = 0; i < treeCount && !isReloading; i++)
-                                                    {
-                                                        var nodeNameObj = motionFsmObj.Call("getCurrentNodeName", i);
-                                                        if (nodeNameObj != null)
-                                                        {
-                                                            string nodeName = nodeNameObj.ToString() ?? "";
-                                                            if (nodeName.IndexOf("reload", StringComparison.OrdinalIgnoreCase) >= 0)
-                                                            {
-                                                                isReloading = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch { }
-                }
+                    var cm = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
+                    var ctx = cm?.Call("getPlayerContextRef") as ManagedObject;
+                    var reloadObj = ctx?.Call("get_IsReloading");
 
-                // If reloading or in a motion override, temporarily set speed to 1.0
+                    if (reloadObj != null)
+                        isReloading = Convert.ToBoolean(reloadObj);
+                }
+                catch { }
+
                 float speedToApply = (isReloading || _motionPauseActive) ? 1.0f : _targetSpeed;
-                
-                // Track reload state for logging
-                if (isReloading && !_wasReloading)
-                {
-                    LogInfo("GameState: Player is reloading, temporarily restoring speed to 1.0");
-                    _wasReloading = true;
-                }
-                else if (!isReloading && _wasReloading)
-                {
-                    LogInfo("GameState: Reload completed, restoring speed effect");
-                    _wasReloading = false;
-                }
 
-                // Set SecondaryPlaySpeed
-                motionObj.Call("set_SecondaryPlaySpeed", speedToApply);
+                motion.Call("set_SecondaryPlaySpeed", speedToApply);
             }
             catch (Exception ex)
             {
-                LogError($"GameState: Error applying speed - {ex.Message}");
+                LogError($"ApplySpeed error: {ex.Message}");
             }
         }
 
@@ -6408,33 +6322,12 @@ namespace RE9DotNet_CC
 
             try
             {
-                var playman = API.GetManagedSingleton("offline.PlayerManager");
-                if (playman == null)
-                    return;
-
-                var playmanObj = playman as ManagedObject;
-                if (playmanObj == null)
-                    return;
-
-                var condition = playmanObj.Call("get_CurrentPlayerCondition");
-                if (condition == null)
-                    return;
-
-                var conditionObj = condition as ManagedObject;
-                if (conditionObj == null)
-                    return;
-
-                // Get Motion field
-                var motion = conditionObj.GetField("<Motion>k__BackingField");
+                var motion = GetPlayerMotion();
                 if (motion == null)
                     return;
 
-                var motionObj = motion as ManagedObject;
-                if (motionObj == null)
-                    return;
+                motion.Call("set_SecondaryPlaySpeed", _originalSpeed.Value);
 
-                // Restore SecondaryPlaySpeed
-                motionObj.Call("set_SecondaryPlaySpeed", _originalSpeed.Value);
                 LogInfo($"GameState: Speed restored to {_originalSpeed.Value}");
             }
             catch (Exception ex)
@@ -6467,21 +6360,28 @@ namespace RE9DotNet_CC
         {
             try
             {
-                var playman = API.GetManagedSingleton("app.GUIManager");
-                if (playman == null)
+                var itemManager = API.GetManagedSingleton("app.InventoryManager") as ManagedObject;
+                if (itemManager == null)
                     return null;
 
-                var playmanObj = playman as ManagedObject;
-                if (playmanObj == null)
+                var dict = itemManager.GetField("_Inventories") as ManagedObject;
+                if (dict == null)
                     return null;
 
-                // Get Inventory field from condition
-                var inventory = playmanObj.GetField("<PlayerInventory>k__BackingField");
-                return inventory as ManagedObject;
+                var values = dict.Call("get_Values") as ManagedObject;
+                if (values == null)
+                    return null;
+
+                int count = Convert.ToInt32(values.Call("get_Count"));
+                if (count == 0)
+                    return null;
+
+                var inventory = values.Call("get_Item", 0) as ManagedObject;
+                return inventory;
             }
             catch (Exception ex)
             {
-                LogError($"GameState: Error getting inventory - {ex.Message}");
+                LogError($"GetInventory failed: {ex.Message}");
                 return null;
             }
         }
@@ -6541,7 +6441,7 @@ namespace RE9DotNet_CC
                 if (inventory == null)
                     return -1;
 
-                var numSlotsObj = inventory.GetField("_CurrentSlotSize");
+                var numSlotsObj = inventory.GetField("_UnlockSlotSize");
                 if (numSlotsObj == null)
                     return -1;
 
@@ -6559,8 +6459,10 @@ namespace RE9DotNet_CC
                     if (slotsManaged == null)
                         return -1;
 
+                    var values = slotsManaged.Call("get_Values") as ManagedObject;
+                    int count = Convert.ToInt32(values.Call("get_Count"));
                     // Iterate through slots
-                    for (int i = 0; i < numSlots; i++)
+                    for (int i = 0; i < count; i++)
                     {
                         var slot = slotsManaged.Call("get_Item", i) ?? slotsManaged.Call("get_Item", (uint)i);
                         if (slot == null)
@@ -6570,7 +6472,7 @@ namespace RE9DotNet_CC
                         if (slotObj == null)
                             continue;
 
-                        var isBlankObj = slotObj.Call("get_IsBlank");
+                        var isBlankObj = slotObj.Call("get_IsEmpty");
                         if (isBlankObj == null)
                             continue;
 
@@ -6591,7 +6493,7 @@ namespace RE9DotNet_CC
                                 if (nextSlotObj == null)
                                     continue;
 
-                                var nextIsBlankObj = nextSlotObj.Call("get_IsBlank");
+                                var nextIsBlankObj = nextSlotObj.Call("get_IsEmpty");
                                 if (nextIsBlankObj == null)
                                     continue;
 
@@ -6617,7 +6519,7 @@ namespace RE9DotNet_CC
                         if (slotObj == null)
                             continue;
 
-                        var isBlankObj = slotObj.Call("get_IsBlank");
+                        var isBlankObj = slotObj.Call("get_IsEmpty");
                         if (isBlankObj == null)
                             continue;
 
@@ -6638,7 +6540,7 @@ namespace RE9DotNet_CC
                                 if (nextSlotObj == null)
                                     continue;
 
-                                var nextIsBlankObj = nextSlotObj.Call("get_IsBlank");
+                                var nextIsBlankObj = nextSlotObj.Call("get_IsEmpty");
                                 if (nextIsBlankObj == null)
                                     continue;
 
@@ -6664,7 +6566,7 @@ namespace RE9DotNet_CC
         /// <summary>
         /// Add healing item to inventory
         /// </summary>
-        public bool AddHealingItem(int itemId)
+        public bool AddHealingItem(string itemId)
         {
             try
             {
@@ -6748,19 +6650,19 @@ namespace RE9DotNet_CC
                             if (max - current >= amount)
                             {
                                 slot.Call("set_Number", current + amount);
-                                
+
                                 // Verify the number was set
                                 var verifyNumObj = slot.Call("get_Number");
                                 int verifyNum = verifyNumObj != null ? Convert.ToInt32(verifyNumObj) : -1;
-                                
+
                                 LogInfo($"GameState: Added {amount} ammo to existing stack (now {verifyNum}/{max})");
-                                
+
                                 if (verifyNum != current + amount)
                                 {
                                     LogError($"GameState: Failed to update ammo count! Expected {current + amount}, got {verifyNum}");
                                     return false;
                                 }
-                                
+
                                 return true;
                             }
                             else
@@ -6798,7 +6700,7 @@ namespace RE9DotNet_CC
                 var verifyItemIdObj = emptySlot.Call("get_ItemID");
                 var verifyNumberObj = emptySlot.Call("get_Number");
                 var verifyIsBlankObj = emptySlot.Call("get_IsBlank");
-                
+
                 int verifyItemId = verifyItemIdObj != null ? Convert.ToInt32(verifyItemIdObj) : -1;
                 int verifyNumber = verifyNumberObj != null ? Convert.ToInt32(verifyNumberObj) : -1;
                 bool verifyIsBlank = verifyIsBlankObj != null && Convert.ToBoolean(verifyIsBlankObj);
@@ -7067,40 +6969,40 @@ namespace RE9DotNet_CC
                 case "g18":
                 case "edge":
                 case "mup":
-                    return TryGetAmmoItemId("handgun");
+                    //return TryGetAmmoItemId("handgun");
                 case "m3":
-                    return TryGetAmmoItemId("shotgun");
+                    //return TryGetAmmoItemId("shotgun");
                 case "cqbr":
-                    return TryGetAmmoItemId("submachine");
+                    //return TryGetAmmoItemId("submachine");
                 case "lightning":
-                    return TryGetAmmoItemId("mag");
+                    //return TryGetAmmoItemId("mag");
                 case "raiden":
-                    return TryGetAmmoItemId("large");
+                    //return TryGetAmmoItemId("large");
                 case "mgl":
-                    return SelectAmmoItemId("acid", "explode");
+                    //return SelectAmmoItemId("acid", "explode");
                 default:
                     return null;
             }
         }
 
-        private int? TryGetAmmoItemId(string ammoKey)
+        private string? TryGetAmmoItemId(string ammoKey)
         {
-            if (!ItemData.AmmoItems.TryGetValue(ammoKey, out int ammoItemId))
+            if (!ItemData.AmmoItems.TryGetValue(ammoKey, out string ammoItemId))
                 return null;
 
             return ammoItemId;
         }
 
-        private int? SelectAmmoItemId(string primaryAmmoKey, string fallbackAmmoKey)
+        private string? SelectAmmoItemId(string primaryAmmoKey, string fallbackAmmoKey)
         {
-            int? primaryItemId = TryGetAmmoItemId(primaryAmmoKey);
-            int? fallbackItemId = TryGetAmmoItemId(fallbackAmmoKey);
+            string? primaryItemId = TryGetAmmoItemId(primaryAmmoKey);
+            string? fallbackItemId = TryGetAmmoItemId(fallbackAmmoKey);
 
-            if (primaryItemId.HasValue && HasInventoryItemId(primaryItemId.Value))
-                return primaryItemId;
+            //if (primaryItemId.HasValue && HasInventoryItemId(primaryItemId.Value))
+               // return primaryItemId;
 
-            if (fallbackItemId.HasValue)
-                return fallbackItemId;
+            //if (fallbackItemId.HasValue)
+              //  return fallbackItemId;
 
             return primaryItemId;
         }
@@ -7197,7 +7099,7 @@ namespace RE9DotNet_CC
                 if (inventory == null)
                     return false;
 
-                var numSlotsObj = inventory.GetField("_CurrentSlotSize");
+                var numSlotsObj = inventory.GetField("_UnlockSlotSize");
                 if (numSlotsObj == null)
                     return false;
 
@@ -7226,7 +7128,7 @@ namespace RE9DotNet_CC
                 if (slot == null)
                     continue;
 
-                var isBlankObj = slot.Call("get_IsBlank");
+                var isBlankObj = slot.Call("get_IsEmpty");
                 if (isBlankObj != null && Convert.ToBoolean(isBlankObj))
                     continue;
 
@@ -7337,8 +7239,8 @@ namespace RE9DotNet_CC
             var items = GetInventoryItems();
             foreach (var entry in items)
             {
-                if (!ItemData.AmmoItems.ContainsValue(entry.ItemId))
-                    continue;
+                //if (!ItemData.AmmoItems.ContainsValue(entry.ItemId))
+                    //continue;
 
                 if (!ammoById.TryGetValue(entry.ItemId, out var total))
                     total = 0;
@@ -7352,7 +7254,7 @@ namespace RE9DotNet_CC
             int ammoId = ammoIds[_random.Next(ammoIds.Count)];
             int totalCount = ammoById[ammoId];
 
-            ammoKey = ItemData.AmmoItems.FirstOrDefault(kvp => kvp.Value == ammoId).Key;
+            //ammoKey = ItemData.AmmoItems.FirstOrDefault(kvp => kvp.Value == ammoId).Key;
             int baseAmount = 1;
             if (ammoKey != null && ItemData.AmmoAmounts.TryGetValue(ammoKey, out var baseAmt))
                 baseAmount = Math.Max(1, baseAmt);
@@ -7380,8 +7282,8 @@ namespace RE9DotNet_CC
 
             foreach (var entry in items)
             {
-                if (!ItemData.HealingItems.ContainsValue(entry.ItemId))
-                    continue;
+                //if (!ItemData.HealingItems.ContainsValue(entry.ItemId))
+                   // continue;
 
                 for (int i = 0; i < entry.Count; i++)
                     healingItems.Add(entry.ItemId);
@@ -7436,17 +7338,17 @@ namespace RE9DotNet_CC
         public int DowngradeHealingItems()
         {
             int changed = 0;
-            if (!ItemData.HealingItems.TryGetValue("herbg", out int greenHerbId))
+            if (!ItemData.HealingItems.TryGetValue("herbg", out string greenHerbId))
                 return 0;
 
             var items = GetInventoryItems();
             foreach (var entry in items)
             {
-                if (!ItemData.HealingItems.ContainsValue(entry.ItemId))
-                    continue;
+                //if (!ItemData.HealingItems.ContainsValue(entry.ItemId))
+                   // continue;
 
-                if (entry.ItemId == greenHerbId)
-                    continue;
+                //if (entry.ItemId == greenHerbId)
+                    //continue;
 
                 entry.Slot.Call("set_ItemID", greenHerbId);
                 entry.Slot.Call("set_Number", 1);
@@ -7459,17 +7361,17 @@ namespace RE9DotNet_CC
         public int UpgradeHealingItems()
         {
             int changed = 0;
-            if (!ItemData.HealingItems.TryGetValue("spray", out int sprayId))
+            if (!ItemData.HealingItems.TryGetValue("spray", out string sprayId))
                 return 0;
 
             var items = GetInventoryItems();
             foreach (var entry in items)
             {
-                if (!ItemData.HealingItems.ContainsValue(entry.ItemId))
-                    continue;
+                //if (!ItemData.HealingItems.ContainsValue(entry.ItemId))
+                    //continue;
 
-                if (entry.ItemId == sprayId)
-                    continue;
+                //if (entry.ItemId == sprayId)
+                    //continue;
 
                 entry.Slot.Call("set_ItemID", sprayId);
                 entry.Slot.Call("set_Number", 1);
@@ -7584,6 +7486,25 @@ namespace RE9DotNet_CC
                 return false;
             }
         }
+
+        void DumpObject(dynamic obj, int depth = 0)
+        {
+            if (obj == null || depth > 3) return;
+
+            var typeDef = obj.get_type_definition();
+
+            foreach (var field in typeDef.get_fields())
+            {
+                var value = field.get_data(obj);
+                API.LogInfo($"{new string(' ', depth * 2)}{field.get_name()}: {value}");
+
+                // Dive deeper into objects
+                if (value != null && value.GetType().Name.Contains("Object"))
+                {
+                    DumpObject(value, depth + 1);
+                }
+            }
+        }
         /// <summary>
         /// Damage all enemies by 25% of their max HP
         /// </summary>
@@ -7610,7 +7531,9 @@ namespace RE9DotNet_CC
                             API.LogInfo($"RE9DotNet-CC: Error, No Enemy Context");
                             continue;
                         }
+                        var typeDef = enemyObj.GetTypeDefinition();
 
+                        DumpObject(enemyObj, 15);
                         var hpObj = enemyObj.Call("get_HitPoint") as ManagedObject;
 
                         if (hpObj == null)

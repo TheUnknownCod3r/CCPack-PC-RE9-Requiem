@@ -1274,28 +1274,6 @@ namespace RE9DotNet_CC
                 "spawn_em3000",
                 "spawn_em4000",
                 "spawn_em3300",
-                "spawn_em3400",
-                "spawn_em3500",
-                "spawn_em7000",
-                "spawn_em7100",
-                "spawn_em7200",
-                "spawn_em8400",
-                "spawn_em9000",
-                "spawn_em9010",
-                "spawn_em9020",
-                "spawn_em9030",
-                "spawn_em9040",
-                "spawn_em9050",
-                "spawn_em9091",
-                "spawn_em9100",
-                "spawn_em9200",
-                "spawn_em9201",
-                "spawn_em9210",
-                "spawn_em9300",
-                "spawn_em9400",
-                "spawn_em9401",
-                "spawn_em9410",
-                "spawn_em9999"
             };
 
             foreach (var enemyCode in enemyCodes)

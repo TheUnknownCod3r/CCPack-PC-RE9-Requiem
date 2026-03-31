@@ -70,7 +70,7 @@ namespace RE9DotNet_CC
                         var tdb = API.GetTDB();
                         if (tdb != null)
                         {
-                            var enemyControllerType = tdb.FindType("offline.EnemyController");
+                            var enemyControllerType = tdb.FindType("app.CharacterManager");
                             if (enemyControllerType != null)
                             {
                                 enemyController = gameObj.Call("getComponent", enemyControllerType);
@@ -124,15 +124,15 @@ namespace RE9DotNet_CC
 
             try
             {
-                var enemyManager = API.GetManagedSingleton("offline.EnemyManager");
+                var enemyManager = API.GetManagedSingleton("app.CharacterManager");
                 var enemyManagerObj = enemyManager as ManagedObject;
                 if (enemyManagerObj == null)
                     return;
 
                 var managerType = enemyManagerObj.GetTypeDefinition();
-                if (managerType?.FindMethod("registerController") != null)
+                if (managerType?.FindMethod("registerCharacter") != null)
                                                                 {
-                    enemyManagerObj.Call("registerController", enemyController);
+                    enemyManagerObj.Call("registerCharacter", enemyController);
                 }
                 else
                 {
@@ -140,9 +140,9 @@ namespace RE9DotNet_CC
                     TryAddEnemyToActiveList(enemyManagerObj, enemyController);
                 }
 
-                if (managerType?.FindMethod("set_HasActiveEnemyUpdateRequest") != null)
+                if (managerType?.FindMethod("set_CharacterPoolUpdated") != null)
                                                                                     {
-                    enemyManagerObj.Call("set_HasActiveEnemyUpdateRequest", true);
+                    enemyManagerObj.Call("set_CharacterPoolUpdated", true);
                                                                             }
                                                                         }
             catch
@@ -542,11 +542,11 @@ namespace RE9DotNet_CC
                                     
                                     try
                                     {
-                var playman = API.GetManagedSingleton("offline.PlayerManager");
+                var playman = API.GetManagedSingleton("app.CharacterManager");
                 if (playman is not ManagedObject playmanObj)
                     return false;
 
-                var player = playmanObj.Call("get_CurrentPlayer");
+                var player = playmanObj.Call("getPlayerContextRefFast");
                 if (player is not ManagedObject playerObj)
                     return false;
 
@@ -620,15 +620,15 @@ namespace RE9DotNet_CC
         {
             try
             {
-                var enemyManager = API.GetManagedSingleton("offline.EnemyManager");
+                var enemyManager = API.GetManagedSingleton("app.CharacterManager");
                 var enemyManagerObj = enemyManager as ManagedObject;
                 var managerType = enemyManagerObj?.GetTypeDefinition();
 
                 if (enemyManagerObj != null
                     && enemy.EnemyController != null
-                    && managerType?.FindMethod("unregisterController") != null)
+                    && managerType?.FindMethod("unregisterCharacter") != null)
                 {
-                    enemyManagerObj.Call("unregisterController", enemy.EnemyController);
+                    enemyManagerObj.Call("unregisterCharacter", enemy.EnemyController);
                 }
             }
             catch

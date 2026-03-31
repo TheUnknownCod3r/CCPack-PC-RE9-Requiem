@@ -24,8 +24,8 @@ namespace RE9DotNet_CC.Effects
             // Store request ID for sending Stopped response later
             gameState.SetFOVRequestId(request.Id, request.RequestID);
             
-            // Start FOV effect with narrow FOV (50.0 like LUA version)
-            if (gameState.StartFOV(50.0f, request.Duration))
+            // Start FOV effect with narrow FOV (20.0f Since Requiem Base seems to be different in certain cases.)
+            if (gameState.StartFOV(20.0f, request.Duration))
             {
                 Logger.LogInfo($"NarrowCameraEffect: Started narrow camera mode - FOV: 50.0, duration: {request.Duration}ms");
                 return Task.FromResult((int)CCStatus.Success);
