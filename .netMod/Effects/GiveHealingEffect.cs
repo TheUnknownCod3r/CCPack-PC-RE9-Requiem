@@ -25,7 +25,7 @@ namespace RE9DotNet_CC.Effects
         {
             try
             {
-                if (!ItemData.HealingItems.TryGetValue(_healingKey, out string itemId))
+                if (!ItemData.HealingItems.TryGetValue(_healingKey, out int itemId))
                 {
                     Logger.LogError($"{Code}: Invalid healing item key '{_healingKey}'");
                     return Task.FromResult((int)CCStatus.Failure);

@@ -1,10 +1,12 @@
 using app;
+using app.cp_B800;
 using REFrameworkNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using via;
+using via.navigation.map;
 
 namespace RE9DotNet_CC
 {
@@ -6085,6 +6087,7 @@ namespace RE9DotNet_CC
                 {
                     var cm = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
                     var ctx = cm?.Call("getPlayerContextRef") as ManagedObject;
+                    var cmn = ctx?.Call("get_Common") as ManagedObject;
                     var reloadObj = ctx?.Call("get_IsReloading");
 
                     if (reloadObj != null)
@@ -6106,7 +6109,7 @@ namespace RE9DotNet_CC
         {
             try
             {
-                var playman = API.GetManagedSingleton("offline.PlayerManager");
+                var playman = API.GetManagedSingleton("app.CharacterManager");
                 if (playman == null)
                     return false;
 
@@ -6114,15 +6117,15 @@ namespace RE9DotNet_CC
                 if (playmanObj == null)
                     return false;
 
-                var condition = playmanObj.Call("get_CurrentPlayerCondition");
+                var condition = playmanObj.Call("getPlayerContextRefFast");
                 if (condition == null)
                     return false;
 
                 var conditionObj = condition as ManagedObject;
                 if (conditionObj == null)
                     return false;
-
-                var conditionType = conditionObj.GetTypeDefinition();
+                var common = conditionObj.Call("get_Common") as ManagedObject;
+                var conditionType = common?.GetTypeDefinition();
                 if (conditionType != null)
                 {
                     string[] ladderMethods =
@@ -6353,6 +6356,33 @@ namespace RE9DotNet_CC
 
         private readonly System.Random _random = new System.Random();
 
+        private ManagedObject? FindObjectByTypeName(ManagedObject obj, string typeName, int depth = 0)
+        {
+            if (obj == null || depth > 5) // prevent infinite loops
+                return null;
+
+            try
+            {
+                var objType = obj.GetType().ToString();
+                if (objType.Contains(typeName))
+                    return obj;
+
+                var fields = obj.GetType().GetFields();
+                foreach (var field in fields)
+                {
+                    var value = obj.GetField(field.Name) as ManagedObject;
+                    if (value == null)
+                        continue;
+
+                    var result = FindObjectByTypeName(value, typeName, depth + 1);
+                    if (result != null)
+                        return result;
+                }
+            }
+            catch { }
+
+            return null;
+        }
         /// <summary>
         /// Get player inventory from current player condition
         /// </summary>
@@ -6360,23 +6390,36 @@ namespace RE9DotNet_CC
         {
             try
             {
-                var itemManager = API.GetManagedSingleton("app.InventoryManager") as ManagedObject;
-                if (itemManager == null)
+                var playman = _playerManager as ManagedObject;
+                if (playman == null) return null;
+
+                var cxt = playman.Call("getPlayerContextRef") as ManagedObject;
+                if (cxt == null) return null;
+
+                var upd = cxt.Call("get_Updater") as ManagedObject;
+                if (upd == null) return null;
+
+                var go = upd.Call("get_GameObject") as ManagedObject;
+                if (go == null)
                     return null;
 
-                var dict = itemManager.GetField("_Inventories") as ManagedObject;
-                if (dict == null)
+                var tdb = API.GetTDB();
+                if (tdb == null)
                     return null;
 
-                var values = dict.Call("get_Values") as ManagedObject;
-                if (values == null)
+                var equipType = tdb.FindType("app.PlayerEquipment");
+                if (equipType == null)
                     return null;
 
-                int count = Convert.ToInt32(values.Call("get_Count"));
-                if (count == 0)
-                    return null;
+                var equip = go.Call("getComponent", equipType) as ManagedObject;
 
-                var inventory = values.Call("get_Item", 0) as ManagedObject;
+                var inventory = equip?.GetField("_Inventory") as ManagedObject;
+                if (inventory == null)
+                {
+                    LogError("Inventory field not found on PlayerEquipment");
+                    return null;
+                }
+
                 return inventory;
             }
             catch (Exception ex)
@@ -6441,158 +6484,161 @@ namespace RE9DotNet_CC
                 if (inventory == null)
                     return -1;
 
-                var numSlotsObj = inventory.GetField("_UnlockSlotSize");
-                if (numSlotsObj == null)
+                var slotsObj = inventory.GetField("_Slots");
+                if (slotsObj is not System.Array slotsArray)
                     return -1;
 
-                int numSlots = Convert.ToInt32(numSlotsObj);
-                var slots = inventory.GetField("_Slots");
-                if (slots == null)
-                    return -1;
+                int slotCount = slotsArray.Length;
 
-                // Get slots as array/collection
-                var slotsArray = slots as System.Array;
-                if (slotsArray == null)
+                for (int i = 0; i < slotCount; i++)
                 {
-                    // Try as ManagedObject with indexer
-                    var slotsManaged = slots as ManagedObject;
-                    if (slotsManaged == null)
-                        return -1;
+                    var slot = slotsArray.GetValue(i) as ManagedObject;
+                    if (slot == null)
+                        continue;
 
-                    var values = slotsManaged.Call("get_Values") as ManagedObject;
-                    int count = Convert.ToInt32(values.Call("get_Count"));
-                    // Iterate through slots
-                    for (int i = 0; i < count; i++)
+                    var isLockedObj = slot.Call("get_IsLocked");
+                    if (isLockedObj == null || Convert.ToBoolean(isLockedObj))
+                        continue;
+
+                    var isEmptyObj = slot.Call("get_IsEmpty");
+                    if (isEmptyObj == null || !Convert.ToBoolean(isEmptyObj))
+                        continue;
+
+                    // ?? Optional but VERY useful
+                    var stateObj = slot.Call("get_State");
+                    // You can log this to learn valid states
+
+                    if (requiresTwoSlots)
                     {
-                        var slot = slotsManaged.Call("get_Item", i) ?? slotsManaged.Call("get_Item", (uint)i);
-                        if (slot == null)
+                        if (i + 1 >= slotCount)
                             continue;
 
-                        var slotObj = slot as ManagedObject;
-                        if (slotObj == null)
+                        var nextSlot = slotsArray.GetValue(i + 1) as ManagedObject;
+                        if (nextSlot == null)
                             continue;
 
-                        var isBlankObj = slotObj.Call("get_IsEmpty");
-                        if (isBlankObj == null)
+                        var nextLocked = nextSlot.Call("get_IsLocked");
+                        var nextEmpty = nextSlot.Call("get_IsEmpty");
+
+                        if (nextLocked == null || Convert.ToBoolean(nextLocked))
                             continue;
 
-                        bool isBlank = Convert.ToBoolean(isBlankObj);
-                        if (isBlank)
-                        {
-                            // For big weapons, check if next slot is also empty
-                            if (requiresTwoSlots)
-                            {
-                                if (i + 1 >= numSlots)
-                                    continue; // Can't fit 2 slots
-
-                                var nextSlot = slotsManaged.Call("get_Item", i + 1) ?? slotsManaged.Call("get_Item", (uint)(i + 1));
-                                if (nextSlot == null)
-                                    continue;
-
-                                var nextSlotObj = nextSlot as ManagedObject;
-                                if (nextSlotObj == null)
-                                    continue;
-
-                                var nextIsBlankObj = nextSlotObj.Call("get_IsEmpty");
-                                if (nextIsBlankObj == null)
-                                    continue;
-
-                                bool nextIsBlank = Convert.ToBoolean(nextIsBlankObj);
-                                if (!nextIsBlank)
-                                    continue; // Next slot is not empty
-                            }
-
-                            return i;
-                        }
+                        if (nextEmpty == null || !Convert.ToBoolean(nextEmpty))
+                            continue;
                     }
-                }
-                else
-                {
-                    // Use array indexing
-                    for (int i = 0; i < numSlots && i < slotsArray.Length; i++)
-                    {
-                        var slot = slotsArray.GetValue(i);
-                        if (slot == null)
-                            continue;
 
-                        var slotObj = slot as ManagedObject;
-                        if (slotObj == null)
-                            continue;
-
-                        var isBlankObj = slotObj.Call("get_IsEmpty");
-                        if (isBlankObj == null)
-                            continue;
-
-                        bool isBlank = Convert.ToBoolean(isBlankObj);
-                        if (isBlank)
-                        {
-                            // For big weapons, check if next slot is also empty
-                            if (requiresTwoSlots)
-                            {
-                                if (i + 1 >= numSlots || i + 1 >= slotsArray.Length)
-                                    continue; // Can't fit 2 slots
-
-                                var nextSlot = slotsArray.GetValue(i + 1);
-                                if (nextSlot == null)
-                                    continue;
-
-                                var nextSlotObj = nextSlot as ManagedObject;
-                                if (nextSlotObj == null)
-                                    continue;
-
-                                var nextIsBlankObj = nextSlotObj.Call("get_IsEmpty");
-                                if (nextIsBlankObj == null)
-                                    continue;
-
-                                bool nextIsBlank = Convert.ToBoolean(nextIsBlankObj);
-                                if (!nextIsBlank)
-                                    continue; // Next slot is not empty
-                            }
-
-                            return i;
-                        }
-                    }
+                    return i;
                 }
 
-                return -1; // No empty slot found
+                return -1;
             }
             catch (Exception ex)
             {
-                LogError($"GameState: Error finding empty slot - {ex.Message}");
+                LogError($"FindEmptySlot failed: {ex.Message}");
                 return -1;
             }
         }
+        private ManagedObject? CreateItemInstance(string typeName, int itemId, int count, out object? guid)
+        {
+            guid = null;
+            var tdb = API.GetTDB();
+            var typeDef = tdb?.FindType(typeName);
+            if (typeDef == null)
+            {
+                Logger.LogError($"RE9DotNet-CC: CreateItemInstance failed - type {typeName} not found");
+                return null;
+            }
 
-        /// <summary>
-        /// Add healing item to inventory
-        /// </summary>
-        public bool AddHealingItem(string itemId)
+            var instance = typeDef.CreateInstance(0) as ManagedObject;
+            if (instance == null)
+            {
+                Logger.LogError($"RE9DotNet-CC: CreateItemInstance failed - could not create {typeName}");
+                return null;
+            }
+            instance.AddRef();
+            var addId = instance.Call(".ctor", itemId);
+            var addCount = instance.Call("set_Stock", 1);
+            if (addId == null)
+            {
+                Logger.LogInfo($"RE9DotNet-CC: Adding Item ID Failed, No Ctor Function");
+                return null;
+            }
+            if (addCount == null) return null;
+            var newGuidObj = CreateNewGuidObject();
+
+                var a2 = instance.GetTypeDefinition();
+                if (a2?.FindMethod("get_Id") != null)
+                {
+                    var guidObj = ExtractFromInvokeRet(instance.Call("get_ID"));
+                    if (guidObj is ManagedObject guidManaged && !IsInvokeRetObject(guidManaged))
+                    {
+                        instance.Call("setId(System.Guid)", guidManaged);
+                        guid = guidManaged;
+                    }
+                }
+
+            Logger.LogInfo($"RE9DotNet-CC: Created item {typeName} id={itemId} count={count}");
+            return instance;
+        }
+
+        private static bool IsInvokeRetObject(object obj)
+        {
+            var typeName = obj.GetType().FullName;
+            return typeName != null
+                   && typeName.Contains("InvokeRet", StringComparison.OrdinalIgnoreCase);
+        }
+        private object? CreateNewGuidObject()
+        {
+            var guidType = API.GetTDB()?.FindType("System.Guid");
+            var guidObj = guidType?.CreateInstance(0);
+            if (guidObj == null)
+                return null;
+
+            var newGuid = ExtractFromInvokeRet(guidObj.Call("NewGuid")) as ManagedObject ?? guidObj;
+            return newGuid;
+        }
+
+        public bool AddHealingItem(int itemId)
         {
             try
             {
                 var inventory = GetInventory();
                 if (inventory == null)
                     return false;
-
-                int slotIndex = FindEmptySlot(false);
-                if (slotIndex < 0)
-                    return false; // No space
-
-                var slots = inventory.GetField("_Slots");
-                if (slots == null)
+                var inventoryManager = API.GetManagedSingleton("app.InventoryManager") as ManagedObject;
+                var itemManager = API.GetManagedSingleton("app.ItemManager") as ManagedObject;
+                if (itemManager == null)
                     return false;
 
-                var slot = GetSlotAtIndex(slots, slotIndex);
-                if (slot == null)
+                // ?? Create item instance (your helper)
+                var item = CreateItemInstance("app.ItemStockData", itemId, 1, out var _);
+                if (item == null)
+                {
+                    LogError("Failed to create item instance");
                     return false;
+                }
+                var tdb = API.GetTDB();
+                var typeDef = tdb?.FindType("app.Inventory.AcquireItemOptions");
+                var stockEvent = tdb?.FindType("app.ItemStockChangedEventType");
+                if (typeDef == null || stockEvent == null) return false;
+                else
+                {
+                    try
+                    {
+                        inventory.Call("mergeOrAdd", item, 1, false, typeDef.FindField("Default"), stockEvent.FindField("Default"));//mergeorAdd(itemId, count, bool, 1, 3);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogWarning($"mergeOrAdd failed: {ex.Message}");
+                    }
+                }
 
-                slot.Call("set_ItemID", itemId);
-                LogInfo($"GameState: Added healing item {itemId} to slot {slotIndex}");
+                LogInfo($"Added healing item {itemId}");
                 return true;
             }
             catch (Exception ex)
             {
-                LogError($"GameState: Error adding healing item - {ex.Message}");
+                LogError($"Error adding healing item - {ex.Message}");
                 return false;
             }
         }
@@ -7338,7 +7384,7 @@ namespace RE9DotNet_CC
         public int DowngradeHealingItems()
         {
             int changed = 0;
-            if (!ItemData.HealingItems.TryGetValue("herbg", out string greenHerbId))
+            if (!ItemData.HealingItems.TryGetValue("herbg", out int greenHerbId))
                 return 0;
 
             var items = GetInventoryItems();
@@ -7361,7 +7407,7 @@ namespace RE9DotNet_CC
         public int UpgradeHealingItems()
         {
             int changed = 0;
-            if (!ItemData.HealingItems.TryGetValue("spray", out string sprayId))
+            if (!ItemData.HealingItems.TryGetValue("spray", out int sprayId))
                 return 0;
 
             var items = GetInventoryItems();

@@ -182,19 +182,10 @@ namespace RE9DotNet_CC
             try
             {
                 ManagedObject? listObj = null;
-                var listField = enemyManagerObj.GetField("<ActiveEnemyList>k__BackingField");
+                var listField = enemyManagerObj.Call("getSpawnedEnemyContextRefList") as ManagedObject;
                 if (listField is ManagedObject listFieldObj)
                 {
                     listObj = listFieldObj;
-                }
-
-                if (listObj == null)
-                {
-                    var managerType = enemyManagerObj.GetTypeDefinition();
-                    if (managerType?.FindMethod("get_ActiveEnemyList") != null)
-                    {
-                        listObj = enemyManagerObj.Call("get_ActiveEnemyList") as ManagedObject;
-                    }
                 }
 
                 if (listObj == null)
@@ -755,11 +746,11 @@ namespace RE9DotNet_CC
 
             try
             {
-                var enemyManager = API.GetManagedSingleton("offline.EnemyManager");
+                var enemyManager = API.GetManagedSingleton("app.CharacterManager");
                 if (enemyManager is not ManagedObject enemyManagerObj)
                     return null;
 
-                var listField = enemyManagerObj.GetField("<ActiveEnemyList>k__BackingField");
+                var listField = enemyManagerObj.Call("getSpawnedEnemyContextRefList");
                 if (listField is ManagedObject listFieldObj)
                     return listFieldObj;
 

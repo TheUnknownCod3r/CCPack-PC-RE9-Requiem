@@ -312,8 +312,9 @@ namespace RE9DotNet_CC
         /// </summary>
         private static void DrawNameplates()
         {
+            //this can be readded via CharacterManager.GetEnemyContextList, or via via.scenemanager and the <EnemyContextList>k__BackingField
             // Disabled per request to avoid crashes around large enemy piles.
-                    return;
+            return;
         }
 
         /// <summary>
@@ -1246,14 +1247,11 @@ namespace RE9DotNet_CC
             RegisterEffect(new GiveAmmoEffect("giveammo_board"));
 
             // Give healing item effects
+            // Give healing item effects
             RegisterEffect(new GiveHealHerbgEffect());
-            RegisterEffect(new GiveHealHerbbEffect());
-            RegisterEffect(new GiveHealHerbrEffect());
             RegisterEffect(new GiveHealHerbggEffect());
-            RegisterEffect(new GiveHealHerbgbEffect());
-            RegisterEffect(new GiveHealHerbgrEffect());
-            RegisterEffect(new GiveHealSprayEffect());
-            RegisterEffect(new GiveHealHerbgrbEffect());
+            RegisterEffect(new GiveHealHerbgggEffect());
+            RegisterEffect(new GiveHealMedEffect());
 
             // Spawn enemy effects - register known RE3 prefabs
             string[] enemyCodes = {
@@ -1399,10 +1397,9 @@ namespace RE9DotNet_CC
         private enum PlayerCharacter
         {
             Unknown,
-            Jill,
-            Carlos,
-            Ada,
-            Sherry
+            Leon,
+            Grace,
+            Emily
         }
 
         /// <summary>

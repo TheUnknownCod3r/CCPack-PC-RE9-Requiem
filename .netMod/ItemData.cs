@@ -8,12 +8,12 @@ namespace RE9DotNet_CC
     public static class ItemData
     {
         // Healing items
-        public static readonly Dictionary<string, string> HealingItems = new()//re9
+        public static readonly Dictionary<string, int> HealingItems = new()
         {
-            { "herbg", "it00_00_000" },     // Green Herb
-            { "herbgg", "it00_00_100" },    // Mixed Herb (G+G)
-            { "herbggg", "it00_00_200" },   // Mixed Herb (G+G+G)
-            { "med", "it00_01_000" }        // Med Injector
+            { "herbg", 0 },      // it00_00_000
+            { "herbgg", 100 },   // it00_00_100
+            { "herbggg", 200 },  // it00_00_200
+            { "med", 1000 }      // it00_01_000
         };
         public static readonly Dictionary<string, string> DamageItems = new()//re9
         {
@@ -40,6 +40,16 @@ namespace RE9DotNet_CC
             { "hemolytic", 1 }
         };
 
+        public static readonly Dictionary<string, string> GraceItems = new()
+        {
+            { "it99_50_001", "Hemolytic Injector" },
+            { "it99_06_000", "Blood Collector" },
+            { "it99_01_000", "Hip Pouch"},
+            { "it99_02_002", "Steroids"},
+            { "it10_20_008", "Kotetsu"},
+            { "it10_03_003", "Freya's Needle"},
+            { "it99_07_002", "Rugged Rookie Charm"}
+        };
         // Weapons (from CCRE3.lua)
         public static readonly Dictionary<string, int> Weapons = new()
         {
@@ -60,7 +70,6 @@ namespace RE9DotNet_CC
             { "grenade", 65 },
             { "flash", 66 }
         };
-
         // Weapon ammo amounts (initial ammo when granted)
         public static readonly Dictionary<string, int> WeaponAmmo = new()
         {

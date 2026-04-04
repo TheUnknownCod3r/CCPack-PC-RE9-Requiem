@@ -13,7 +13,6 @@
           "REFramework.NET.application": "0.0.0.0",
           "REFramework.NET": "1.0.0.0",
           "REFramework.NET.viacore": "0.0.0.0",
-          "REFramework.NET._System": "0.0.0.0",
           "REFramework.NET._System.Private.CoreLib": "0.0.0.0"
         },
         "runtime": {
@@ -55,14 +54,6 @@
       "REFramework.NET.viacore/0.0.0.0": {
         "runtime": {
           "REFramework.NET.viacore.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "REFramework.NET._System/0.0.0.0": {
-        "runtime": {
-          "REFramework.NET._System.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -129,11 +120,6 @@
       "sha512": ""
     },
     "REFramework.NET.viacore/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "REFramework.NET._System/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

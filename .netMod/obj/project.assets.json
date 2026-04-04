@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE9DotNet-CC.csproj",
+      "projectUniqueName": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
       "projectName": "RE9-CrowdControl",
-      "projectPath": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\RE9DotNet-CC.csproj",
+      "projectPath": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
       "packagesPath": "C:\\Users\\mrfaw\\.nuget\\packages\\",
-      "outputPath": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\.netMod\\obj\\",
+      "outputPath": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

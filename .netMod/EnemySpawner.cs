@@ -46,7 +46,7 @@ namespace RE9DotNet_CC
 
             // Get scene using native singleton
             var sceneManagerNative = API.GetNativeSingleton("via.SceneManager")!;
-            var scene = sceneManagerNative.Call("get_CurrentScene")!;
+            var scene = sceneManagerNative.Call("getCurrentScene")!;
             var sceneObj = (ManagedObject)scene;
 
             // Find spawn folder
@@ -54,8 +54,8 @@ namespace RE9DotNet_CC
                 ?? sceneObj.Call("findFolder", "GUI_Rogue");
 
             // Get spawn position from player
-            var playmanObj = (ManagedObject)API.GetManagedSingleton("offline.PlayerManager")!;
-            var playerObj = (ManagedObject)playmanObj.Call("get_CurrentPlayer")!;
+            var playmanObj = (ManagedObject)API.GetManagedSingleton("app.CharacterManager")!;
+            var playerObj = (ManagedObject)playmanObj.Call("getPlayerContextRefFast")!;
             var transformObj = (ManagedObject)playerObj.Call("get_Transform")!;
             var posValueType = (REFrameworkNET.ValueType)transformObj.Call("get_Position")!;
             var xObj = posValueType.Call("get_Item", 0);
@@ -321,7 +321,7 @@ namespace RE9DotNet_CC
 
             // Get scene
             var sceneManagerNative = API.GetNativeSingleton("via.SceneManager")!;
-            var scene = sceneManagerNative.Call("get_CurrentScene")!;
+            var scene = sceneManagerNative.Call("getCurrentScene")!;
             var sceneObj = (ManagedObject)scene;
 
             // Find EnemyDataManager components
