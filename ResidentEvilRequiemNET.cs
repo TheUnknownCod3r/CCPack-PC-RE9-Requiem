@@ -5,6 +5,7 @@ using ConnectorType = CrowdControl.Common.ConnectorType;
 
 namespace CrowdControl.Games.Packs.ResidentEvilRequiemNET;
 
+/// <summary>Crowd Control effect list for RE9 — keep codes in sync with <c>RE9CrowdControlPlugin</c>, <c>ItemData</c>, and <c>RE9ItemID's.txt</c>.</summary>
 public class ResidentEvilRequiemNET : SimpleTCPPack<SimpleTCPServerConnector>
 {
     public override string Host => "127.0.0.1";
@@ -53,6 +54,7 @@ public class ResidentEvilRequiemNET : SimpleTCPPack<SimpleTCPServerConnector>
         new("Fill Weapon Mag", "fillweap"){ Category = new string[]{"Ammo","Weapons"} },
         new("Empty Weapon Mag", "emptyweap"){ Category = new string[]{"Ammo","Weapons"} },
 
+        // giveweap_* keys match ItemData.Weapons (in-game names differ from RE2/RE3 labels below).
         new("Give G19", "giveweap_g19"){ Category = new string[]{"Give Items","Weapons"} },
         new("Give Burst Handgun", "giveweap_burst"){ Category = new string[]{"Give Items","Weapons"} },
         new("Give G18", "giveweap_g18"){ Category = new string[]{"Give Items","Weapons"} },
@@ -70,29 +72,24 @@ public class ResidentEvilRequiemNET : SimpleTCPPack<SimpleTCPServerConnector>
         new("Give Hand Grenade", "giveweap_grenade"){ Category = new string[]{"Give Items","Weapons"} },
         new("Give Flash Grenade", "giveweap_flash"){ Category = new string[]{"Give Items","Weapons"} },
 
-        new("Give Handgun Bullets", "giveammo_handgun"){ Category = new string[]{"Give Items","Ammo"} },
+        // Ammo / throwables — IDs from RE9ItemID's.txt (see .netMod/ItemData.cs); not RE3 mine/RPG rounds.
+        new("Give Handgun Ammo", "giveammo_handgun"){ Category = new string[]{"Give Items","Ammo"} },
         new("Give Shotgun Shells", "giveammo_shotgun"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Submachinegun Bullets", "giveammo_submachine"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give MAG Ammo", "giveammo_mag"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Mine Rounds", "giveammo_mine"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Explosive Rounds", "giveammo_explode"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Acid Rounds", "giveammo_acid"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Flame Rounds", "giveammo_flame"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Needle Cartridges", "giveammo_needle"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Fuel", "giveammo_fuel"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Large Caliber Bullets", "giveammo_large"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give High Powered Bullets", "giveammo_slshigh"){ Category = new string[]{"Give Items","Ammo"} },
-        new("Give Detonator", "giveammo_detonator"){ Category = new string[]{"Give Items","Ammo"} },
-
-
-        new("Give Ink Ribbon", "giveammo_ink"){ Category = new string[]{"Give Items","Misc Items"} },
-        new("Give Wooden Boards", "giveammo_board"){ Category = new string[]{"Give Items","Misc Items"} },
+        new("Give Machine Gun Ammo", "giveammo_submachine"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give 12.7x55mm Ammo", "giveammo_mag"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give Rifle Ammo", "giveammo_large"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give Hand Grenade", "giveammo_grenade"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give Stacked Hand Grenades", "giveammo_grenade_stack"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give Molotov Cocktail", "giveammo_molotov"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give Bottle of Acid", "giveammo_acid"){ Category = new string[]{"Give Items","Ammo"} },
+        new("Give Ink Ribbon Tin", "giveammo_ink_tin"){ Category = new string[]{"Give Items","Misc Items"} },
 
         new("One Hit KO", "ohko") { Category = "Health", Duration = 30 },
         new("Invincible", "invul") { Category = "Health", Duration = 30 },
 
         new("Wide Camera", "wide") { Category = "Camera", Duration = 30 },
         new("Narrow Camera", "narrow") { Category = "Camera", Duration = 30 },
+        new("Swap 1st/3rd Person Camera", "swapview") { Category = "Camera", Duration = 30 },
 
 
         new("Giant Player", "giant") { Category = "Player Size", Duration = 30 },
@@ -110,16 +107,24 @@ public class ResidentEvilRequiemNET : SimpleTCPPack<SimpleTCPServerConnector>
         new("Slow Enemies", "eslow") { Category = new string[]{"Enemy Speed", "Enemies" }, Duration = 15 },
 
 
-        new("Spawn Male Zombie", "spawn_em0000") { Category = "Spawn Enemies" },
-        new("Spawn Female Zombie", "spawn_em0100") { Category = "Spawn Enemies" },
-        new("Spawn Big Zombie", "spawn_em0200") { Category = "Spawn Enemies" },
-        new("Spawn Licker", "spawn_em3000") { Category = "Spawn Enemies" },
-        new("Spawn Zombie Dog", "spawn_em4000") { Category = "Spawn Enemies" },
-        new("Spawn Hunter", "spawn_em3300") { Category = "Spawn Enemies" },
-        new("Spawn Hunter Gamma", "spawn_em3400") { Category = "Spawn Enemies" },
-        new("Spawn Nemesis", "spawn_em9000") { Category = "Spawn Enemies" },
-        new("Spawn Pale Head", "spawn_em8400") { Category = "Spawn Enemies" },
-        new("Spawn Drain Deimos", "spawn_em3500") { Category = "Spawn Enemies" },
+        // Spawn codes match RE9DotNet plugin / EnemySpawner (runtime prefab catalog); labels are IDs only — not RE3 enemy names.
+        new("Spawn Enemy em0000", "spawn_em0000") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0020", "spawn_em0020") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0100", "spawn_em0100") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0200", "spawn_em0200") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0300", "spawn_em0300") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0400", "spawn_em0400") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0500", "spawn_em0500") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0600", "spawn_em0600") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0700", "spawn_em0700") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em0800", "spawn_em0800") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em1000", "spawn_em1000") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em2500", "spawn_em2500") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em2600", "spawn_em2600") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em2700", "spawn_em2700") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em3000", "spawn_em3000") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em4000", "spawn_em4000") { Category = "Spawn Enemies" },
+        new("Spawn Enemy em3300", "spawn_em3300") { Category = "Spawn Enemies" },
         new("Cycle Costume", "cycle_costume") { Category = "Player" },
 
 

@@ -5,7 +5,9 @@ using REFrameworkNET;
 namespace RE9DotNet_CC
 {
     /// <summary>
-    /// Handles actual enemy spawning logic
+    /// Enemy prefab registration: scene <c>EnemyDataManager</c> tables, catalog registers,
+    /// and RE9 <c>app.Cp_*Manager</c> types (see reference). Runtime lists: <c>app.CharacterManager</c>
+    /// (<c>EnemyContextList</c> / spawned contexts). Spawn keys normalize <c>CP_*</c> → <c>cp_*</c> to match prefab / kind naming.
     /// </summary>
     public static class EnemySpawner
     {
@@ -41,38 +43,43 @@ namespace RE9DotNet_CC
         /// </summary>
         public static bool SpawnEnemy(string enemyName, string playerName)
         {
-            // Register enemies if needed
+            try
+            {
+                return SpawnEnemyCore(enemyName, playerName);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"EnemySpawner: SpawnEnemy - {ex}");
+                return false;
+            }
+        }
+
+        private static bool SpawnEnemyCore(string enemyName, string playerName)
+        {
+            enemyName = NormalizeEnemySpawnKey(enemyName);
             RegisterEnemiesIfNeeded();
 
-            // Get scene using native singleton
-            var sceneManagerNative = API.GetNativeSingleton("via.SceneManager")!;
-            var scene = sceneManagerNative.Call("getCurrentScene")!;
-            var sceneObj = (ManagedObject)scene;
+            var sceneObj = TryGetSceneManagerCurrentScene();
+            if (sceneObj == null)
+            {
+                Logger.LogInfo("EnemySpawner: No current scene (tried get_CurrentScene / getCurrentScene on managed+native SceneManager).");
+                return false;
+            }
 
-            // Find spawn folder
-            var folder = sceneObj.Call("findFolder", "ModdedTemporaryObjects")
-                ?? sceneObj.Call("findFolder", "GUI_Rogue");
+            var folder = TryFindSpawnParentFolder(sceneObj);
+            if (folder == null)
+            {
+                Logger.LogInfo("EnemySpawner: No spawn folder under scene (ModdedTemporaryObjects, GUI_Rogue, root, Root).");
+                return false;
+            }
 
-            // Get spawn position from player
-            var playmanObj = (ManagedObject)API.GetManagedSingleton("app.CharacterManager")!;
-            var playerObj = (ManagedObject)playmanObj.Call("getPlayerContextRefFast")!;
-            var transformObj = (ManagedObject)playerObj.Call("get_Transform")!;
-            var posValueType = (REFrameworkNET.ValueType)transformObj.Call("get_Position")!;
-            var xObj = posValueType.Call("get_Item", 0);
-            var yObj = posValueType.Call("get_Item", 1);
-            var zObj = posValueType.Call("get_Item", 2);
-            float spawnX = Convert.ToSingle(xObj);
-            float spawnY = Convert.ToSingle(yObj);
-            float spawnZ = Convert.ToSingle(zObj);
-                // Spawn exactly at the player's position
-                float finalSpawnX = spawnX, finalSpawnY = spawnY, finalSpawnZ = spawnZ;
-                
-                // Get player position for facing calculation
+            if (!TryGetPlayerWorldPosition(out float spawnX, out float spawnY, out float spawnZ))
+            {
+                Logger.LogInfo("EnemySpawner: Could not read player position (CharacterManager / player context / Transform).");
+                return false;
+            }
+
                 float playerX = spawnX, playerY = spawnY, playerZ = spawnZ;
-                
-                spawnX = finalSpawnX;
-                spawnY = finalSpawnY;
-                spawnZ = finalSpawnZ;
 
                 // Create spawn position vector
                 var spawnPos = REFrameworkNET.ValueType.New<via.vec3>();
@@ -213,6 +220,105 @@ namespace RE9DotNet_CC
             return LogReturn(nameof(SpawnEnemy), true);
         }
 
+        /// <summary>RE9 exposes <c>get_CurrentScene</c> on <c>via.SceneManager</c>; older code used camelCase <c>getCurrentScene</c>.</summary>
+        private static ManagedObject? TryGetSceneManagerCurrentScene()
+        {
+            foreach (var acquire in new Func<object?>[]
+                     {
+                         () => API.GetManagedSingleton("via.SceneManager"),
+                         () => API.GetNativeSingleton("via.SceneManager")
+                     })
+            {
+                var mgr = acquire();
+                if (mgr == null)
+                    continue;
+
+                foreach (var method in new[] { "get_CurrentScene", "getCurrentScene" })
+                {
+                    try
+                    {
+                        object? scene = mgr switch
+                        {
+                            ManagedObject mo => mo.Call(method),
+                            NativeObject no => no.Call(method),
+                            _ => null
+                        };
+                        if (scene is ManagedObject managedScene)
+                            return managedScene;
+                    }
+                    catch
+                    {
+                        // try next method / manager
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static bool TryGetPlayerWorldPosition(out float x, out float y, out float z)
+        {
+            x = y = z = 0f;
+            try
+            {
+                var charMgr = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
+                if (charMgr == null)
+                    return false;
+
+                object? ctx = charMgr.Call("getPlayerContextRefFast")
+                              ?? charMgr.Call("getPlayerContextRef")
+                              ?? charMgr.Call("get_PlayerContext");
+                if (ctx is not ManagedObject ctxObj)
+                    return false;
+
+                var transformObj = ctxObj.Call("get_Transform") as ManagedObject;
+                if (transformObj == null)
+                    return false;
+
+                if (transformObj.Call("get_Position") is not REFrameworkNET.ValueType posVt)
+                    return false;
+
+                x = Convert.ToSingle(posVt.Call("get_Item", 0));
+                y = Convert.ToSingle(posVt.Call("get_Item", 1));
+                z = Convert.ToSingle(posVt.Call("get_Item", 2));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static object? TryFindSpawnParentFolder(ManagedObject sceneObj)
+        {
+            foreach (var name in new[] { "ModdedTemporaryObjects", "GUI_Rogue", "root", "Root" })
+            {
+                try
+                {
+                    var f = sceneObj.Call("findFolder", name);
+                    if (f != null)
+                        return f;
+                }
+                catch
+                {
+                    // next name
+                }
+            }
+
+            try
+            {
+                var root = sceneObj.Call("get_RootFolder") ?? sceneObj.Call("get_Root");
+                if (root != null)
+                    return root;
+            }
+            catch
+            {
+                // ignore
+            }
+
+            return null;
+        }
+
         private static void TryFixSpawnFolderAndEnemyList(
             object? folder,
             string? reason = null,
@@ -269,11 +375,21 @@ namespace RE9DotNet_CC
             }
         }
 
+        private static string NormalizeEnemySpawnKey(string enemyName)
+        {
+            if (string.IsNullOrWhiteSpace(enemyName))
+                return enemyName;
+            var s = enemyName.Trim();
+            if (s.Length >= 3 && s.StartsWith("CP_", StringComparison.OrdinalIgnoreCase))
+                s = "cp_" + s.Substring(3);
+            return s.ToLowerInvariant();
+        }
+
         private static string? TryGetPauseFlagsDescription()
         {
             try
             {
-                var guiObj = API.GetManagedSingleton("app.GUIManager") as ManagedObject;
+                var guiObj = GuiManagerProbe.TryGetGuiManager();
                 if (guiObj == null)
                     return null;
 
@@ -319,10 +435,13 @@ namespace RE9DotNet_CC
             }
             _enemyPrefabs = new Dictionary<string, EnemyPrefabData>();
 
-            // Get scene
-            var sceneManagerNative = API.GetNativeSingleton("via.SceneManager")!;
-            var scene = sceneManagerNative.Call("getCurrentScene")!;
-            var sceneObj = (ManagedObject)scene;
+            var sceneObj = TryGetSceneManagerCurrentScene();
+            if (sceneObj == null)
+            {
+                Logger.LogInfo("EnemySpawner: RegisterEnemiesIfNeeded — scene unavailable (skip prefab scan).");
+                _lastEnemyRegistration = now;
+                return;
+            }
 
             // Find EnemyDataManager components
             var tdb = API.GetTDB();
@@ -341,7 +460,16 @@ namespace RE9DotNet_CC
                          "offline.enemy.EnemyDataManager",
                          "offline.enemy.EnemyDataCatalogRegister",
                          "offline.enemy.EnemyDataManagerBase",
-                         "app.ropeway.EnemyDataManager"
+                         "app.ropeway.EnemyDataManager",
+                         // RE9: chapter / character-prefixed enemy managers (see reference app/Cp_*Manager.cs)
+                         "app.Cp_B000Manager",
+                         "app.Cp_B600Manager",
+                         "app.Cp_B800Manager",
+                         "app.Cp_C100Manager",
+                         "app.Cp_C200Manager",
+                         "app.Cp_C500Manager",
+                         "app.Cp_C700Manager",
+                         "app.Cp_V000Manager"
                      })
             {
                 var type = tdb.FindType(typeName);

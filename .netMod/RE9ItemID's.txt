@@ -43,6 +43,7 @@ it10_30_001 | 1030001  | Body Armor Lv.II
 it10_30_002 | 1030002  | Body Armor Lv.III
 
 it20_00_000 | 2000000  | Hand Grenade
+it20_00_001 | 2000001  | Flash Grenade (sub-weapon)
 it20_00_002 | 2000002  | Molotov Cocktail
 it20_00_003 | 2000003  | Empty Bottle
 it20_00_004 | 2000004  | Stacked Hand Grenade

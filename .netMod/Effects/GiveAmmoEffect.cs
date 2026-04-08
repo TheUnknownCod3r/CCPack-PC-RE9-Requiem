@@ -41,13 +41,12 @@ namespace RE9DotNet_CC.Effects
             return _ammoKey;
         }
 
-       protected override Task<int> OnExecute(GameState gameState, CCRequest request)
-        {/*
+        protected override Task<int> OnExecute(GameState gameState, CCRequest request)
+        {
             try
             {
                 string ammoKey = GetAmmoKey();
 
-                // Check if ammo is available for current character
                 if (!gameState.IsAmmoAvailableForCharacter(ammoKey))
                 {
                     Logger.LogInfo($"{Code}: Ammo '{ammoKey}' is not available for current character");
@@ -62,7 +61,7 @@ namespace RE9DotNet_CC.Effects
 
                 int amount = ItemData.AmmoAmounts.TryGetValue(ammoKey, out int ammoAmount)
                     ? ammoAmount
-                    : 5;
+                    : 10;
 
                 if (gameState.AddAmmoItem(itemId, amount))
                 {
@@ -77,8 +76,7 @@ namespace RE9DotNet_CC.Effects
             {
                 Logger.LogError($"{Code}: Error adding ammo - {ex.Message}");
                 return Task.FromResult((int)CCStatus.Failure);
-            }*/
-            return Task.FromResult((int)CCStatus.Failure);
+            }
         }
     }
 }

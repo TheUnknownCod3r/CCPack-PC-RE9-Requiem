@@ -1,6 +1,6 @@
 namespace RE9DotNet_CC.Effects
 {
-    // All RE3 weapon give effects in one file
+    // Weapon give effects (shared pack layout)
     public class GiveWeapG19Effect : GiveWeaponEffect
     {
         public GiveWeapG19Effect() : base("g19", "giveweap_g19") { }

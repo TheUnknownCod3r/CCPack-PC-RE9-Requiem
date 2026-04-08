@@ -7,44 +7,51 @@
     <PlatformTarget>x64</PlatformTarget>
     <OutputType>Library</OutputType>
     <AssemblyName>RE9-CrowdControl</AssemblyName>
-    <RootNamespace>RE9DotNet-CC</RootNamespace>
+    <RootNamespace>RE9DotNet_CC</RootNamespace>
 
-    <!-- Configure these paths to your RE3 install -->
-    <RE3GamePath Condition="'$(RE3GamePath)'==''">F:\SteamLibrary\steamapps\common\RE3</RE3GamePath>
-    <RE3ManagedPath Condition="'$(RE3ManagedPath)'==''">$(RE3GamePath)\reframework\plugins\managed\generated</RE3ManagedPath>
-    <RE3PluginsPath Condition="'$(RE3PluginsPath)'==''">$(RE3GamePath)\reframework\plugins\managed\</RE3PluginsPath>
+    <!-- Default game root (Steam). Override: dotnet build -p:RE9GameRoot="D:\Your\Install\Folder" -->
+    <RE9GameRoot Condition="'$(RE9GameRoot)'==''">I:\SteamLibrary\steamapps\common\RESIDENT EVIL requiem BIOHAZARD requiem</RE9GameRoot>
+    <RE9ManagedGeneratedPath Condition="'$(RE9ManagedGeneratedPath)'==''">$(RE9GameRoot)\reframework\plugins\managed\generated</RE9ManagedGeneratedPath>
+    <RE9ManagedPluginsPath Condition="'$(RE9ManagedPluginsPath)'==''">$(RE9GameRoot)\reframework\plugins\managed\</RE9ManagedPluginsPath>
+    <!-- Hexa DLLs: reframework\plugins\managed\dependencies\ (fallback: same folder as other managed plugins). -->
+    <_HexaImGuiDeps>$(RE9ManagedPluginsPath)dependencies\Hexa.NET.ImGui.dll</_HexaImGuiDeps>
+    <_HexaImGuiRoot>$(RE9ManagedPluginsPath)Hexa.NET.ImGui.dll</_HexaImGuiRoot>
+    <HexaImGuiHintPath Condition="'$(HexaImGuiHintPath)'=='' and Exists('$(_HexaImGuiDeps)')">$(_HexaImGuiDeps)</HexaImGuiHintPath>
+    <HexaImGuiHintPath Condition="'$(HexaImGuiHintPath)'=='' and Exists('$(_HexaImGuiRoot)')">$(_HexaImGuiRoot)</HexaImGuiHintPath>
+    <HexaImGuiHintPath Condition="'$(HexaImGuiHintPath)'==''">$(_HexaImGuiDeps)</HexaImGuiHintPath>
+    <_HexaGenDeps>$(RE9ManagedPluginsPath)dependencies\HexaGen.Runtime.dll</_HexaGenDeps>
+    <_HexaGenRoot>$(RE9ManagedPluginsPath)HexaGen.Runtime.dll</_HexaGenRoot>
+    <HexaGenHintPath Condition="'$(HexaGenHintPath)'=='' and Exists('$(_HexaGenDeps)')">$(_HexaGenDeps)</HexaGenHintPath>
+    <HexaGenHintPath Condition="'$(HexaGenHintPath)'=='' and Exists('$(_HexaGenRoot)')">$(_HexaGenRoot)</HexaGenHintPath>
+    <HexaGenHintPath Condition="'$(HexaGenHintPath)'==''">$(_HexaGenDeps)</HexaGenHintPath>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="Hexa.NET.ImGui">
-      <HintPath>H:\RESIDENT EVIL requiem BIOHAZARD requiem\reframework\plugins\managed\dependencies\Hexa.NET.ImGui.dll</HintPath>
+      <HintPath>$(HexaImGuiHintPath)</HintPath>
+    </Reference>
+    <Reference Include="HexaGen.Runtime" Condition="Exists('$(HexaGenHintPath)')">
+      <HintPath>$(HexaGenHintPath)</HintPath>
     </Reference>
     <Reference Include="REFCoreDeps">
-      <HintPath>H:\RESIDENT EVIL requiem BIOHAZARD requiem\reframework\plugins\managed\dependencies\REFCoreDeps.dll</HintPath>
+      <HintPath>$(RE9ManagedPluginsPath)dependencies\REFCoreDeps.dll</HintPath>
     </Reference>
     <Reference Include="REFramework.NET">
-      <HintPath>H:\RESIDENT EVIL requiem BIOHAZARD requiem\reframework\plugins\REFramework.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="application">
-      <HintPath>H:\RESIDENT EVIL requiem BIOHAZARD requiem\reframework\plugins\managed\generated\REFramework.NET.application.dll</HintPath>
+      <HintPath>$(RE9GameRoot)\reframework\plugins\REFramework.NET.dll</HintPath>
     </Reference>
     <Reference Include="viacore">
-      <HintPath>H:\RESIDENT EVIL requiem BIOHAZARD requiem\reframework\plugins\managed\generated\REFramework.NET.viacore.dll</HintPath>
+      <HintPath>$(RE9ManagedGeneratedPath)\REFramework.NET.viacore.dll</HintPath>
     </Reference>
     <Reference Include="_System.Private.CoreLib">
-      <HintPath>H:\RESIDENT EVIL requiem BIOHAZARD requiem\reframework\plugins\managed\generated\REFramework.NET._System.Private.CoreLib.dll</HintPath>
+      <HintPath>$(RE9ManagedGeneratedPath)\REFramework.NET._System.Private.CoreLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="ResidentEvil3.cs" />
-  </ItemGroup>
-
-  <!-- Post-build event to copy DLL to RE3 plugins directory -->
-  <Target Name="CopyToRE3Plugins" AfterTargets="Build">
-    <Message Text="Copying $(TargetFileName) to RE3 plugins directory..." Importance="high" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RE3PluginsPath)" />
-    <Message Text="Successfully copied $(TargetFileName) to $(RE3PluginsPath)" Importance="high" />
+  <!-- Post-build: copy plugin into game's managed plugin folder -->
+  <Target Name="CopyToRE9Plugins" AfterTargets="Build">
+    <Message Text="Copying $(TargetFileName) to $(RE9ManagedPluginsPath)..." Importance="high" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RE9ManagedPluginsPath)" />
+    <Message Text="Successfully copied $(TargetFileName)" Importance="high" />
   </Target>
 
 </Project>

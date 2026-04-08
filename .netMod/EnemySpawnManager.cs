@@ -57,7 +57,7 @@ namespace RE9DotNet_CC
                 }
 
                 // Generate unique ID
-                string enemyId = $"{gameObject.GetHashCode()}_{DateTime.Now.Ticks}_{new Random().Next(1000, 9999)}";
+                string enemyId = $"{gameObject.GetHashCode()}_{DateTime.Now.Ticks}_{new System.Random().Next(1000, 9999)}";
 
                 // Try to get EnemyController
                 object? enemyController = null;
