@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:gamestate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\enemyspawnmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:enemyspawnmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\enemyspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:enemyspawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\enemyspawnmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:enemyspawnmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\re9crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,20 +23,36 @@
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\givehealingeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\givehealingeffects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\givehealingeffects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\guimanagerprobe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:guimanagerprobe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\re9dotnet-cc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:re9dotnet-cc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\emptyammoeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\emptyammoeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:globalusings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\givehealingeffects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\givehealingeffects.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\healstatuseffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\healstatuseffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\emptyammoeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\emptyammoeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -154,10 +170,6 @@
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\hyperspeedeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\healstatuseffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\healstatuseffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\effects\\giantplayereffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\giantplayereffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -206,10 +218,6 @@
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:effects\\enemydamageeffect.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:pluginconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|c:\\users\\mrfaw\\documents\\github\\ccpack-pc-re9-requiem\\.netmod\\logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:logger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -225,11 +233,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GuiManagerProbe.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\GuiManagerProbe.cs",
+              "RelativeDocumentMoniker": "GuiManagerProbe.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\GuiManagerProbe.cs",
+              "RelativeToolTip": "GuiManagerProbe.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T15:10:05.927Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -239,22 +260,35 @@
               "RelativeDocumentMoniker": "GameState.cs",
               "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\GameState.cs",
               "RelativeToolTip": "GameState.cs",
-              "ViewState": "AgIAAMgZAAAAAAAAAAAIwOAZAAARAAAAAAAAAA==",
+              "ViewState": "AgIAAC4CAAAAAAAAAAAAwGoCAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-27T16:20:26.833Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "RE9DotNet-CC",
-              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
-              "RelativeDocumentMoniker": "RE9DotNet-CC.csproj",
-              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
-              "RelativeToolTip": "RE9DotNet-CC.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAB+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-04-02T16:31:39.062Z",
+              "DocumentIndex": 8,
+              "Title": "PluginConfig.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\PluginConfig.cs",
+              "RelativeDocumentMoniker": "PluginConfig.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\PluginConfig.cs",
+              "RelativeToolTip": "PluginConfig.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAAwAUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T23:56:56.927Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GiveHealingEffects.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveHealingEffects.cs",
+              "RelativeDocumentMoniker": "Effects\\GiveHealingEffects.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveHealingEffects.cs",
+              "RelativeToolTip": "Effects\\GiveHealingEffects.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T01:29:48.729Z",
               "EditorCaption": ""
             },
             {
@@ -272,20 +306,95 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "RE9CrowdControlPlugin.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9CrowdControlPlugin.cs",
+              "RelativeDocumentMoniker": "RE9CrowdControlPlugin.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9CrowdControlPlugin.cs",
+              "RelativeToolTip": "RE9CrowdControlPlugin.cs",
+              "ViewState": "AgIAAAwBAAAAAAAAAAAcwH8FAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-27T16:19:55.709Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "EnemySpawner.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\EnemySpawner.cs",
+              "RelativeDocumentMoniker": "EnemySpawner.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\EnemySpawner.cs",
+              "RelativeToolTip": "EnemySpawner.cs",
+              "ViewState": "AgIAAMUBAAAAAAAAAAAAABgEAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-29T18:02:45.888Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "EnemySpawnManager.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\EnemySpawnManager.cs",
               "RelativeDocumentMoniker": "EnemySpawnManager.cs",
               "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\EnemySpawnManager.cs",
               "RelativeToolTip": "EnemySpawnManager.cs",
-              "ViewState": "AgIAAPsCAAAAAAAAAAAcwAcDAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAIwAcDAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-29T18:04:53.827Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
+              "Title": "RE9DotNet-CC.csproj",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
+              "RelativeDocumentMoniker": "RE9DotNet-CC.csproj",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
+              "RelativeToolTip": "RE9DotNet-CC.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-02T16:31:39.062Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "GlobalUsings.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\GlobalUsings.cs",
+              "RelativeDocumentMoniker": "GlobalUsings.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\GlobalUsings.cs",
+              "RelativeToolTip": "GlobalUsings.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T15:09:01.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "HealStatusEffect.cs",
+              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HealStatusEffect.cs",
+              "RelativeDocumentMoniker": "Effects\\HealStatusEffect.cs",
+              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HealStatusEffect.cs",
+              "RelativeToolTip": "Effects\\HealStatusEffect.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T01:30:21.125Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ResidentEvilRequiemNET.cs",
+              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
+              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAC8AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-30T00:10:54.679Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "ItemData.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\ItemData.cs",
               "RelativeDocumentMoniker": "ItemData.cs",
@@ -298,55 +407,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "RE9CrowdControlPlugin.cs",
-              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9CrowdControlPlugin.cs",
-              "RelativeDocumentMoniker": "RE9CrowdControlPlugin.cs",
-              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\RE9CrowdControlPlugin.cs",
-              "RelativeToolTip": "RE9CrowdControlPlugin.cs",
-              "ViewState": "AgIAAA8BAAAAAAAAAAAcwH8FAABCAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T16:19:55.709Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ResidentEvilRequiemNET.cs",
-              "DocumentMoniker": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
-              "ToolTip": "H:\\CCPack-PC-ResidentEvil3-main3\\CCPack-PC-ResidentEvil3-main\\ResidentEvilRequiemNET.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAAC8AAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T00:10:54.679Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EnemySpawner.cs",
-              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\EnemySpawner.cs",
-              "RelativeDocumentMoniker": "EnemySpawner.cs",
-              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\EnemySpawner.cs",
-              "RelativeToolTip": "EnemySpawner.cs",
-              "ViewState": "AgIAAMUAAAAAAAAAAAAwwDQAAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-29T18:02:45.888Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "GiveHealingEffects.cs",
-              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveHealingEffects.cs",
-              "RelativeDocumentMoniker": "Effects\\GiveHealingEffects.cs",
-              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveHealingEffects.cs",
-              "RelativeToolTip": "Effects\\GiveHealingEffects.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T01:29:48.729Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "EmptyAmmoEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EmptyAmmoEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EmptyAmmoEffect.cs",
@@ -358,7 +419,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "GiveItemEffectBase.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveItemEffectBase.cs",
               "RelativeDocumentMoniker": "Effects\\GiveItemEffectBase.cs",
@@ -370,7 +431,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 15,
               "Title": "GiveWeaponEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveWeaponEffect.cs",
               "RelativeDocumentMoniker": "Effects\\GiveWeaponEffect.cs",
@@ -382,7 +443,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 16,
               "Title": "GiveWeaponEffects.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveWeaponEffects.cs",
               "RelativeDocumentMoniker": "Effects\\GiveWeaponEffects.cs",
@@ -394,7 +455,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 17,
               "Title": "HealEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HealEffect.cs",
               "RelativeDocumentMoniker": "Effects\\HealEffect.cs",
@@ -406,7 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 18,
               "Title": "UpgradeHealingItemsEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\UpgradeHealingItemsEffect.cs",
               "RelativeDocumentMoniker": "Effects\\UpgradeHealingItemsEffect.cs",
@@ -418,7 +479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 19,
               "Title": "NarrowCameraEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\NarrowCameraEffect.cs",
               "RelativeDocumentMoniker": "Effects\\NarrowCameraEffect.cs",
@@ -430,7 +491,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "WideCameraEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\WideCameraEffect.cs",
               "RelativeDocumentMoniker": "Effects\\WideCameraEffect.cs",
@@ -442,7 +503,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 22,
               "Title": "TakeAmmoEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\TakeAmmoEffect.cs",
               "RelativeDocumentMoniker": "Effects\\TakeAmmoEffect.cs",
@@ -454,7 +515,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 23,
               "Title": "GiveAmmoEffects.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveAmmoEffects.cs",
               "RelativeDocumentMoniker": "Effects\\GiveAmmoEffects.cs",
@@ -466,7 +527,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 21,
               "Title": "GiveAmmoEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiveAmmoEffect.cs",
               "RelativeDocumentMoniker": "Effects\\GiveAmmoEffect.cs",
@@ -478,7 +539,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 25,
               "Title": "OneHPEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\OneHPEffect.cs",
               "RelativeDocumentMoniker": "Effects\\OneHPEffect.cs",
@@ -490,7 +551,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 24,
               "Title": "HurtEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HurtEffect.cs",
               "RelativeDocumentMoniker": "Effects\\HurtEffect.cs",
@@ -502,7 +563,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 26,
               "Title": "EffectBase.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EffectBase.cs",
               "RelativeDocumentMoniker": "Effects\\EffectBase.cs",
@@ -514,7 +575,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 27,
               "Title": "DowngradeHealingItemsEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\DowngradeHealingItemsEffect.cs",
               "RelativeDocumentMoniker": "Effects\\DowngradeHealingItemsEffect.cs",
@@ -526,7 +587,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 28,
               "Title": "AccessoryEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\AccessoryEffect.cs",
               "RelativeDocumentMoniker": "Effects\\AccessoryEffect.cs",
@@ -538,7 +599,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 29,
               "Title": "CCConnection.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\CCConnection.cs",
               "RelativeDocumentMoniker": "CCConnection.cs",
@@ -550,7 +611,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 30,
               "Title": "UnequipWeaponEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\UnequipWeaponEffect.cs",
               "RelativeDocumentMoniker": "Effects\\UnequipWeaponEffect.cs",
@@ -562,7 +623,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 31,
               "Title": "TinyPlayerEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\TinyPlayerEffect.cs",
               "RelativeDocumentMoniker": "Effects\\TinyPlayerEffect.cs",
@@ -574,7 +635,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 32,
               "Title": "TakeWeaponEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\TakeWeaponEffect.cs",
               "RelativeDocumentMoniker": "Effects\\TakeWeaponEffect.cs",
@@ -586,7 +647,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 33,
               "Title": "TakeHealingEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\TakeHealingEffect.cs",
               "RelativeDocumentMoniker": "Effects\\TakeHealingEffect.cs",
@@ -598,7 +659,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 34,
               "Title": "SpawnEnemyEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\SpawnEnemyEffect.cs",
               "RelativeDocumentMoniker": "Effects\\SpawnEnemyEffect.cs",
@@ -610,7 +671,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 35,
               "Title": "SlowSpeedEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\SlowSpeedEffect.cs",
               "RelativeDocumentMoniker": "Effects\\SlowSpeedEffect.cs",
@@ -622,7 +683,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 36,
               "Title": "PostEffectFilterEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\PostEffectFilterEffect.cs",
               "RelativeDocumentMoniker": "Effects\\PostEffectFilterEffect.cs",
@@ -634,7 +695,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 37,
               "Title": "OHKOEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\OHKOEffect.cs",
               "RelativeDocumentMoniker": "Effects\\OHKOEffect.cs",
@@ -646,7 +707,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 39,
               "Title": "InvincibilityEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\InvincibilityEffect.cs",
               "RelativeDocumentMoniker": "Effects\\InvincibilityEffect.cs",
@@ -658,7 +719,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 40,
               "Title": "IEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\IEffect.cs",
               "RelativeDocumentMoniker": "Effects\\IEffect.cs",
@@ -670,7 +731,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 41,
               "Title": "HyperSpeedEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HyperSpeedEffect.cs",
               "RelativeDocumentMoniker": "Effects\\HyperSpeedEffect.cs",
@@ -683,18 +744,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 38,
-              "Title": "HealStatusEffect.cs",
-              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HealStatusEffect.cs",
-              "RelativeDocumentMoniker": "Effects\\HealStatusEffect.cs",
-              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\HealStatusEffect.cs",
-              "RelativeToolTip": "Effects\\HealStatusEffect.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-30T01:30:21.125Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 34,
               "Title": "KillEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\KillEffect.cs",
               "RelativeDocumentMoniker": "Effects\\KillEffect.cs",
@@ -706,7 +755,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 42,
               "Title": "GiantPlayerEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\GiantPlayerEffect.cs",
               "RelativeDocumentMoniker": "Effects\\GiantPlayerEffect.cs",
@@ -718,7 +767,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 44,
               "Title": "FillAmmoEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\FillAmmoEffect.cs",
               "RelativeDocumentMoniker": "Effects\\FillAmmoEffect.cs",
@@ -730,7 +779,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 45,
               "Title": "FastSpeedEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\FastSpeedEffect.cs",
               "RelativeDocumentMoniker": "Effects\\FastSpeedEffect.cs",
@@ -742,7 +791,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 46,
               "Title": "EnemyTinyEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyTinyEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyTinyEffect.cs",
@@ -754,7 +803,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 47,
               "Title": "EnemySlowSpeedEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemySlowSpeedEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemySlowSpeedEffect.cs",
@@ -766,7 +815,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 49,
               "Title": "EnemyHealEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyHealEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyHealEffect.cs",
@@ -778,7 +827,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 50,
               "Title": "EnemyGiantEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyGiantEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyGiantEffect.cs",
@@ -790,7 +839,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 51,
               "Title": "EnemyFullHealEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyFullHealEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyFullHealEffect.cs",
@@ -802,7 +851,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 43,
               "Title": "FullHealEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\FullHealEffect.cs",
               "RelativeDocumentMoniker": "Effects\\FullHealEffect.cs",
@@ -814,7 +863,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 52,
               "Title": "EnemyFastSpeedEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyFastSpeedEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyFastSpeedEffect.cs",
@@ -826,7 +875,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 48,
               "Title": "EnemyOneHPEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyOneHPEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyOneHPEffect.cs",
@@ -838,7 +887,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 54,
               "Title": "Logger.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Logger.cs",
               "RelativeDocumentMoniker": "Logger.cs",
@@ -850,7 +899,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 55,
               "Title": "CostumeDefinitions.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\CostumeDefinitions.cs",
               "RelativeDocumentMoniker": "CostumeDefinitions.cs",
@@ -862,7 +911,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 53,
               "Title": "EnemyDamageEffect.cs",
               "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\Effects\\EnemyDamageEffect.cs",
               "RelativeDocumentMoniker": "Effects\\EnemyDamageEffect.cs",
@@ -871,18 +920,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-29T22:44:09.956Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 51,
-              "Title": "PluginConfig.cs",
-              "DocumentMoniker": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\PluginConfig.cs",
-              "RelativeDocumentMoniker": "PluginConfig.cs",
-              "ToolTip": "C:\\Users\\mrfaw\\Documents\\GitHub\\CCPack-PC-RE9-Requiem\\.netMod\\PluginConfig.cs",
-              "RelativeToolTip": "PluginConfig.cs",
-              "ViewState": "AgIAACMAAAAAAAAAAAAAwAUAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-29T23:56:56.927Z"
             }
           ]
         }

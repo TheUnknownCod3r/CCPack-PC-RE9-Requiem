@@ -620,7 +620,7 @@ namespace RE9DotNet_CC
             try
             {
                 var playerManager = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
-                var playerObj = playerManager?.Call("get_PlayerContextFast") as ManagedObject;
+                var playerObj = playerManager?.Call("getPlayerContextRefFast") as ManagedObject;
                 if (playerObj == null)
                     return null;
 
@@ -7295,7 +7295,7 @@ namespace RE9DotNet_CC
                 try
                 {
                     // Prefer mergeOrAdd(ItemID, int, bool, AcquireItemOptions, ItemStockChangedEventType) — same item identity as Lua.
-                    var mergeRet = inventory.Call("mergeOrAdd", itemIdBoxed, 1, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
+                    var mergeRet = inventory.Call("mergeOrAdd(app.ItemID, System.Int32, System.Boolean, app.Inventory.AcquireItemOptions, app.ItemStockChangedEventType)", itemIdBoxed, 1, true, null, null);
                     LogMergeOrAddDiag("AddHealingItem(ItemID)", mergeRet);
                 }
                 catch (Exception ex)
@@ -7356,7 +7356,7 @@ namespace RE9DotNet_CC
                 const int itemStockChangedEventDefault = 0;
                 try
                 {
-                    var mergeRet = inventory.Call("mergeOrAdd", itemIdBoxed, amount, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
+                    var mergeRet = inventory.Call("mergeOrAdd(app.ItemID, System.Int32, System.Boolean, app.Inventory.AcquireItemOptions, app.ItemStockChangedEventType)", itemIdBoxed, amount, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
                     LogMergeOrAddDiag("AddAmmoItem(ItemID)", mergeRet);
                 }
                 catch (Exception ex)
@@ -7425,7 +7425,7 @@ namespace RE9DotNet_CC
                 const int itemStockChangedEventDefault = 0;
                 try
                 {
-                    inventory.Call("mergeOrAdd", item, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
+                    inventory.Call("mergeOrAdd(app.ItemID, System.Int32, System.Boolean, app.Inventory.AcquireItemOptions, app.ItemStockChangedEventType)", item, true, null, null);
                 }
                 catch (Exception ex)
                 {

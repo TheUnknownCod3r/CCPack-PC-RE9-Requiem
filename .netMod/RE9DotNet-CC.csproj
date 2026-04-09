@@ -10,7 +10,7 @@
     <RootNamespace>RE9DotNet_CC</RootNamespace>
 
     <!-- Default game root (Steam). Override: dotnet build -p:RE9GameRoot="D:\Your\Install\Folder" -->
-    <RE9GameRoot Condition="'$(RE9GameRoot)'==''">I:\SteamLibrary\steamapps\common\RESIDENT EVIL requiem BIOHAZARD requiem</RE9GameRoot>
+    <RE9GameRoot Condition="'$(RE9GameRoot)'==''">H:\SteamLibrary\steamapps\common\RESIDENT EVIL requiem BIOHAZARD requiem</RE9GameRoot>
     <RE9ManagedGeneratedPath Condition="'$(RE9ManagedGeneratedPath)'==''">$(RE9GameRoot)\reframework\plugins\managed\generated</RE9ManagedGeneratedPath>
     <RE9ManagedPluginsPath Condition="'$(RE9ManagedPluginsPath)'==''">$(RE9GameRoot)\reframework\plugins\managed\</RE9ManagedPluginsPath>
     <!-- Hexa DLLs: reframework\plugins\managed\dependencies\ (fallback: same folder as other managed plugins). -->
