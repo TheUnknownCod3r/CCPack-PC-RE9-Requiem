@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace RE9DotNet_CC
 {
     /// <summary>
-    /// Item ID mappings for RE3
+    /// Item / weapon id mappings for RE9 (numeric ids + string item names where used).
     /// </summary>
     public static class ItemData
     {
@@ -15,29 +15,71 @@ namespace RE9DotNet_CC
             { "herbggg", 200 },  // it00_00_200
             { "med", 1000 }      // it00_01_000
         };
+
+        /// <summary>
+        /// RE9ItemID-style catalog numbers are not the same as <c>app.ItemID</c> enum values in memory.
+        /// <c>canMergeOrAdd(ItemID, …)</c> / <c>ItemStockData.ctor(ItemID, …)</c> need the static field token (resolved at runtime).
+        /// </summary>
+        public static readonly Dictionary<int, string> CatalogNumericToItemIdField = new()
+        {
+            { 0, "it00_00_000" },
+            { 100, "it00_00_100" },
+            { 200, "it00_00_200" },
+            { 1000, "it00_01_000" },
+            { 4000000, "it40_00_000" },
+            { 4001000, "it40_01_000" },
+            { 4002000, "it40_02_000" },
+            { 4003000, "it40_03_000" },
+            { 4005000, "it40_05_000" },
+            { 2000000, "it20_00_000" },
+            { 2000001, "it20_00_001" },
+            { 2000002, "it20_00_002" },
+            { 2000004, "it20_00_004" },
+            { 2000005, "it20_00_005" },
+            { 5000012, "it50_00_012" }
+        };
         public static readonly Dictionary<string, string> DamageItems = new()//re9
         {
             { "molotov", "it20_00_002" },
             { "acid", "it20_00_005" }
         };
-        // Ammo items (from CCRE3.lua)
-        public static readonly Dictionary<string, string> AmmoItems = new()
+        /// <summary>Numeric item IDs for <see cref="GameState.AddAmmoItem"/> (from RE9ItemID's.txt / game data).</summary>
+        public static readonly Dictionary<string, int> AmmoItems = new()
         {
-            { "grenade", "it20_00_000" },
-            { "grenade_stack", "it20_00_004" },
-            { "molotov", "it20_00_002" },
-            { "acid", "it20_00_005" },
-            { "hemolytic", "it99_50_001" }
+            { "handgun", 4000000 },
+            { "shotgun", 4001000 },
+            { "submachine", 4003000 },
+            { "mag", 4002000 },
+            { "large", 4005000 },
+            { "grenade", 2000000 },
+            { "grenade_stack", 2000004 },
+            { "molotov", 2000002 },
+            { "acid", 2000005 },
+            { "ink_tin", 5000012 }
         };
 
-        // Ammo amounts to give (tuned for RE3)
+        /// <summary>
+        /// Throwable sub-weapons are normal inventory stackables (e.g. it20_00_000), not internal WeaponID 65/66.
+        /// Matches chaos mod ITEM_REWARD_DEFS.hand_grenade / re9_item_adder mergeOrAdd flow.
+        /// </summary>
+        public static readonly Dictionary<string, int> ThrowableInventoryItemIds = new()
+        {
+            { "grenade", 2000000 }, // it20_00_000 Hand Grenade
+            { "flash", 2000001 }    // it20_00_001 (see reference app.ItemID)
+        };
+
         public static readonly Dictionary<string, int> AmmoAmounts = new()
         {
+            { "handgun", 15 },
+            { "shotgun", 6 },
+            { "submachine", 40 },
+            { "mag", 10 },
+            { "large", 8 },
             { "grenade", 2 },
             { "grenade_stack", 1 },
             { "molotov", 2 },
             { "acid", 2 },
-            { "hemolytic", 1 }
+            { "ink_tin", 1 }
         };
 
         public static readonly Dictionary<string, string> GraceItems = new()
@@ -50,7 +92,7 @@ namespace RE9DotNet_CC
             { "it10_03_003", "Freya's Needle"},
             { "it99_07_002", "Rugged Rookie Charm"}
         };
-        // Weapons (from CCRE3.lua)
+        // Weapon type ids (InventoryManager / pack)
         public static readonly Dictionary<string, int> Weapons = new()
         {
             { "g19", 1 },
@@ -67,6 +109,7 @@ namespace RE9DotNet_CC
             { "survive", 47 },
             { "hot", 48 },
             { "rocket", 49 },
+            // Grenade / flash: use ThrowableInventoryItemIds + mergeOrAdd as items, not these internal ids.
             { "grenade", 65 },
             { "flash", 66 }
         };

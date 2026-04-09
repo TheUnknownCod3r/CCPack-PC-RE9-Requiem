@@ -32,7 +32,7 @@ namespace RE9DotNet_CC
         private readonly SemaphoreSlim _sendMutex = new(1, 1);
 
         // Standard Crowd Control port - SDK listens here, game connects here
-        // Based on ResidentEvil3.cs: Port => 58431
+        // Crowd Control simple-TCP pack default (matches PC connector convention)
         private const int PORT = 58431;  // SDK listens here, game connects here
         private const string HOST = "127.0.0.1";
         private const int RECONNECT_DELAY_MS = 2000; // Wait 2 seconds before reconnecting
@@ -97,7 +97,7 @@ namespace RE9DotNet_CC
             {
                 _cancellationTokenSource?.Cancel();
                 // Give tasks a moment to respond to cancellation
-                Thread.Sleep(100);
+                System.Threading.Thread.Sleep(100);
             }
             catch (Exception ex)
             {

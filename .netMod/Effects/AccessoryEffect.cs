@@ -26,7 +26,7 @@ namespace RE9DotNet_CC.Effects
 
         protected override Task<int> OnExecute(GameState gameState, CCRequest request)
         {
-            Logger.LogInfo($"{Code}: Accessory effects are disabled for RE3DotNet-CC");
+            Logger.LogInfo($"{Code}: Accessory effects are not implemented for RE9-CrowdControl");
             return Task.FromResult(CCStatus.Unavailable);
         }
     }

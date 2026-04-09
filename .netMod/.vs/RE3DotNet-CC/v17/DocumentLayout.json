@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "I:\\CrowdControl-Plugins\\CCPack-PC-RE9-Requiem\\.netMod\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|i:\\crowdcontrol-plugins\\ccpack-pc-re9-requiem\\.netmod\\re9crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:re9crowdcontrolplugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|i:\\crowdcontrol-plugins\\ccpack-pc-re9-requiem\\.netmod\\re9dotnet-cc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{590FC28D-6C1B-EAF1-671E-DAF64AD9E884}|RE9DotNet-CC.csproj|solutionrelative:re9dotnet-cc.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ba2fc7a-405e-5c33-ae0c-f01f6ad6d6d7}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RE9CrowdControlPlugin.cs",
+              "DocumentMoniker": "I:\\CrowdControl-Plugins\\CCPack-PC-RE9-Requiem\\.netMod\\RE9CrowdControlPlugin.cs",
+              "RelativeDocumentMoniker": "RE9CrowdControlPlugin.cs",
+              "ToolTip": "I:\\CrowdControl-Plugins\\CCPack-PC-RE9-Requiem\\.netMod\\RE9CrowdControlPlugin.cs",
+              "RelativeToolTip": "RE9CrowdControlPlugin.cs",
+              "ViewState": "AgIAANQAAAAAAAAAAABAwOUAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T19:34:43.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RE9DotNet-CC",
+              "DocumentMoniker": "I:\\CrowdControl-Plugins\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
+              "RelativeDocumentMoniker": "RE9DotNet-CC.csproj",
+              "ToolTip": "I:\\CrowdControl-Plugins\\CCPack-PC-RE9-Requiem\\.netMod\\RE9DotNet-CC.csproj",
+              "RelativeToolTip": "RE9DotNet-CC.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-08T19:34:35.914Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

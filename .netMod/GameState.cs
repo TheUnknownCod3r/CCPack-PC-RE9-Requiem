@@ -1,12 +1,9 @@
-using app;
-using app.cp_B800;
 using REFrameworkNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using via;
-using via.navigation.map;
 
 namespace RE9DotNet_CC
 {
@@ -84,6 +81,17 @@ namespace RE9DotNet_CC
         private bool _fovWasPaused = false;
         private float _targetFOV = 81.0f; // Default FOV
         private bool _fovActive = false;
+
+        // TPS/FPS view swap (app.PlayerContext CurrentViewMode / CurrentBodyViewMode — app.PlayerMode TPS=0, FPS=1)
+        private bool _viewModeSwapActive = false;
+        private int? _originalViewMode = null;
+        private int? _originalBodyViewMode = null;
+        private int _targetViewMode;
+        private int _targetBodyViewMode;
+        private float _viewModeTimer = -1.0f;
+        private int _viewModeSwapRequestId = 0;
+        private string? _viewModeSwapRequestID = null;
+        private bool _viewModeSwapWasPaused = false;
 
         // Player scale tracking
         private float? _originalScale = null;
@@ -212,6 +220,9 @@ namespace RE9DotNet_CC
         /// </summary>
         public bool IsFOVActive => _fovActive;
 
+        /// <summary>Timed TPS/FPS view inversion active.</summary>
+        public bool IsViewModeSwapActive => _viewModeSwapActive;
+
         /// <summary>
         /// Is player scale effect active?
         /// </summary>
@@ -300,6 +311,7 @@ namespace RE9DotNet_CC
                 StopOHKO();
                 StopInvincibility();
                 StopFOV();
+                StopViewModeSwap();
                 StopScale();
                 StopSpeed();
                 StopEnemySize();
@@ -360,43 +372,56 @@ namespace RE9DotNet_CC
                     }
                 }
                 catch (Exception) { }
-                // Aim status
-                bool? isHold = TryGetConditionHold();
-                string aimStatus = $"AimStatus: IsAiming={isHold?.ToString() ?? "null"}";
-                LogInfo($"GameState: {mainState}");
-                
-                // Menu status
+                // Player / aim (RE9: Common.IsHolding; optional IsAiming on context if present)
+                bool? isHolding = TryGetConditionHold();
+                bool? isAiming = TryGetPlayerContextBoolGetter("get_IsAiming");
+                string aimStatus =
+                    $"AimStatus: Holding={isHolding?.ToString() ?? "null"}, IsAiming={isAiming?.ToString() ?? "null"}";
+                LogInfo($"GameState: {aimStatus}");
+                LogInfo($"GameState: MainFlowPhase={mainState?.ToString() ?? "null"}");
+
+                // Menu / GUI (app.GuiManager — see reference app/GuiManager.cs, GuiInventoryBridge.Active)
                 bool? isOpenInventory = null;
+                bool? isOpenInventoryFile = null;
                 bool? isOpenMap = null;
+                bool? isWorldMapEnabledFlag = null;
                 bool? isOpenPause = null;
-                bool? isOpenPauseForEvent = null;
+                bool? activeGuiWithPause = null;
+                bool? isHudDisabled = null;
                 bool guiMasterExists = false;
-                
+
                 try
                 {
-                    var guiMaster = API.GetManagedSingleton("app.GuiManager");
-                    if (guiMaster != null)
+                    var guiMasterObj = GuiManagerProbe.TryGetGuiManager();
+                    if (guiMasterObj != null)
                     {
                         guiMasterExists = true;
-                        var guiMasterObj = guiMaster as ManagedObject;
-                        if (guiMasterObj != null)
-                        {
-                            var map = guiMasterObj.Call("get_IsWorldMapEnabled");
-                            if (map != null) isOpenMap = Convert.ToBoolean(map);
-                            
-                            var pause = guiMasterObj.Call("get_IsHudPaused");
-                            if (pause != null) isOpenPause = Convert.ToBoolean(pause);
-                            
-                            
-                        }
+                        isOpenInventory = GuiManagerProbe.TryGetInventoryActive(guiMasterObj);
+                        isOpenInventoryFile = GuiManagerProbe.TryGetInventoryFileClueActive(guiMasterObj);
+                        var mapOpen = guiMasterObj.Call("get_IsOpenWorldMap");
+                        if (mapOpen != null)
+                            isOpenMap = Convert.ToBoolean(mapOpen);
+                        var mapEnabled = guiMasterObj.Call("get_IsWorldMapEnabled");
+                        if (mapEnabled != null)
+                            isWorldMapEnabledFlag = Convert.ToBoolean(mapEnabled);
+                        var pause = guiMasterObj.Call("get_IsHudPaused");
+                        if (pause != null)
+                            isOpenPause = Convert.ToBoolean(pause);
+                        var agp = guiMasterObj.Call("get_ActiveGuiWithPause");
+                        if (agp != null)
+                            activeGuiWithPause = Convert.ToBoolean(agp);
+                        var hudOff = guiMasterObj.Call("get_IsHudDisable");
+                        if (hudOff != null)
+                            isHudDisabled = Convert.ToBoolean(hudOff);
                     }
                 }
                 catch (Exception ex)
                 {
                     LogInfo($"GameState: Error checking GUI state - {ex.Message}");
                 }
-                
-                string menuStatus = $"MenuStatus: GUIMaster={guiMasterExists}, Inventory={isOpenInventory?.ToString() ?? "null"}, Map={isOpenMap?.ToString() ?? "null"}, Pause={isOpenPause?.ToString() ?? "null"}, PauseForEvent={isOpenPauseForEvent?.ToString() ?? "null"}";
+
+                string menuStatus =
+                    $"MenuStatus: GuiManager={guiMasterExists}, InventoryActive={isOpenInventory?.ToString() ?? "null"}, InventoryFile={isOpenInventoryFile?.ToString() ?? "null"}, MapOpen={isOpenMap?.ToString() ?? "null"}, MapEnabled={isWorldMapEnabledFlag?.ToString() ?? "null"}, HudPaused={isOpenPause?.ToString() ?? "null"}, ActiveGuiWithPause={activeGuiWithPause?.ToString() ?? "null"}, HudDisabled={isHudDisabled?.ToString() ?? "null"}";
                 LogInfo($"GameState: {menuStatus}");
                 
                 // Pause status (overall)
@@ -595,7 +620,7 @@ namespace RE9DotNet_CC
             try
             {
                 var playerManager = API.GetManagedSingleton("app.CharacterManager") as ManagedObject;
-                var playerObj = playerManager?.Call("get_PlayerContextFast") as ManagedObject;
+                var playerObj = playerManager?.Call("getPlayerContextRefFast") as ManagedObject;
                 if (playerObj == null)
                     return null;
 
@@ -1664,7 +1689,7 @@ namespace RE9DotNet_CC
         /// </summary>
         public bool IsWeaponAvailableForCharacter(string weaponKey)
         {
-            // RE3 LUA does not restrict weapons by character.
+            // No per-character weapon filtering in this pack.
                 return true;
         }
 
@@ -1673,7 +1698,7 @@ namespace RE9DotNet_CC
         /// </summary>
         public bool IsAmmoAvailableForCharacter(string ammoKey)
         {
-            // RE3 LUA does not restrict ammo by character.
+            // No per-character ammo filtering in this pack.
                 return true;
         }
 
@@ -1813,31 +1838,33 @@ namespace RE9DotNet_CC
 
             try
             {
-                var guiMaster = API.GetManagedSingleton("app.GuiManager");
-                if (guiMaster != null)
+                var guiObj = GuiManagerProbe.TryGetGuiManager();
+                if (guiObj != null)
                 {
-                    var guiObj = guiMaster as ManagedObject;
-                    if (guiObj != null)
+                    var isOpenMap = guiObj.Call("get_IsOpenWorldMap");
+                    if (isOpenMap != null && Convert.ToBoolean(isOpenMap))
                     {
-                        var isOpenMap = guiObj.Call("get_IsOpenWorldMap");
-                        if (isOpenMap != null && Convert.ToBoolean(isOpenMap))
-                        {
-                            _isGameReady = false;
-                            return;
-                        }
+                        _isGameReady = false;
+                        return;
+                    }
 
-                        var isHudPaused = guiObj.Call("get_IsHudPaused");
-                        if (isHudPaused != null && Convert.ToBoolean(isHudPaused))
-                        {
-                            _isGameReady = false;
-                            return;
-                        }
+                    var isHudPaused = guiObj.Call("get_IsHudPaused");
+                    if (isHudPaused != null && Convert.ToBoolean(isHudPaused))
+                    {
+                        _isGameReady = false;
+                        return;
+                    }
+
+                    var invActive = GuiManagerProbe.TryGetInventoryActive(guiObj);
+                    if (invActive == true)
+                    {
+                        _isGameReady = false;
+                        return;
                     }
                 }
             }
             catch (Exception)
             {
-                
             }
 
             _isGameReady = true;
@@ -3782,6 +3809,217 @@ namespace RE9DotNet_CC
             _fovRequestID = requestID;
         }
 
+        /// <summary>Player <c>app.PlayerContext</c> for the active character, when available.</summary>
+        public ManagedObject? TryGetPlayerContextManaged()
+        {
+            try
+            {
+                var playman = _playerManager as ManagedObject;
+                if (playman == null)
+                    return null;
+
+                return playman.Call("getPlayerContextRef") as ManagedObject
+                       ?? playman.Call("getPlayerContextRefFast") as ManagedObject
+                       ?? playman.Call("get_PlayerContext") as ManagedObject;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static int PlayerModeEnumAsInt(object? o)
+        {
+            if (o == null)
+                return 0;
+            try
+            {
+                var u = ExtractFromInvokeRet(o) ?? o;
+                return Convert.ToInt32(u);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Swap TPS/FPS for <paramref name="durationMs"/>; restores prior modes when the timer ends.
+        /// </summary>
+        public bool StartViewModeSwap(int durationMs)
+        {
+            if (_viewModeSwapActive)
+            {
+                LogError("GameState: View mode swap already active");
+                return false;
+            }
+
+            if (durationMs <= 0)
+                durationMs = 30_000;
+
+            var ctx = TryGetPlayerContextManaged();
+            if (ctx == null)
+            {
+                LogError("GameState: No player context for view mode swap");
+                return false;
+            }
+
+            try
+            {
+                int vm = PlayerModeEnumAsInt(ctx.Call("get_CurrentViewMode"));
+                int bm = PlayerModeEnumAsInt(ctx.Call("get_CurrentBodyViewMode"));
+                _originalViewMode = vm;
+                _originalBodyViewMode = bm;
+                _targetViewMode = vm == 0 ? 1 : 0;
+                _targetBodyViewMode = _targetViewMode;
+                _viewModeTimer = durationMs / 1000.0f;
+                _viewModeSwapActive = true;
+                _viewModeSwapWasPaused = false;
+                ApplySwappedViewModes();
+                LogInfo($"GameState: View mode swap started {vm} (TPS=0,FPS=1) -> {_targetViewMode} for {_viewModeTimer}s");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogError($"GameState: StartViewModeSwap failed - {ex.Message}");
+                ClearViewModeSwapState(skipRestore: true, clearRequestTracking: true);
+                return false;
+            }
+        }
+
+        private void ApplySwappedViewModes()
+        {
+            if (!_viewModeSwapActive)
+                return;
+
+            var ctx = TryGetPlayerContextManaged();
+            if (ctx == null)
+                return;
+
+            try
+            {
+                ctx.Call("set_CurrentViewMode", _targetViewMode);
+                ctx.Call("set_CurrentBodyViewMode", _targetBodyViewMode);
+            }
+            catch (Exception ex)
+            {
+                LogWarning($"GameState: ApplySwappedViewModes - {ex.Message}");
+            }
+        }
+
+        private void RestoreViewModesFromSnapshot()
+        {
+            if (!_originalViewMode.HasValue)
+                return;
+
+            var ctx = TryGetPlayerContextManaged();
+            if (ctx == null)
+                return;
+
+            try
+            {
+                ctx.Call("set_CurrentViewMode", _originalViewMode.Value);
+                ctx.Call("set_CurrentBodyViewMode", _originalBodyViewMode ?? _originalViewMode.Value);
+            }
+            catch (Exception ex)
+            {
+                LogWarning($"GameState: RestoreViewModesFromSnapshot - {ex.Message}");
+            }
+        }
+
+        private void ClearViewModeSwapState(bool skipRestore, bool clearRequestTracking)
+        {
+            if (!skipRestore)
+                RestoreViewModesFromSnapshot();
+
+            _originalViewMode = null;
+            _originalBodyViewMode = null;
+            _viewModeTimer = -1.0f;
+            _viewModeSwapActive = false;
+            _viewModeSwapWasPaused = false;
+            if (clearRequestTracking)
+            {
+                _viewModeSwapRequestId = 0;
+                _viewModeSwapRequestID = null;
+            }
+        }
+
+        /// <summary>Like <see cref="UpdateFOV"/> — re-applies swapped mode while active, restores when timer ends.</summary>
+        public bool UpdateViewModeSwap(float deltaTime, bool isGameReady, out bool wasPaused, out bool justResumed)
+        {
+            wasPaused = false;
+            justResumed = false;
+
+            if (!_viewModeSwapActive)
+            {
+                if (_originalViewMode != null || _viewModeTimer > 0 || _viewModeSwapRequestId > 0)
+                {
+                    LogInfo("GameState: Clearing stale view mode swap state");
+                    ClearViewModeSwapState(skipRestore: true, clearRequestTracking: true);
+                }
+
+                return false;
+            }
+
+            if (!isGameReady)
+            {
+                wasPaused = true;
+                if (!_viewModeSwapWasPaused)
+                {
+                    _viewModeSwapWasPaused = true;
+                    LogInfo("GameState: View mode swap paused (game not ready)");
+                }
+
+                ApplySwappedViewModes();
+                return true;
+            }
+
+            if (_viewModeSwapWasPaused)
+            {
+                justResumed = true;
+                _viewModeSwapWasPaused = false;
+                LogInfo("GameState: View mode swap resumed (game ready)");
+            }
+
+            if (_viewModeTimer <= 0)
+            {
+                LogInfo("GameState: View mode swap expired, restoring original modes");
+                ClearViewModeSwapState(skipRestore: false, clearRequestTracking: false);
+                return false;
+            }
+
+            _viewModeTimer -= deltaTime;
+            ApplySwappedViewModes();
+
+            if (_viewModeTimer <= 0)
+            {
+                LogInfo("GameState: View mode swap expired, restoring original modes");
+                ClearViewModeSwapState(skipRestore: false, clearRequestTracking: false);
+                return false;
+            }
+
+            return true;
+        }
+
+        public void StopViewModeSwap()
+        {
+            if (!_viewModeSwapActive && _originalViewMode == null)
+                return;
+
+            LogInfo("GameState: Stopping view mode swap");
+            ClearViewModeSwapState(skipRestore: false, clearRequestTracking: true);
+        }
+
+        public int GetViewModeSwapRequestId() => _viewModeSwapRequestId;
+
+        public string? GetViewModeSwapRequestID() => _viewModeSwapRequestID;
+
+        public void SetViewModeSwapRequestId(int requestId, string? requestID)
+        {
+            _viewModeSwapRequestId = requestId;
+            _viewModeSwapRequestID = requestID;
+        }
+
         /// <summary>
         /// Get player transform from HeadJoint
         /// </summary>
@@ -4833,7 +5071,6 @@ namespace RE9DotNet_CC
         }
 
         /// <summary>
-        /// <summary>
         /// Check if player is currently aiming - tries multiple methods
         /// </summary>
         private bool IsPlayerAiming()
@@ -4848,8 +5085,20 @@ namespace RE9DotNet_CC
             
             bool result = false;
             bool? isHold = null;
-            
-            // Method 1: Try SurvivorCondition.get_IsHold (from FirstPerson.cpp)
+
+            try
+            {
+                var isAimCtx = TryGetPlayerContextBoolGetter("get_IsAiming");
+                if (isAimCtx == true)
+                {
+                    result = true;
+                    LogAimingStateIfChanged("PlayerContext.IsAiming", result);
+                    goto cache_and_return;
+                }
+            }
+            catch (Exception) { }
+
+            // Common.IsHolding (weapon ready / aim-adjacent in RE9)
             try
             {
                 isHold = TryGetConditionHold();
@@ -4885,6 +5134,32 @@ namespace RE9DotNet_CC
             }
         }
 
+        /// <summary>Optional getters on <c>app.PlayerContext</c> (e.g. get_IsAiming) — returns null if missing.</summary>
+        private bool? TryGetPlayerContextBoolGetter(string getterName)
+        {
+            try
+            {
+                if (_playerManager == null)
+                    UpdatePlayerManager();
+
+                var mgr = _playerManager as ManagedObject;
+                if (mgr == null)
+                    return null;
+
+                var ctx = mgr.Call("getPlayerContextRefFast") ?? mgr.Call("getPlayerContextRef");
+                var ctxObj = ctx as ManagedObject ?? ExtractFromInvokeRet(ctx!) as ManagedObject;
+                if (ctxObj == null)
+                    return null;
+
+                object? r = ctxObj.Call(getterName);
+                return r == null ? null : Convert.ToBoolean(r);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private bool? TryGetConditionHold()
         {
             bool? isHold = null;
@@ -4900,10 +5175,10 @@ namespace RE9DotNet_CC
                 if (mgr == null)
                     return null;
 
-                // Get PlayerContext
-                var ctx = mgr.Call("getPlayerContextRef");
+                // Get PlayerContext (RE9 fast path used elsewhere in mod)
+                var ctx = mgr.Call("getPlayerContextRefFast") ?? mgr.Call("getPlayerContextRef");
 
-                var ctxObj = ctx as ManagedObject;
+                var ctxObj = ctx as ManagedObject ?? ExtractFromInvokeRet(ctx!) as ManagedObject;
                 if (ctxObj == null)
                     return null;
 
@@ -5787,7 +6062,7 @@ namespace RE9DotNet_CC
         /// <summary>
         /// Extract the actual object from InvokeRet wrapper
         /// </summary>
-        private static object? ExtractFromInvokeRet(object invokeRet)
+        internal static object? ExtractFromInvokeRet(object invokeRet)
         {
             try
             {
@@ -6356,6 +6631,229 @@ namespace RE9DotNet_CC
 
         private readonly System.Random _random = new System.Random();
 
+        /// <summary>RE9 singleton; RE3/RE4 used offline.gamemastering.InventoryManager which does not exist here.</summary>
+        private static ManagedObject? TryGetAppInventoryManager()
+        {
+            try
+            {
+                return API.GetManagedSingleton("app.InventoryManager") as ManagedObject;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Same source as chaos mod <c>get_inventory_object()</c> / <c>re9_item_adder</c>: <c>app.GuiUtil.getInventory()</c>.
+        /// Using only <c>PlayerEquipment._Inventory</c> can succeed without updating the inventory the game shows.
+        /// </summary>
+        private static ManagedObject? TryGetInventoryFromGuiUtil()
+        {
+            try
+            {
+                var guiUtil = API.GetTDB()?.FindType("app.GuiUtil");
+                if (guiUtil == null)
+                    return null;
+
+                object? ret = guiUtil.Invoke("getInventory", Array.Empty<object>());
+                return ExtractFromInvokeRet(ret) as ManagedObject;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// <c>getPlayerContextRef()</c> is not always the character you are controlling (e.g. Grace vs Leon).
+        /// Prefer a context with <c>get_IsActivePlayer() == true</c> from <c>getPlayerContextRefs()</c>.
+        /// </summary>
+        private ManagedObject? TryGetActivePlayerContext(ManagedObject characterManager)
+        {
+            try
+            {
+                object? listRaw = characterManager.Call("getPlayerContextRefs");
+                var listObj = ExtractFromInvokeRet(listRaw) as ManagedObject ?? listRaw as ManagedObject;
+                if (listObj != null)
+                {
+                    var countObj = listObj.Call("get_Count");
+                    int n = countObj != null ? Convert.ToInt32(countObj) : 0;
+                    ManagedObject? first = null;
+                    for (int i = 0; i < n; i++)
+                    {
+                        object? elem = null;
+                        try
+                        {
+                            elem = listObj.Call("get_Item", i);
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                elem = listObj.Call("Get", i);
+                            }
+                            catch
+                            {
+                                /* ignore */
+                            }
+                        }
+
+                        var ctx = elem == null
+                            ? null
+                            : elem as ManagedObject ?? ExtractFromInvokeRet(elem) as ManagedObject;
+                        if (ctx == null)
+                            continue;
+                        if (first == null)
+                            first = ctx;
+                        var activeObj = ctx.Call("get_IsActivePlayer");
+                        if (activeObj != null && Convert.ToBoolean(activeObj))
+                            return ctx;
+                    }
+
+                    if (first != null)
+                        return first;
+                }
+            }
+            catch
+            {
+                /* fall through */
+            }
+
+            return characterManager.Call("getPlayerContextRef") as ManagedObject;
+        }
+
+        /// <summary>
+        /// Player field inventory: <c>app.InventoryManager.getInventory(PlayerContext.InventoryUserID, InventoryType.Hand)</c>.
+        /// This stays tied to Leon/Grace's backpack; GuiUtil.getInventory can track the open UI (e.g. item box) when the inventory screen is up.
+        /// </summary>
+        private ManagedObject? TryGetHandInventoryFromInventoryManager()
+        {
+            try
+            {
+                var invMgr = TryGetAppInventoryManager();
+                var playman = _playerManager as ManagedObject;
+                if (invMgr == null || playman == null)
+                    return null;
+
+                var ctx = TryGetActivePlayerContext(playman);
+                if (ctx == null)
+                    return null;
+
+                object? userObj = null;
+                foreach (var methodName in new[] { "get_InventoryUserID", "getInventoryUserID" })
+                {
+                    try
+                    {
+                        userObj = ctx.Call(methodName);
+                        if (userObj != null)
+                            break;
+                    }
+                    catch
+                    {
+                        // try next name
+                    }
+                }
+
+                if (userObj == null)
+                    return null;
+
+                const int inventoryTypeHand = 0; // app.InventoryType.Hand
+
+                object? invRet = invMgr.Call("getInventory", userObj, inventoryTypeHand);
+                object? resolved = ExtractFromInvokeRet(invRet);
+                return resolved as ManagedObject ?? invRet as ManagedObject;
+            }
+            catch (Exception ex)
+            {
+                if (IsLoggingEnabled)
+                    LogWarning($"TryGetHandInventoryFromInventoryManager: {ex.Message}");
+                return null;
+            }
+        }
+
+        private ManagedObject? TryGetInventoryFromPlayerEquipment()
+        {
+            try
+            {
+                var playman = _playerManager as ManagedObject;
+                if (playman == null)
+                    return null;
+
+                var cxt = TryGetActivePlayerContext(playman);
+                if (cxt == null)
+                    return null;
+
+                var upd = cxt.Call("get_Updater") as ManagedObject;
+                if (upd == null)
+                    return null;
+
+                var go = upd.Call("get_GameObject") as ManagedObject;
+                if (go == null)
+                    return null;
+
+                var tdb = API.GetTDB();
+                if (tdb == null)
+                    return null;
+
+                var equipType = tdb.FindType("app.PlayerEquipment");
+                if (equipType == null)
+                    return null;
+
+                var equip = go.Call("getComponent", equipType) as ManagedObject;
+                return equip?.GetField("_Inventory") as ManagedObject;
+            }
+            catch (Exception ex)
+            {
+                LogError($"TryGetInventoryFromPlayerEquipment failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>Matches chaos <c>can_merge_or_add_item</c>: <c>canMergeOrAdd(ItemID, int, bool)</c> with real <c>app.ItemID</c>, not a raw catalog int.</summary>
+        private static bool InventoryAllowsMergeOrAdd(ManagedObject inventory, object itemIdBoxed, int count)
+        {
+            try
+            {
+                var r = inventory.Call("canMergeOrAdd", itemIdBoxed, count, true);
+                return r != null && Convert.ToBoolean(r);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>Reads static <c>app.ItemID.itXX_YY_ZZZ</c> (same as Lua <c>ItemID:get_field(...):get_data</c>).</summary>
+        private static object? TryGetItemIdBoxedFromField(string fieldName)
+        {
+            try
+            {
+                var tdb = API.GetTDB();
+                var itemIdType = tdb?.FindType("app.ItemID");
+                if (itemIdType == null)
+                    return null;
+
+                var field = itemIdType.FindField(fieldName);
+                if (field == null)
+                    return null;
+
+                // Static field on app.ItemID — instance address 0 (see REFrameworkNET.Field.GetDataBoxed).
+                return field.GetDataBoxed(0uL, false);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static object? TryGetItemIdBoxedFromCatalogNumber(int catalogNumber)
+        {
+            return ItemData.CatalogNumericToItemIdField.TryGetValue(catalogNumber, out var fieldName)
+                ? TryGetItemIdBoxedFromField(fieldName)
+                : null;
+        }
+
         private ManagedObject? FindObjectByTypeName(ManagedObject obj, string typeName, int depth = 0)
         {
             if (obj == null || depth > 5) // prevent infinite loops
@@ -6384,48 +6882,170 @@ namespace RE9DotNet_CC
             return null;
         }
         /// <summary>
-        /// Get player inventory from current player condition
+        /// Inventory used for <c>mergeOrAdd</c>. Chaos / <c>re9_item_adder</c> use <b>only</b> <c>GuiUtil.getInventory()</c>;
+        /// that instance is what the HUD / field bag reflect when the items menu is closed. When the items UI is open,
+        /// <c>GuiUtil</c> may track the focused panel (e.g. item box), so we prefer <c>InventoryManager.getInventory(Hand)</c> first.
         /// </summary>
-        public ManagedObject? GetInventory()
+        private ManagedObject? ResolveGrantInventory(out string source)
         {
+            source = "none";
             try
             {
-                var playman = _playerManager as ManagedObject;
-                if (playman == null) return null;
+                var gui = GuiManagerProbe.TryGetGuiManager();
+                var invUiOpen = gui != null && GuiManagerProbe.TryGetInventoryActive(gui) == true;
 
-                var cxt = playman.Call("getPlayerContextRef") as ManagedObject;
-                if (cxt == null) return null;
-
-                var upd = cxt.Call("get_Updater") as ManagedObject;
-                if (upd == null) return null;
-
-                var go = upd.Call("get_GameObject") as ManagedObject;
-                if (go == null)
-                    return null;
-
-                var tdb = API.GetTDB();
-                if (tdb == null)
-                    return null;
-
-                var equipType = tdb.FindType("app.PlayerEquipment");
-                if (equipType == null)
-                    return null;
-
-                var equip = go.Call("getComponent", equipType) as ManagedObject;
-
-                var inventory = equip?.GetField("_Inventory") as ManagedObject;
-                if (inventory == null)
+                if (!invUiOpen)
                 {
-                    LogError("Inventory field not found on PlayerEquipment");
-                    return null;
+                    var fromGui = TryGetInventoryFromGuiUtil();
+                    if (fromGui != null)
+                    {
+                        source = "GuiUtil.getInventory (Lua/chaos-style; items menu closed)";
+                        return fromGui;
+                    }
                 }
 
-                return inventory;
+                var fromManager = TryGetHandInventoryFromInventoryManager();
+                if (fromManager != null)
+                {
+                    source = "InventoryManager.Hand + IsActivePlayer context";
+                    return fromManager;
+                }
+
+                var fromEquip = TryGetInventoryFromPlayerEquipment();
+                if (fromEquip != null)
+                {
+                    source = "PlayerEquipment._Inventory + IsActivePlayer context";
+                    return fromEquip;
+                }
+
+                if (invUiOpen)
+                {
+                    var fromGuiOpen = TryGetInventoryFromGuiUtil();
+                    if (fromGuiOpen != null)
+                    {
+                        source = "GuiUtil.getInventory (fallback; items menu open)";
+                        return fromGuiOpen;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                LogError($"GetInventory failed: {ex.Message}");
-                return null;
+                if (IsLoggingEnabled)
+                    LogWarning($"ResolveGrantInventory: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        /// <summary>Same as <see cref="ResolveGrantInventory"/> without logging the source label.</summary>
+        public ManagedObject? GetInventory()
+        {
+            return ResolveGrantInventory(out var unusedGrantSource);
+        }
+
+        private void LogGrantInventoryAndPlayer(string tag, string invSource)
+        {
+            if (!IsLoggingEnabled)
+                return;
+            try
+            {
+                var gui = GuiManagerProbe.TryGetGuiManager();
+                var invUi = gui != null ? GuiManagerProbe.TryGetInventoryActive(gui) : null;
+                var playman = _playerManager as ManagedObject;
+                var ctx = playman != null ? TryGetActivePlayerContext(playman) : null;
+                var ctxDesc = "(null)";
+                var goName = "";
+                var isActive = "";
+                if (ctx != null)
+                {
+                    try
+                    {
+                        ctxDesc = ctx.Call("ToString")?.ToString() ?? ctxDesc;
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+
+                    try
+                    {
+                        var go = ctx.Call("get_GameObject") as ManagedObject;
+                        goName = go?.Call("get_Name")?.ToString() ?? "";
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+
+                    try
+                    {
+                        isActive = ctx.Call("get_IsActivePlayer")?.ToString() ?? "";
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+                }
+
+                LogInfo(
+                    $"{tag}: inventory={invSource}; GuiInventory.Active={invUi?.ToString() ?? "null"}; ActiveContext={ctxDesc}; PlayerRoot.Name={goName}; IsActivePlayer={isActive}");
+            }
+            catch (Exception ex)
+            {
+                LogInfo($"{tag}: LogGrantInventoryAndPlayer failed: {ex.Message}");
+            }
+        }
+
+        private void LogMergeOrAddDiag(string tag, object? ret)
+        {
+            if (!IsLoggingEnabled || ret == null)
+                return;
+            try
+            {
+                string? boolish = null;
+                try
+                {
+                    boolish = Convert.ToBoolean(ret).ToString();
+                }
+                catch
+                {
+                    boolish = "n/a";
+                }
+
+                var skipped = -1;
+                var processed = -1;
+                var mo = ret as ManagedObject ?? ExtractFromInvokeRet(ret) as ManagedObject;
+                if (mo != null)
+                {
+                    try
+                    {
+                        var sk = mo.Call("get_SkippedItems");
+                        if (sk is System.Array a)
+                            skipped = a.Length;
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+
+                    try
+                    {
+                        var pr = mo.Call("get_ProcessedItems");
+                        if (pr is System.Array b)
+                            processed = b.Length;
+                    }
+                    catch
+                    {
+                        /* ignore */
+                    }
+                }
+
+                LogInfo(
+                    $"{tag}: mergeOrAdd ret type={ret.GetType().Name} ToBooleanTry={boolish} SkippedItems.len={skipped} ProcessedItems.len={processed}");
+            }
+            catch (Exception ex)
+            {
+                LogInfo($"{tag}: mergeOrAdd diag failed: {ex.Message}");
             }
         }
 
@@ -6556,14 +7176,21 @@ namespace RE9DotNet_CC
                 return null;
             }
             instance.AddRef();
-            var addId = instance.Call(".ctor", itemId);
-            var addCount = instance.Call("set_Stock", 1);
-            if (addId == null)
+            // Chaos / re9_item_adder: ItemStockData ".ctor(app.ItemID, System.Int32)" with stack count; fallback to ctor(id)+set_Stock.
+            object? ctorOk = instance.Call(".ctor", itemId, count);
+            if (ctorOk == null)
             {
-                Logger.LogInfo($"RE9DotNet-CC: Adding Item ID Failed, No Ctor Function");
-                return null;
+                ctorOk = instance.Call(".ctor", itemId);
+                if (ctorOk == null)
+                {
+                    Logger.LogInfo($"RE9DotNet-CC: Adding Item ID Failed, No Ctor Function");
+                    return null;
+                }
+
+                var addCount = instance.Call("set_Stock", count);
+                if (addCount == null)
+                    return null;
             }
-            if (addCount == null) return null;
             var newGuidObj = CreateNewGuidObject();
 
                 var a2 = instance.GetTypeDefinition();
@@ -6578,6 +7205,50 @@ namespace RE9DotNet_CC
                 }
 
             Logger.LogInfo($"RE9DotNet-CC: Created item {typeName} id={itemId} count={count}");
+            return instance;
+        }
+
+        /// <summary><c>ItemStockData.ctor(app.ItemID, System.Int32)</c> as in chaos / item adder.</summary>
+        private ManagedObject? CreateItemStockDataForItemId(object itemIdBoxed, int count, out object? guid)
+        {
+            guid = null;
+            var tdb = API.GetTDB();
+            var typeDef = tdb?.FindType("app.ItemStockData");
+            if (typeDef == null)
+            {
+                Logger.LogError("RE9DotNet-CC: CreateItemStockDataForItemId — app.ItemStockData not found");
+                return null;
+            }
+
+            var instance = typeDef.CreateInstance(0) as ManagedObject;
+            if (instance == null)
+            {
+                Logger.LogError("RE9DotNet-CC: CreateItemStockDataForItemId — CreateInstance failed");
+                return null;
+            }
+
+            instance.AddRef();
+            object? ctorOk = instance.Call(".ctor", itemIdBoxed, count);
+            if (ctorOk == null)
+            {
+                ctorOk = instance.Call(".ctor", itemIdBoxed);
+                if (ctorOk == null)
+                    return null;
+                if (instance.Call("set_Stock", count) == null)
+                    return null;
+            }
+
+            var a2 = instance.GetTypeDefinition();
+            if (a2?.FindMethod("get_Id") != null)
+            {
+                var guidObj = ExtractFromInvokeRet(instance.Call("get_ID"));
+                if (guidObj is ManagedObject guidManaged && !IsInvokeRetObject(guidManaged))
+                {
+                    instance.Call("setId(System.Guid)", guidManaged);
+                    guid = guidManaged;
+                }
+            }
+
             return instance;
         }
 
@@ -6602,38 +7273,50 @@ namespace RE9DotNet_CC
         {
             try
             {
-                var inventory = GetInventory();
+                var inventory = ResolveGrantInventory(out var invSource);
                 if (inventory == null)
                     return false;
-                var inventoryManager = API.GetManagedSingleton("app.InventoryManager") as ManagedObject;
-                var itemManager = API.GetManagedSingleton("app.ItemManager") as ManagedObject;
-                if (itemManager == null)
-                    return false;
 
-                // ?? Create item instance (your helper)
-                var item = CreateItemInstance("app.ItemStockData", itemId, 1, out var _);
-                if (item == null)
+                LogGrantInventoryAndPlayer("AddHealingItem", invSource);
+
+                var itemIdBoxed = TryGetItemIdBoxedFromCatalogNumber(itemId);
+                if (itemIdBoxed == null)
                 {
-                    LogError("Failed to create item instance");
+                    LogError($"AddHealingItem: no app.ItemID static field mapping for catalog id {itemId} (extend ItemData.CatalogNumericToItemIdField)");
                     return false;
                 }
-                var tdb = API.GetTDB();
-                var typeDef = tdb?.FindType("app.Inventory.AcquireItemOptions");
-                var stockEvent = tdb?.FindType("app.ItemStockChangedEventType");
-                if (typeDef == null || stockEvent == null) return false;
-                else
+
+                // canMergeOrAdd often returns false while the inventory screen is open or when the wrong PlayerContext was used — do not hard-fail.
+                if (!InventoryAllowsMergeOrAdd(inventory, itemIdBoxed, 1) && IsLoggingEnabled)
+                    LogInfo($"AddHealingItem: canMergeOrAdd false for catalog id {itemId}; attempting mergeOrAdd anyway.");
+
+                const uint acquireItemOptionsDefault = 3u;
+                const int itemStockChangedEventDefault = 0;
+                try
                 {
+                    // Prefer mergeOrAdd(ItemID, int, bool, AcquireItemOptions, ItemStockChangedEventType) — same item identity as Lua.
+                    var mergeRet = inventory.Call("mergeOrAdd(app.ItemID, System.Int32, System.Boolean, app.Inventory.AcquireItemOptions, app.ItemStockChangedEventType)", itemIdBoxed, 1, true, null, null);
+                    LogMergeOrAddDiag("AddHealingItem(ItemID)", mergeRet);
+                }
+                catch (Exception ex)
+                {
+                    LogWarning($"mergeOrAdd(ItemID) failed, trying ItemStockData — {ex.Message}");
+                    var item = CreateItemStockDataForItemId(itemIdBoxed, 1, out var _);
+                    if (item == null)
+                        return false;
                     try
                     {
-                        inventory.Call("mergeOrAdd", item, 1, false, typeDef.FindField("Default"), stockEvent.FindField("Default"));//mergeorAdd(itemId, count, bool, 1, 3);
+                        var mergeRet2 = inventory.Call("mergeOrAdd", item, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
+                        LogMergeOrAddDiag("AddHealingItem(ItemStockData)", mergeRet2);
                     }
-                    catch (Exception ex)
+                    catch (Exception ex2)
                     {
-                        LogWarning($"mergeOrAdd failed: {ex.Message}");
+                        LogWarning($"mergeOrAdd(ItemAmountData) failed: {ex2.Message}");
+                        return false;
                     }
                 }
 
-                LogInfo($"Added healing item {itemId}");
+                LogInfo($"Added healing item catalogId={itemId}");
                 return true;
             }
             catch (Exception ex)
@@ -6644,122 +7327,61 @@ namespace RE9DotNet_CC
         }
 
         /// <summary>
-        /// Add ammo item to inventory
+        /// Add ammo / stackable item via <c>mergeOrAdd</c> (RE9 has no <c>_CurrentSlotSize</c> or per-slot <c>get_ItemID</c> on <c>SlotInfo</c>).
         /// </summary>
         public bool AddAmmoItem(int itemId, int amount)
         {
             try
             {
-                var inventory = GetInventory();
+                var inventory = ResolveGrantInventory(out var invSource);
                 if (inventory == null)
                     return false;
 
-                var numSlotsObj = inventory.GetField("_CurrentSlotSize");
-                if (numSlotsObj == null)
-                    return false;
+                LogGrantInventoryAndPlayer("AddAmmoItem", invSource);
 
-                int numSlots = Convert.ToInt32(numSlotsObj);
-                var slots = inventory.GetField("_Slots");
-                if (slots == null)
-                    return false;
+                if (amount <= 0)
+                    amount = 1;
 
-                // First, check if we already have this ammo type and can add to it
-                for (int i = 0; i < numSlots; i++)
+                var itemIdBoxed = TryGetItemIdBoxedFromCatalogNumber(itemId);
+                if (itemIdBoxed == null)
                 {
-                    var slot = GetSlotAtIndex(slots, i);
-                    if (slot == null)
-                        continue;
+                    LogError($"GameState: AddAmmoItem — no app.ItemID mapping for catalog id {itemId}");
+                    return false;
+                }
 
-                    var isBlankObj = slot.Call("get_IsBlank");
-                    if (isBlankObj == null)
-                        continue;
+                if (!InventoryAllowsMergeOrAdd(inventory, itemIdBoxed, amount) && IsLoggingEnabled)
+                    LogInfo($"GameState: canMergeOrAdd false for catalog id {itemId} x{amount}; attempting mergeOrAdd anyway.");
 
-                    bool isBlank = Convert.ToBoolean(isBlankObj);
-                    if (isBlank)
-                        continue;
-
-                    var existingItemIdObj = slot.Call("get_ItemID");
-                    if (existingItemIdObj == null)
-                        continue;
-
-                    int existingItemId = Convert.ToInt32(existingItemIdObj);
-                    if (existingItemId == itemId)
+                const uint acquireItemOptionsDefault = 3u;
+                const int itemStockChangedEventDefault = 0;
+                try
+                {
+                    var mergeRet = inventory.Call("mergeOrAdd(app.ItemID, System.Int32, System.Boolean, app.Inventory.AcquireItemOptions, app.ItemStockChangedEventType)", itemIdBoxed, amount, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
+                    LogMergeOrAddDiag("AddAmmoItem(ItemID)", mergeRet);
+                }
+                catch (Exception ex)
+                {
+                    LogWarning($"GameState: mergeOrAdd(ItemID) ammo failed, trying ItemStockData — {ex.Message}");
+                    var item = CreateItemStockDataForItemId(itemIdBoxed, amount, out object? unusedAmmoGuid);
+                    if (item == null)
                     {
-                        // Found existing ammo, try to add to it
-                        var currentObj = slot.Call("get_Number");
-                        var maxObj = slot.Call("get_MaxNumber");
-                        if (currentObj != null && maxObj != null)
-                        {
-                            int current = Convert.ToInt32(currentObj);
-                            int max = Convert.ToInt32(maxObj);
-                            LogInfo($"GameState: Found existing ammo stack at slot {i}: {current}/{max}, trying to add {amount}");
-                            if (max - current >= amount)
-                            {
-                                slot.Call("set_Number", current + amount);
+                        LogError("GameState: Failed to create ItemStockData for ammo");
+                        return false;
+                    }
 
-                                // Verify the number was set
-                                var verifyNumObj = slot.Call("get_Number");
-                                int verifyNum = verifyNumObj != null ? Convert.ToInt32(verifyNumObj) : -1;
-
-                                LogInfo($"GameState: Added {amount} ammo to existing stack (now {verifyNum}/{max})");
-
-                                if (verifyNum != current + amount)
-                                {
-                                    LogError($"GameState: Failed to update ammo count! Expected {current + amount}, got {verifyNum}");
-                                    return false;
-                                }
-
-                                return true;
-                            }
-                            else
-                            {
-                                LogInfo($"GameState: Existing stack at slot {i} is full ({current}/{max}), cannot add {amount}");
-                            }
-                        }
+                    try
+                    {
+                        var mergeRet2 = inventory.Call("mergeOrAdd", item, true, acquireItemOptionsDefault, itemStockChangedEventDefault);
+                        LogMergeOrAddDiag("AddAmmoItem(ItemStockData)", mergeRet2);
+                    }
+                    catch (Exception ex2)
+                    {
+                        LogError($"GameState: mergeOrAdd ammo failed - {ex2.Message}");
+                        return false;
                     }
                 }
 
-                // No existing stack found or can't add to it, create new slot
-                int emptySlotIndex = FindEmptySlot(false);
-                if (emptySlotIndex < 0)
-                {
-                    LogError($"GameState: No empty slot found for ammo item {itemId}");
-                    return false; // No space
-                }
-
-                var emptySlot = GetSlotAtIndex(slots, emptySlotIndex);
-                if (emptySlot == null)
-                {
-                    LogError($"GameState: Could not get slot at index {emptySlotIndex}");
-                    return false;
-                }
-
-                // Verify slot is blank before setting
-                var isBlankBeforeObj = emptySlot.Call("get_IsBlank");
-                bool isBlankBefore = isBlankBeforeObj != null && Convert.ToBoolean(isBlankBeforeObj);
-                LogInfo($"GameState: Slot {emptySlotIndex} isBlank before: {isBlankBefore}");
-
-                emptySlot.Call("set_ItemID", itemId);
-                emptySlot.Call("set_Number", amount);
-
-                // Verify the item was set correctly
-                var verifyItemIdObj = emptySlot.Call("get_ItemID");
-                var verifyNumberObj = emptySlot.Call("get_Number");
-                var verifyIsBlankObj = emptySlot.Call("get_IsBlank");
-
-                int verifyItemId = verifyItemIdObj != null ? Convert.ToInt32(verifyItemIdObj) : -1;
-                int verifyNumber = verifyNumberObj != null ? Convert.ToInt32(verifyNumberObj) : -1;
-                bool verifyIsBlank = verifyIsBlankObj != null && Convert.ToBoolean(verifyIsBlankObj);
-
-                LogInfo($"GameState: Added new ammo item {itemId} with amount {amount} to slot {emptySlotIndex}");
-                LogInfo($"GameState: Verification - ItemID: {verifyItemId} (expected {itemId}), Number: {verifyNumber} (expected {amount}), IsBlank: {verifyIsBlank}");
-
-                if (verifyItemId != itemId || verifyNumber != amount)
-                {
-                    LogError($"GameState: Ammo item was not set correctly! Expected ItemID={itemId}, Number={amount}, but got ItemID={verifyItemId}, Number={verifyNumber}");
-                    return false;
-                }
-
+                LogInfo($"GameState: mergeOrAdd ammo catalogId={itemId} x{amount}");
                 return true;
             }
             catch (Exception ex)
@@ -6770,92 +7392,51 @@ namespace RE9DotNet_CC
         }
 
         /// <summary>
-        /// Add weapon to inventory using InventoryManager
+        /// Add weapon via player <c>app.Inventory.mergeOrAdd</c> (RE9). Older packs used offline InventoryManager.addAndEquipMainWeapon.
         /// </summary>
         public bool AddWeapon(string weaponKey, int weaponId, bool isBig, int ammoAmount)
         {
             try
             {
-                // Use InventoryManager like LUA does
-                var itemMan = API.GetManagedSingleton("offline.gamemastering.InventoryManager");
-                if (itemMan == null)
-                {
-                    LogError("GameState: InventoryManager not found");
-                    return false;
-                }
+                // Hand grenade / flashbang are inventory items (it20_00_000 / it20_00_001), not WeaponID 65/66 — see ItemData.ThrowableInventoryItemIds.
+                if (ItemData.ThrowableInventoryItemIds.TryGetValue(weaponKey, out int throwableItemId))
+                    return AddAmmoItem(throwableItemId, 1);
 
-                var itemManObj = itemMan as ManagedObject;
-                if (itemManObj == null)
-                    return false;
-
-                // Check if weapon already exists
                 var inventory = GetInventory();
-                if (inventory != null)
+                if (inventory == null)
                 {
-                    var numSlotsObj = inventory.GetField("_CurrentSlotSize");
-                    if (numSlotsObj != null)
-                    {
-                        int numSlots = Convert.ToInt32(numSlotsObj);
-                        var slots = inventory.GetField("_Slots");
-                        if (slots != null)
-                        {
-                            for (int i = 0; i < numSlots; i++)
-                            {
-                                var slot = GetSlotAtIndex(slots, i);
-                                if (slot == null)
-                                    continue;
-
-                                var isBlankObj = slot.Call("get_IsBlank");
-                                if (isBlankObj == null)
-                                    continue;
-
-                                bool isBlank = Convert.ToBoolean(isBlankObj);
-                                if (isBlank)
-                                    continue;
-
-                                var weaponTypeObj = slot.Call("get_WeaponType");
-                                if (weaponTypeObj != null)
-                                {
-                                    int existingWeaponId = Convert.ToInt32(weaponTypeObj);
-                                    if (existingWeaponId == weaponId)
-                                    {
-                                        // Weapon already exists, don't add another
-                                        LogInfo($"GameState: Weapon {weaponId} already exists in inventory");
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Check if we have space (for big weapons, need 2 slots)
-                int emptySlot = FindEmptySlot(isBig);
-                if (emptySlot < 0)
-                {
-                    LogError($"GameState: No space for weapon (big={isBig})");
+                    LogError("GameState: GetInventory() returned null — cannot add weapon");
                     return false;
                 }
 
                 int bulletItemId = GetDefaultAmmoItemIdForWeapon(weaponKey) ?? 1;
-                int bulletId = ResolveBulletId(itemManObj, bulletItemId);
+                var invMgr = TryGetAppInventoryManager();
+                int bulletId = invMgr != null ? ResolveBulletId(invMgr, bulletItemId) : bulletItemId;
 
-                // Use addAndEquipMainWeapon
-                // For grenades/flash, the LUA uses different parameters: addAndEquipMainWeapon(itemid, 1, bullet)
-                // For others: addAndEquipMainWeapon(itemid, ammo_count, bullet)
-                if (weaponKey == "grenade" || weaponKey == "flash")
+                int stock = ammoAmount;
+                var item = CreateItemInstance("app.ItemStockData", weaponId, stock, out object? unusedGuid);
+                if (item == null)
                 {
-                    itemManObj.Call("addAndEquipMainWeapon", weaponId, 1, bulletId);
+                    LogError("GameState: Failed to create ItemStockData for weapon");
+                    return false;
                 }
-                else
+
+                const uint acquireItemOptionsDefault = 3u;
+                const int itemStockChangedEventDefault = 0;
+                try
                 {
-                    itemManObj.Call("addAndEquipMainWeapon", weaponId, ammoAmount, bulletId);
+                    inventory.Call("mergeOrAdd(app.ItemID, System.Int32, System.Boolean, app.Inventory.AcquireItemOptions, app.ItemStockChangedEventType)", item, true, null, null);
+                }
+                catch (Exception ex)
+                {
+                    LogError($"GameState: mergeOrAdd weapon failed - {ex.Message}");
+                    return false;
                 }
 
                 TrySetWeaponBulletType(weaponId, bulletItemId, bulletId);
                 DumpWeaponSlotInfo(weaponId);
-                
-                LogInfo($"GameState: Added weapon {weaponId} (big={isBig}, ammo={ammoAmount})");
+
+                LogInfo($"GameState: Added weapon {weaponId} (big={isBig}, stock={stock})");
                 return true;
             }
             catch (Exception ex)
@@ -6873,65 +7454,41 @@ namespace RE9DotNet_CC
                 if (inventory == null)
                     return;
 
-                var numSlotsObj = inventory.GetField("_CurrentSlotSize");
-                if (numSlotsObj == null)
+                var statesObj = inventory.Call("findPanelStates");
+                if (statesObj is not System.Array arr)
                     return;
 
-                int numSlots = Convert.ToInt32(numSlotsObj);
-                var slots = inventory.GetField("_Slots");
-                if (slots == null)
-                    return;
-
-                for (int i = 0; i < numSlots; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
-                    var slot = GetSlotAtIndex(slots, i);
-                    if (slot == null)
+                    var panel = arr.GetValue(i) as ManagedObject;
+                    if (panel == null)
                         continue;
 
-                    var weaponTypeObj = slot.Call("get_WeaponType");
-                    if (weaponTypeObj == null)
+                    var widObj = panel.Call("get_WeaponID") ?? panel.Call("get_ItemID");
+                    if (widObj == null)
                         continue;
 
-                    int slotWeaponId = Convert.ToInt32(weaponTypeObj);
-                    if (slotWeaponId != weaponId)
+                    int wid = Convert.ToInt32(widObj);
+                    if (wid != weaponId)
                         continue;
 
-                    var slotType = slot.GetTypeDefinition();
-                    if (slotType == null)
+                    var panelType = panel.GetTypeDefinition();
+                    if (panelType == null)
                         return;
 
-                    string[] methodNames =
+                    foreach (var methodName in new[]
+                             {
+                                 "set_BulletItemID", "set_BulletItemId", "set_BulletID", "set_BulletId",
+                                 "set_BulletType", "set_Bullet"
+                             })
                     {
-                        "set_BulletItemID",
-                        "set_BulletItemId",
-                        "set_BulletID",
-                        "set_BulletId",
-                        "set_BulletType",
-                        "set_Bullet"
-                    };
-
-                    foreach (var methodName in methodNames)
-                    {
-                        if (slotType.FindMethod(methodName) == null)
+                        if (panelType.FindMethod(methodName) == null)
                             continue;
 
-                        if (methodName.IndexOf("Item", StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            slot.Call(methodName, bulletItemId);
-                            continue;
-                        }
-
-                        // Try bullet ID first, then fall back to item ID if it doesn't stick.
-                        slot.Call(methodName, bulletId);
-                        var bulletIdObj = slot.Call("get_BulletID") ?? slot.Call("get_BulletId") ?? slot.Call("get_BulletType");
-                        if (bulletIdObj != null)
-                        {
-                            int currentBulletId = Convert.ToInt32(bulletIdObj);
-                            if (currentBulletId != bulletId && bulletItemId != bulletId)
-                            {
-                                slot.Call(methodName, bulletItemId);
-                            }
-                        }
+                        panel.Call(methodName,
+                            methodName.IndexOf("Item", StringComparison.OrdinalIgnoreCase) >= 0
+                                ? bulletItemId
+                                : bulletId);
                     }
 
                     return;
@@ -6951,52 +7508,40 @@ namespace RE9DotNet_CC
                 if (inventory == null)
                     return;
 
-                var numSlotsObj = inventory.GetField("_CurrentSlotSize");
-                if (numSlotsObj == null)
+                var statesObj = inventory.Call("findPanelStates");
+                if (statesObj is not System.Array arr)
                     return;
 
-                int numSlots = Convert.ToInt32(numSlotsObj);
-                var slots = inventory.GetField("_Slots");
-                if (slots == null)
-                    return;
-
-                for (int i = 0; i < numSlots; i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
-                    var slot = GetSlotAtIndex(slots, i);
-                    if (slot == null)
+                    var panel = arr.GetValue(i) as ManagedObject;
+                    if (panel == null)
                         continue;
 
-                    var weaponTypeObj = slot.Call("get_WeaponType");
-                    if (weaponTypeObj == null)
+                    var widObj = panel.Call("get_WeaponID") ?? panel.Call("get_ItemID");
+                    if (widObj == null)
                         continue;
 
-                    int slotWeaponId = Convert.ToInt32(weaponTypeObj);
-                    if (slotWeaponId != weaponId)
+                    if (Convert.ToInt32(widObj) != weaponId)
                         continue;
 
-                    var slotType = slot.GetTypeDefinition();
-                    if (slotType == null)
+                    var panelType = panel.GetTypeDefinition();
+                    if (panelType == null)
                         return;
 
                     var methodNames = new List<string>();
-                    foreach (var method in slotType.Methods)
+                    foreach (var method in panelType.Methods)
                     {
                         var name = method.Name;
                         if (name.IndexOf("Bullet", StringComparison.OrdinalIgnoreCase) >= 0
-                            || name.IndexOf("Ammo", StringComparison.OrdinalIgnoreCase) >= 0)
+                            || name.IndexOf("Ammo", StringComparison.OrdinalIgnoreCase) >= 0
+                            || name.IndexOf("Loader", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
                             methodNames.Add(name);
                         }
                     }
 
-                    LogInfo($"GameState: Weapon slot {i} for weapon {weaponId} has bullet/ammo methods: {string.Join(", ", methodNames)}");
-
-                    var bulletIdObj = slot.Call("get_BulletID") ?? slot.Call("get_BulletId") ?? slot.Call("get_BulletType");
-                    if (bulletIdObj != null)
-                    {
-                        LogInfo($"GameState: Slot {i} BulletID={Convert.ToInt32(bulletIdObj)}");
-                    }
-
+                    LogInfo($"GameState: Panel {i} weapon {weaponId} bullet/loader-related methods: {string.Join(", ", methodNames)}");
                     return;
                 }
             }
@@ -7015,42 +7560,32 @@ namespace RE9DotNet_CC
                 case "g18":
                 case "edge":
                 case "mup":
-                    //return TryGetAmmoItemId("handgun");
+                    return TryGetAmmoItemId("handgun");
                 case "m3":
-                    //return TryGetAmmoItemId("shotgun");
+                    return TryGetAmmoItemId("shotgun");
                 case "cqbr":
-                    //return TryGetAmmoItemId("submachine");
+                    return TryGetAmmoItemId("submachine");
                 case "lightning":
-                    //return TryGetAmmoItemId("mag");
+                    return TryGetAmmoItemId("mag");
                 case "raiden":
-                    //return TryGetAmmoItemId("large");
+                    return TryGetAmmoItemId("large");
                 case "mgl":
-                    //return SelectAmmoItemId("acid", "explode");
+                    return SelectAmmoItemId("acid", "grenade");
                 default:
                     return null;
             }
         }
 
-        private string? TryGetAmmoItemId(string ammoKey)
+        private int? TryGetAmmoItemId(string ammoKey)
         {
-            if (!ItemData.AmmoItems.TryGetValue(ammoKey, out string ammoItemId))
-                return null;
-
-            return ammoItemId;
+            return ItemData.AmmoItems.TryGetValue(ammoKey, out int id) ? id : null;
         }
 
-        private string? SelectAmmoItemId(string primaryAmmoKey, string fallbackAmmoKey)
+        private int? SelectAmmoItemId(string primaryAmmoKey, string fallbackAmmoKey)
         {
-            string? primaryItemId = TryGetAmmoItemId(primaryAmmoKey);
-            string? fallbackItemId = TryGetAmmoItemId(fallbackAmmoKey);
-
-            //if (primaryItemId.HasValue && HasInventoryItemId(primaryItemId.Value))
-               // return primaryItemId;
-
-            //if (fallbackItemId.HasValue)
-              //  return fallbackItemId;
-
-            return primaryItemId;
+            int? primaryItemId = TryGetAmmoItemId(primaryAmmoKey);
+            int? fallbackItemId = TryGetAmmoItemId(fallbackAmmoKey);
+            return primaryItemId ?? fallbackItemId;
         }
 
         private bool HasInventoryItemId(int itemId)
@@ -7134,6 +7669,7 @@ namespace RE9DotNet_CC
             }
         }
 
+        /// <summary>RE9: grid size is <c>_UnlockSlotSize</c> (<c>via.Int2</c>); iteration for items uses <c>findPanelStates</c>, not raw <c>SlotInfo</c>.</summary>
         private bool TryGetInventorySlots(out object? slotsObj, out int numSlots)
         {
             slotsObj = null;
@@ -7145,16 +7681,14 @@ namespace RE9DotNet_CC
                 if (inventory == null)
                     return false;
 
-                var numSlotsObj = inventory.GetField("_UnlockSlotSize");
-                if (numSlotsObj == null)
-                    return false;
-
-                numSlots = Convert.ToInt32(numSlotsObj);
-                if (numSlots <= 0)
-                    return false;
-
                 slotsObj = inventory.GetField("_Slots");
-                return slotsObj != null;
+                if (slotsObj is System.Array arr)
+                {
+                    numSlots = arr.Length;
+                    return numSlots > 0;
+                }
+
+                return false;
             }
             catch
             {
@@ -7165,33 +7699,41 @@ namespace RE9DotNet_CC
         private List<(ManagedObject Slot, int ItemId, int Count)> GetInventoryItems()
         {
             var items = new List<(ManagedObject, int, int)>();
-            if (!TryGetInventorySlots(out var slotsObj, out var numSlots) || slotsObj == null)
-                return items;
-
-            for (int i = 0; i < numSlots; i++)
+            try
             {
-                var slot = GetSlotAtIndex(slotsObj, i);
-                if (slot == null)
-                    continue;
+                var inventory = GetInventory();
+                if (inventory == null)
+                    return items;
 
-                var isBlankObj = slot.Call("get_IsEmpty");
-                if (isBlankObj != null && Convert.ToBoolean(isBlankObj))
-                    continue;
+                var statesObj = inventory.Call("findPanelStates");
+                if (statesObj is not System.Array arr)
+                    return items;
 
-                var itemIdObj = slot.Call("get_ItemID");
-                if (itemIdObj == null)
-                    continue;
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    var panel = arr.GetValue(i) as ManagedObject;
+                    if (panel == null)
+                        continue;
 
-                int itemId = Convert.ToInt32(itemIdObj);
-                if (itemId <= 0)
-                    continue;
+                    var itemIdObj = panel.Call("get_ItemID");
+                    if (itemIdObj == null)
+                        continue;
 
-                int count = 1;
-                var countObj = slot.Call("get_Number");
-                if (countObj != null)
-                    count = Math.Max(1, Convert.ToInt32(countObj));
+                    int itemId = Convert.ToInt32(itemIdObj);
+                    if (itemId == 0)
+                        continue;
 
-                items.Add((slot, itemId, count));
+                    int count = 1;
+                    var stockObj = panel.Call("get_Stock");
+                    if (stockObj != null)
+                        count = Math.Max(1, Convert.ToInt32(stockObj));
+
+                    items.Add((panel, itemId, count));
+                }
+            }
+            catch
+            {
+                // ignore
             }
 
             return items;
@@ -7214,6 +7756,9 @@ namespace RE9DotNet_CC
                 if (typeDef?.FindMethod("set_ItemID") != null)
                     slot.Call("set_ItemID", 0);
 
+                if (typeDef?.FindMethod("set_Stock") != null)
+                    slot.Call("set_Stock", 0);
+
                 if (typeDef?.FindMethod("set_Number") != null)
                     slot.Call("set_Number", 0);
 
@@ -7232,7 +7777,26 @@ namespace RE9DotNet_CC
                 if (amount <= 0)
                     return false;
 
-                var itemMan = API.GetManagedSingleton("offline.gamemastering.InventoryManager") as ManagedObject;
+                var inventory = GetInventory();
+                if (inventory != null)
+                {
+                    var invType = inventory.GetTypeDefinition();
+                    if (invType?.FindMethod("consumeStock") != null)
+                    {
+                        try
+                        {
+                            var consumed = inventory.Call("consumeStock", itemId, amount, 0);
+                            if (consumed != null && Convert.ToBoolean(consumed))
+                                return true;
+                        }
+                        catch
+                        {
+                            // fall through to slot path
+                        }
+                    }
+                }
+
+                var itemMan = TryGetAppInventoryManager();
                 var itemManType = itemMan?.GetTypeDefinition();
                 if (itemMan != null && itemManType?.FindMethod("reduceItem") != null)
                 {
@@ -7261,7 +7825,10 @@ namespace RE9DotNet_CC
                     }
                     else
                     {
-                        entry.Slot.Call("set_Number", current - remove);
+                        if (entry.Slot.GetTypeDefinition()?.FindMethod("set_Stock") != null)
+                            entry.Slot.Call("set_Stock", current - remove);
+                        else
+                            entry.Slot.Call("set_Number", current - remove);
                     }
 
                     if (remaining <= 0)
@@ -7358,7 +7925,7 @@ namespace RE9DotNet_CC
                 if (weaponTypeObj == null)
                     return false;
 
-                var itemMan = API.GetManagedSingleton("offline.gamemastering.InventoryManager") as ManagedObject;
+                var itemMan = TryGetAppInventoryManager();
                 var itemManType = itemMan?.GetTypeDefinition();
                 if (itemMan != null && itemManType?.FindMethod("removeWeapon") != null)
                 {

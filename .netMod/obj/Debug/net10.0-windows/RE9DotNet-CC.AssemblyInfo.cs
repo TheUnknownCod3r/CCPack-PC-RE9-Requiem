@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RE9-CrowdControl")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce0659d91ef8497727ec197a705f202b349d7a71")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b6087c33e5d53baf47cac51762637e44c3a7a19")]
 [assembly: System.Reflection.AssemblyProductAttribute("RE9-CrowdControl")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RE9-CrowdControl")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

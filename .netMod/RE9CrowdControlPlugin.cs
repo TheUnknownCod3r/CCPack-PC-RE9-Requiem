@@ -1,8 +1,5 @@
-using REFrameworkNET;
-using REFrameworkNET.Attributes;
-using REFrameworkNET.Callbacks;
-using RE9DotNet_CC.Effects;
 using Hexa.NET.ImGui;
+using RE9DotNet_CC.Effects;
 
 namespace RE9DotNet_CC
 {
@@ -24,6 +21,7 @@ namespace RE9DotNet_CC
         private static bool _ohkoWasPaused = false;
         private static bool _invulWasPaused = false;
         private static bool _fovWasPaused = false;
+        private static bool _viewModeSwapWasPaused = false;
         private static bool _scaleWasPaused = false;
         private static bool _speedWasPaused = false;
         private static bool _loadCleanupTriggered = false;
@@ -76,13 +74,10 @@ namespace RE9DotNet_CC
         }
 
         /// <summary>
-        /// Hook into BeginRendering to apply FOV and camera height every frame (like LUA version)
-        /// This ensures effects are continuously applied even if the game tries to reset them
+        /// Draw UI in REFramework menu (ImGui). BeginRendering hook below applies FOV / camera height each frame.
+        /// RE9 REFramework.NET: [Callback] lives in Attributes; <c>CallbackType</c> is <c>REFrameworkNET.CallbackType</c> (root), not Attributes/Callbacks.
         /// </summary>
-        /// <summary>
-        /// Draw UI in REFramework menu
-        /// </summary>
-        [Callback(typeof(ImGuiRender), CallbackType.Pre)]
+        [global::REFrameworkNET.Attributes.Callback(typeof(global::REFrameworkNET.Callbacks.ImGuiRender), global::REFrameworkNET.CallbackType.Pre)]
         public static void OnDrawUI()
         {
             if (_config == null)
@@ -124,7 +119,7 @@ namespace RE9DotNet_CC
             ImGui.End();
         }
 
-        [Callback(typeof(BeginRendering), CallbackType.Pre)]
+        [global::REFrameworkNET.Attributes.Callback(typeof(global::REFrameworkNET.Callbacks.BeginRendering), global::REFrameworkNET.CallbackType.Pre)]
         public static void OnPreBeginRendering()
         {
             try
@@ -170,7 +165,7 @@ namespace RE9DotNet_CC
                 if (camera == null)
                     return null;
 
-                var cameraObj = camera as ManagedObject;
+                var cameraObj = camera as global::REFrameworkNET.ManagedObject;
                 if (cameraObj == null)
                     return null;
 
@@ -184,11 +179,11 @@ namespace RE9DotNet_CC
                 {
                     var io = ImGui.GetIO();
                     // Create via.Size using ValueType
-                    windowSizeObj = REFrameworkNET.ValueType.New<via.Size>();
+                    windowSizeObj = global::REFrameworkNET.ValueType.New<global::via.Size>();
                     if (windowSizeObj != null)
                     {
                         // via.Size uses w and h properties (not width/height)
-                        var sizeValueType = windowSizeObj as REFrameworkNET.ValueType;
+                        var sizeValueType = windowSizeObj as global::REFrameworkNET.ValueType;
                         if (sizeValueType != null)
                         {
                             // Try to set w and h properties
@@ -232,7 +227,7 @@ namespace RE9DotNet_CC
                     return null;
 
                 // Get via.math type and worldPos2ScreenPos method
-                var mathType = API.GetTDB()?.FindType("via.math");
+                var mathType = global::REFrameworkNET.API.GetTDB()?.FindType("via.math");
                 if (mathType == null)
                     return null;
 
@@ -242,7 +237,7 @@ namespace RE9DotNet_CC
                     return null;
 
                 // Create world position vector
-                var worldPosVec = REFrameworkNET.ValueType.New<via.vec3>();
+                var worldPosVec = global::REFrameworkNET.ValueType.New<global::via.vec3>();
                 worldPosVec.x = worldPos.X;
                 worldPosVec.y = worldPos.Y;
                 worldPosVec.z = worldPos.Z;
@@ -256,7 +251,7 @@ namespace RE9DotNet_CC
                     return null;
 
                 // Extract screen position
-                var screenPosValueType = screenPosObj as REFrameworkNET.ValueType;
+                var screenPosValueType = screenPosObj as global::REFrameworkNET.ValueType;
                 if (screenPosValueType == null)
                     return null;
 
@@ -285,10 +280,10 @@ namespace RE9DotNet_CC
             try
             {
                 // Try CameraManager first
-                var cameraManager = API.GetManagedSingleton("via.camera");
+                var cameraManager = global::REFrameworkNET.API.GetManagedSingleton("via.camera");
                 if (cameraManager != null)
                 {
-                    var cameraManagerObj = cameraManager as ManagedObject;
+                    var cameraManagerObj = cameraManager as global::REFrameworkNET.ManagedObject;
                     if (cameraManagerObj != null)
                     {
                         var camera = cameraManagerObj.Call("get_MainCamera603180");
@@ -327,12 +322,12 @@ namespace RE9DotNet_CC
                 if (invokeRet == null) return null;
                 
                 // Try direct casting first
-                if (invokeRet is ManagedObject managedObj)
+                if (invokeRet is global::REFrameworkNET.ManagedObject managedObj)
                 {
                     return managedObj;
                 }
                 
-                if (invokeRet is REFrameworkNET.ValueType valueType)
+                if (invokeRet is global::REFrameworkNET.ValueType valueType)
                 {
                     return valueType;
                 }
@@ -373,7 +368,7 @@ namespace RE9DotNet_CC
                         if (ptrUInt64 != 0)
                         {
                             // Try ManagedObject first
-                            var managedObject = ManagedObject.ToManagedObject(ptrUInt64);
+                            var managedObject = global::REFrameworkNET.ManagedObject.ToManagedObject(ptrUInt64);
                             if (managedObject != null)
                             {
                                 return managedObject;
@@ -477,7 +472,7 @@ namespace RE9DotNet_CC
             }
         }
 
-        [Callback(typeof(UpdateMotion), CallbackType.Pre)]
+        [global::REFrameworkNET.Attributes.Callback(typeof(global::REFrameworkNET.Callbacks.UpdateMotion), global::REFrameworkNET.CallbackType.Pre)]
         public static void OnUpdateMotion()
         {
             // Only update if initialized to avoid holding references after unload
@@ -771,6 +766,73 @@ namespace RE9DotNet_CC
                             
                             // Clear request IDs to allow effect to be triggered again
                             _gameState.SetFOVRequestId(0, null);
+                        }
+                    }
+                }
+
+                // View mode (TPS/FPS) swap timer
+                if (_gameState != null && _gameState.IsViewModeSwapActive)
+                {
+                    bool vmStillActive = _gameState.UpdateViewModeSwap(deltaTime, isGameReady, out bool vmWasPaused, out bool vmJustResumed);
+
+                    if (_connection != null)
+                    {
+                        int vmReqId = _gameState.GetViewModeSwapRequestId();
+                        string? vmReqGuid = _gameState.GetViewModeSwapRequestID();
+                        if (vmReqId > 0)
+                        {
+                            if (vmJustResumed)
+                            {
+                                var response = new CCResponse
+                                {
+                                    Id = vmReqId,
+                                    RequestID = vmReqGuid,
+                                    Status = CCStatus.Resumed,
+                                    Message = "Camera view swap resumed",
+                                    TimeRemaining = 0,
+                                    ResponseType = 0
+                                };
+                                Task.Run(async () => await _connection.SendResponseAsync(response));
+                                _viewModeSwapWasPaused = false;
+                            }
+                            else if (vmWasPaused && !_viewModeSwapWasPaused)
+                            {
+                                var response = new CCResponse
+                                {
+                                    Id = vmReqId,
+                                    RequestID = vmReqGuid,
+                                    Status = CCStatus.Pause,
+                                    Message = "Camera view swap paused",
+                                    TimeRemaining = 0,
+                                    ResponseType = 0
+                                };
+                                Task.Run(async () => await _connection.SendResponseAsync(response));
+                                _viewModeSwapWasPaused = true;
+                            }
+                            else if (!vmWasPaused)
+                            {
+                                _viewModeSwapWasPaused = false;
+                            }
+                        }
+                    }
+
+                    if (!vmStillActive && _connection != null)
+                    {
+                        int vmReqId = _gameState.GetViewModeSwapRequestId();
+                        string? vmReqGuid = _gameState.GetViewModeSwapRequestID();
+                        if (vmReqId > 0)
+                        {
+                            var response = new CCResponse
+                            {
+                                Id = vmReqId,
+                                RequestID = vmReqGuid,
+                                Status = CCStatus.Stopped,
+                                Message = "Camera view restored (TPS/FPS)",
+                                TimeRemaining = 0,
+                                ResponseType = 0
+                            };
+                            Task.Run(async () => await _connection.SendResponseAsync(response));
+                            _gameState.SetViewModeSwapRequestId(0, null);
                         }
                     }
                 }
@@ -1069,21 +1131,21 @@ namespace RE9DotNet_CC
         {
             try
             {
-                var sceneManagerNative = API.GetNativeSingleton("via.SceneManager");
+                var sceneManagerNative = global::REFrameworkNET.API.GetNativeSingleton("via.SceneManager");
                 if (sceneManagerNative == null)
                     return false;
 
                 var scene = sceneManagerNative.Call("get_CurrentScene");
-                if (scene is not ManagedObject sceneObj)
+                if (scene is not global::REFrameworkNET.ManagedObject sceneObj)
                     return false;
 
-                var tdb = API.GetTDB();
+                var tdb = global::REFrameworkNET.API.GetTDB();
                 var loadingType = tdb?.FindType("offline.gui.Loading5secBehavior");
                 if (loadingType != null)
                 {
                     var loadingComponents = sceneObj.Call("findComponents", loadingType);
                     if (AnyComponent(loadingComponents, component =>
-                        component is ManagedObject compObj
+                        component is global::REFrameworkNET.ManagedObject compObj
                         && compObj.GetTypeDefinition()?.FindMethod("isBusyLoading5sec") != null
                         && compObj.Call("isBusyLoading5sec") is object busy
                         && Convert.ToBoolean(busy)))
@@ -1098,7 +1160,7 @@ namespace RE9DotNet_CC
                     var loadComponents = sceneObj.Call("findComponents", loadBehaviorType);
                     if (AnyComponent(loadComponents, component =>
                     {
-                        if (component is not ManagedObject compObj)
+                        if (component is not global::REFrameworkNET.ManagedObject compObj)
                             return false;
 
                         var compType = compObj.GetTypeDefinition();
@@ -1172,11 +1234,12 @@ namespace RE9DotNet_CC
             RegisterEffect(new OHKOEffect());
             RegisterEffect(new FullHealEffect());
             RegisterEffect(new InvincibilityEffect());
-            // RE3 LUA set does not include poison/burn/heal status effects
+            // RE9: status set TBD — prior LUA pack omitted some status effects
 
             // Camera effects
             RegisterEffect(new WideCameraEffect());
             RegisterEffect(new NarrowCameraEffect());
+            RegisterEffect(new SwapCameraViewEffect());
 
             // Player scale effects
             RegisterEffect(new GiantPlayerEffect());
@@ -1234,17 +1297,12 @@ namespace RE9DotNet_CC
             RegisterEffect(new GiveAmmoEffect("giveammo_shotgun"));
             RegisterEffect(new GiveAmmoEffect("giveammo_submachine"));
             RegisterEffect(new GiveAmmoEffect("giveammo_mag"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_mine"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_explode"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_acid"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_flame"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_needle"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_fuel"));
             RegisterEffect(new GiveAmmoEffect("giveammo_large"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_slshigh"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_detonator"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_ink"));
-            RegisterEffect(new GiveAmmoEffect("giveammo_board"));
+            RegisterEffect(new GiveAmmoEffect("giveammo_grenade"));
+            RegisterEffect(new GiveAmmoEffect("giveammo_grenade_stack"));
+            RegisterEffect(new GiveAmmoEffect("giveammo_molotov"));
+            RegisterEffect(new GiveAmmoEffect("giveammo_acid"));
+            RegisterEffect(new GiveAmmoEffect("giveammo_ink_tin"));
 
             // Give healing item effects
             // Give healing item effects
@@ -1253,7 +1311,7 @@ namespace RE9DotNet_CC
             RegisterEffect(new GiveHealHerbgggEffect());
             RegisterEffect(new GiveHealMedEffect());
 
-            // Spawn enemy effects - register known RE3 prefabs
+            // Spawn enemy effects (prefab names / CP_ ids discovered at runtime via EnemySpawner)
             string[] enemyCodes = {
                 "spawn_em0000",
                 "spawn_em0020",
@@ -1291,7 +1349,7 @@ namespace RE9DotNet_CC
 
         private static void UpdateCharacterMenuVisibility(GameState gameState)
         {
-            // RE3 LUA mod does not apply character-based menu filtering, so keep all effects visible.
+            // Keep all effects visible (no character-based menu filtering).
             if (_connection == null || !_connection.IsConnected)
             {
                 return;
